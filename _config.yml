@@ -3,8 +3,8 @@
 # ----------------------- #
 
 url: rongyi.work
-title: rongyi.work
-subtitle: 图样图森破啊
+title: 图样图森破啊😄
+subtitle: 易荣义的技术博客
 author: 易荣义
 simple_search: https://www.google.com/search
 description:
@@ -71,7 +71,7 @@ github_skip_forks: true
 
 # Twitter
 twitter_user:
-twitter_tweet_button: true
+twitter_tweet_button: false
 
 # Google +1
 google_plus_one: false
