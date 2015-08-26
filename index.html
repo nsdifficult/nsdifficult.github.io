@@ -7,7 +7,7 @@
 	<meta name="author" content="Your Name">
 
 	
-	<meta name="description" content=" Blog Archives ">
+	<meta name="description" content=" 放在前面要说的 本文文字完全总结（95%）自《Spring3.x企业应用开发实战》，《高性能MySQL》。写在这里是为了方便自己查阅。 Read on &rarr; Jul 14th, 2015 ">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -75,8 +75,359 @@
 	
 	<div id="content" class="inner">
 
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/07/14/dbTransaction/">
+		
+			再谈数据库事务</a>
+	</h2>
+	<div class="entry-content">
+		<h2>放在前面要说的</h2>
+
+<p>本文文字完全总结（95%）自《Spring3.x企业应用开发实战》，《高性能MySQL》。写在这里是为了方便自己查阅。
+		
+		<a href="/blog/2015/07/14/dbTransaction/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Jul 14th, 2015</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/06/18/javaThread2/">
+		
+			《Java编程思想》读书笔记之多线程(二)</a>
+	</h2>
+	<div class="entry-content">
+		<h2>共享受限资源</h2>
+
+<p>基本上所有的并发模式在解决线程冲突问题的时候，都是采用序列化访问共享资源的方案。这意味着在给定时刻只允许一个任务访问共享资源。通常这是通过在代码前加上一条锁语句来实现的，这就使得一段时间内只有一个任务可以运行这段代码。因为锁语句产生了一种互相排斥的效果，所以这种机制称为互赤量(mutex)。 <br/>
+共享资源一般是以对象的形式存在的内存片段，但也可以是文件、输入/输出端口，或者是打印机。
+		
+		<a href="/blog/2015/06/18/javaThread2/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Jun 18th, 2015</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/06/15/javaThread/">
+		
+			《Java编程思想》读书笔记之多线程(一)</a>
+	</h2>
+	<div class="entry-content">
+		<h2>线程状态</h2>
+
+<p>new->runnable->running->block->dead
+		
+		<a href="/blog/2015/06/15/javaThread/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Jun 15th, 2015</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/05/22/leetcodeTwosum/">
+		
+			Leetcode之two Sum</a>
+	</h2>
+	<div class="entry-content">
+		<h2>问题描述</h2>
+
+<p><a href="https://leetcode.com/problems/two-sum/">two sum原题链接</a></p>
+
+<blockquote><p>Given an array of integers, find two numbers such that they add up to a specific target number.
+		
+		<a href="/blog/2015/05/22/leetcodeTwosum/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+May 22nd, 2015</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/05/12/MySqlPartitions/">
+		
+			MySql分区调研笔记</a>
+	</h2>
+	<div class="entry-content">
+		<h2>先介绍索引分类</h2>
+
+<h3>key</h3>
+
+<p>通常是index的同义词</p>
+
+<h3>index</h3>
+
+<p>索引，同key</p>
+
+<h3>primary key</h3>
+
+<p>主键，也是unique key（即unique index）。每个表只能有一个。</p>
+
+<h3>unique key</h3>
+
+<p>即唯一索引，每个表可以有多个。
+		
+		<a href="/blog/2015/05/12/MySqlPartitions/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+May 12th, 2015</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/05/07/javacontainer2/">
+		
+			《Java编程思想》读书笔记之容器(二)</a>
+	</h2>
+	<div class="entry-content">
+		<h2>理解Map</h2>
+
+<p>映射表（也称关联数组）的基本思想是它维护的键-值对关联，因此你可以使用键来查找值。标准的Java类库中包含了Map的几种基本实现，包括：HashMap,TreeMap,LinkedHashMap,WeakHashMap,ConcurrentHashMap,IdentiyHashMap.它们都有同样的基本接口Map，但是行为特性各不相同，这表现在效率、键值对的保存及呈现次序、对象的保存周期
+映射表如何在多线程程序中和判定“键”等价的策略等方面。
+		
+		<a href="/blog/2015/05/07/javacontainer2/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+May 7th, 2015</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/04/26/javacontainer1/">
+		
+			《Java编程思想》读书笔记之容器(一)</a>
+	</h2>
+	<div class="entry-content">
+		<h1>先上容器的类图</h1>
+
+<p><img src="/images/container/container.png"></p>
+
+<p>点线框表示接口；实线框表示普通类（具体类）；虚线框表示抽象类；带有空心箭头的点线表示一个特定的类实现了一个接口；实心箭头表示某个类可以生成箭头所指向类的对象。例如任意的Collection可以生成Iterator，而List可以生成ListIterator（也能生成普通的Iterator，因为List继承自Collection）。
+		
+		<a href="/blog/2015/04/26/javacontainer1/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Apr 26th, 2015</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/04/20/mysqlIndex/">
+		
+			MySql索引的使用笔记</a>
+	</h2>
+	<div class="entry-content">
+		<h2>什么是数据库索引？</h2>
+
+<p>数据库索引，是数据库管理系统中一个排序的数据结构，以协助快速查询、更新数据库表中数据。</p>
+
+<h2>MySql中索引使用的数据结构？</h2>
+
+<p>BTree。MyISAM引擎使用B+Tree作为索引结构；InnoDB存储引擎也使用B+Tree作为索引结构，但两者的具体实现方式不同，具体见<a href="http://blog.codinglabs.org/articles/theory-of-mysql-index.html">MySQL索引背后的数据结构及算法原理</a></p>
+
+<h2>什么是聚集索引和非聚集索引？</h2>
+
+<p>数据记录本身被存于索引
+		
+		<a href="/blog/2015/04/20/mysqlIndex/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Apr 20th, 2015</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/04/06/exception/">
+		
+			关于异常的一些问答</a>
+	</h2>
+	<div class="entry-content">
+		<h2>1、什么叫做异常？</h2>
+
+<p>异常处理，是编程语言或计算机硬件里的一种机制，用于处理软件或信息系统中出现的异常状况（即超出程序正常执行流程的某些特殊条件）。</p>
+
+<h2>2、Java中关于异常／错误怎么理解？</h2>
+
+<p>Java的基本理念是：“结构不佳的代码不能运行”。 <br/>
+发现错误的最佳时机是在编译阶段。但编译期间不能找出所有的错误，余下的错误只能在运行期解决。这就需要错误源能通过某种方式，把适当的信息传递给某个接收者（该接收者知道该如何处理这个错误）。Java使用异常来提供一致的错误报告模型。
+		
+		<a href="/blog/2015/04/06/exception/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Apr 6th, 2015</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/12/28/jpg2png/">
+		
+			Jpg转png命令sips</a>
+	</h2>
+	<div class="entry-content">
+		<p>（很久以前的笔记了，今天提交了吧，免得下次再找）。</p>
+
+<h2>sips介绍</h2>
+
+<p>sips命令介绍可使用man sips命令查看。这里只记录我使用的其中转换图片格式功能的两个笔记。</p>
+
+<h2>使用</h2>
+
+<h3>转换单个jpg到png
+		
+		<a href="/blog/2014/12/28/jpg2png/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Dec 28th, 2014</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
 <nav id="pagenavi">
     
+    
+        <a href="/posts/2" class="next">Next</a>
     
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav>

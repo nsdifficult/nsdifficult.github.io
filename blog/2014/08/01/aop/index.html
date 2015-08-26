@@ -1,0 +1,317 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>AOP学习笔记 - My Octopress Blog</title>
+	<meta name="author" content="Your Name">
+
+	
+	<meta name="description" content="AOP的定义 AOP（Aspect Orient Programming），也就是面向切面编程。
+一句话解释：面向对象编程（OOP）是从静态角度考虑程序结构，面向切面编程（AOP）是从动态角度考虑程序运行过程。 spring官方解释（第 5 章 Spring AOP: Spring之面向方面编程 &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">My Octopress Blog</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:nsdifficult.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:nsdifficult.github.io">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">AOP学习笔记</h2>
+	<div class="entry-content"><h2>AOP的定义</h2>
+
+<p>AOP（Aspect Orient Programming），也就是面向切面编程。<br/>
+<strong>一句话解释</strong>：面向对象编程（OOP）是从静态角度考虑程序结构，面向切面编程（AOP）是从动态角度考虑程序运行过程。<!--more--></p>
+
+<p>spring官方解释（<a href="http://oss.org.cn/ossdocs/framework/spring/zh-cn/aop.html">第 5 章 Spring AOP: Spring之面向方面编程</a>）：</p>
+
+<blockquote><p>面向方面编程 (AOP) 提供从另一个角度来考虑程序结构以完善面向对象编程（OOP）。 面向对象将应用程序分解成 各个层次的对象，而AOP将程序分解成各个方面 或者说 关注点 。 这使得可以模块化诸如事务管理等这些横切多个对象的关注点。(这些关注点术语称作 横切关注点。)</p></blockquote>
+
+<p>在网上查了很多资料，看到解释最清楚的就是这篇文章了<a href="http://www.jdon.com/AOPdesign/jdon-aop.htm">AOP是什么？ </a>：</p>
+
+<blockquote><p>从J2EE系统划分为J2EE容器和J2EE应用系统两个方面，我们已经看到一种分散关注的思路（separation of concerns）。</p>
+
+<p>分散关注:  将通用需求功能从不相关类之中分离出来；同时，能够使得很多类共享一个行为，一旦行为发生变化，不必修改很多类，只要修改这个行为就可以。</p>
+
+<p>AOP就是这种实现分散关注的编程方法，它将“关注”封装在“方面”中。</p></blockquote>
+
+<h2>AOP的作用</h2>
+
+<p>常常通过 AOP 来处理一些具有横切性质的系统性服务，如事物管理、安全检查、缓存、对象池管理等，AOP 已经成为一种非常常用的解决方案。<br/>
+1. Authentication 权限<br/>
+2. Caching 缓存<br/>
+3. Context passing 内容传递<br/>
+4. Error handling 错误处理<br/>
+5. Lazy loading　懒加载<br/>
+6. Debugging　　调试<br/>
+7. logging, tracing, profiling and monitoring　记录跟踪　优化　校准 <br/>
+8. Performance optimization　性能优化<br/>
+9. Persistence　　持久化 <br/>
+10. Resource pooling　资源池 <br/>
+11. Synchronization　同步 <br/>
+12. Transactions 事务</p>
+
+<h2>AOP实现</h2>
+
+<p>可以使用静态代理,jdk动态代理或者<code>CGLib</code>动态代理来实现简单的aop。<br/>
+关于这点这篇文章讲的很好：<a href="http://my.oschina.net/huangyong/blog/161338">AOP 那点事儿</a></p>
+
+<h2>spring aop</h2>
+
+<p>写了大半天，结果还是删除了。因为这篇文章讲的实在是太好了：<a href="http://my.oschina.net/huangyong/blog/161338">AOP 那点事儿</a>  。仔细看这两篇文章完全可以弄懂aop。</p>
+
+<h2>实际项目中的使用</h2>
+
+<p>使用TransactionProxyFactoryBean来管理dao层的事物。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;dataSource&quot;</span> <span class="na">class=</span><span class="s">&quot;com.trs.util.dbcp.impl.CacheImpl&quot;</span>
+</span><span class='line'>  <span class="na">init-method=</span><span class="s">&quot;start&quot;</span> <span class="na">destroy-method=</span><span class="s">&quot;close&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;driverClassName&quot;</span> <span class="na">value=</span><span class="s">&quot;${hibernate.connection.driver_class}&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;URL&quot;</span> <span class="na">value=</span><span class="s">&quot;${hibernate.connection.url}&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;userName&quot;</span> <span class="na">value=</span><span class="s">&quot;${hibernate.connection.username}&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;passWord&quot;</span> <span class="na">value=</span><span class="s">&quot;${hibernate.connection.password}&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;minLimit&quot;</span> <span class="na">value=</span><span class="s">&quot;10&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;maxLimit&quot;</span> <span class="na">value=</span><span class="s">&quot;100&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;minSpare&quot;</span> <span class="na">value=</span><span class="s">&quot;10&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;maxSpare&quot;</span> <span class="na">value=</span><span class="s">&quot;100&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;TTLOverAge&quot;</span> <span class="na">value=</span><span class="s">&quot;1200&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;traceAssign&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;cacheScheme&quot;</span> <span class="na">value=</span><span class="s">&quot;2&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;maxWait&quot;</span> <span class="na">value=</span><span class="s">&quot;0&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;testOnAssign&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;maxIdleTime&quot;</span> <span class="na">value=</span><span class="s">&quot;150000&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;testSQL&quot;</span> <span class="na">value=</span><span class="s">&quot;${trsdbcp.testSQL}&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/bean&gt;</span>
+</span><span class='line'><span class="c">&lt;!-- ========================= End of DATA SOURCE ========================= --&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&lt;!-- Hibernate SessionFactory --&gt;</span>
+</span><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;sessionFactory&quot;</span> <span class="na">class=</span><span class="s">&quot;org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;packagesToScan&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;list&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;value&gt;</span>com.trs.dev4.jdk16.model<span class="nt">&lt;/value&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;value&gt;</span>com.trs.dev4.jdk16.cms.bo<span class="nt">&lt;/value&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;value&gt;</span>com.trs.mam.bo<span class="nt">&lt;/value&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/list&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/property&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;hibernateProperties&quot;</span> <span class="na">ref=</span><span class="s">&quot;hibernateProperties&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;dataSource&quot;</span> <span class="na">ref=</span><span class="s">&quot;dataSource&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/bean&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&lt;!-- Transaction manager for a single Hibernate SessionFactory (alternative to JTA) --&gt;</span>
+</span><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;hb_transactionManager&quot;</span>
+</span><span class='line'>  <span class="na">class=</span><span class="s">&quot;org.springframework.orm.hibernate3.HibernateTransactionManager&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;sessionFactory&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;ref</span> <span class="na">local=</span><span class="s">&quot;sessionFactory&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/property&gt;</span>
+</span><span class='line'><span class="nt">&lt;/bean&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&lt;!-- ========================= BASE TRANSACTIONPROXY DEFINITIONS ======================== --&gt;</span>
+</span><span class='line'><span class="c">&lt;!--</span>
+</span><span class='line'><span class="c">  - A parent bean definition which is a base definition for transaction proxies.</span>
+</span><span class='line'><span class="c">  - It&#39;s marked as abstract, since it&#39;s not supposed to be instantiated itself.</span>
+</span><span class='line'><span class="c">  - We set shared transaction attributes here, following our naming patterns.</span>
+</span><span class='line'><span class="c">  - The attributes can still be overridden in child bean definitions.</span>
+</span><span class='line'><span class="c">--&gt;</span>
+</span><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;baseTransactionProxy&quot;</span>
+</span><span class='line'>  <span class="na">class=</span><span class="s">&quot;org.springframework.transaction.interceptor.TransactionProxyFactoryBean&quot;</span>
+</span><span class='line'>  <span class="na">abstract=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;proxyTargetClass&quot;</span> <span class="na">value=</span><span class="s">&quot;true&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;transactionManager&quot;</span> <span class="na">ref=</span><span class="s">&quot;hb_transactionManager&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;transactionAttributes&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;props&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;prop</span> <span class="na">key=</span><span class="s">&quot;addNew*&quot;</span><span class="nt">&gt;</span>PROPAGATION_REQUIRED<span class="nt">&lt;/prop&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;prop</span> <span class="na">key=</span><span class="s">&quot;delete*&quot;</span><span class="nt">&gt;</span>PROPAGATION_REQUIRED<span class="nt">&lt;/prop&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;prop</span> <span class="na">key=</span><span class="s">&quot;update*&quot;</span><span class="nt">&gt;</span>PROPAGATION_REQUIRED<span class="nt">&lt;/prop&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;prop</span> <span class="na">key=</span><span class="s">&quot;insert*&quot;</span><span class="nt">&gt;</span>PROPAGATION_REQUIRED<span class="nt">&lt;/prop&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;prop</span> <span class="na">key=</span><span class="s">&quot;get*&quot;</span><span class="nt">&gt;</span>PROPAGATION_REQUIRED<span class="nt">&lt;/prop&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/props&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/property&gt;</span>
+</span><span class='line'><span class="nt">&lt;/bean&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&lt;!-- ========================= Belows are DAOs: ========================= --&gt;</span>
+</span><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;characteredFrameAccessor&quot;</span> <span class="na">class=</span><span class="s">&quot;com.trs.mam.dao.hb3.BaseAccessor&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">&quot;com.trs.mam.bo.CharacteredFrame&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;sessionFactory&quot;</span> <span class="na">ref=</span><span class="s">&quot;sessionFactory&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/bean&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Aug 1st, 2014</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Your Name
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>

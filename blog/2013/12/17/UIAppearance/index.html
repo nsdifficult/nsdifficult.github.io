@@ -1,0 +1,187 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>使用UIAppearance协议自定义视图 - My Octopress Blog</title>
+	<meta name="author" content="Your Name">
+
+	
+	<meta name="description" content="背景 在iOS5之前，如果想更改原生控件的外观，且如果想一次性更改系统中所有的控件外观，就只能定义子类且所有使用的地方都替换成自定义的子类，且覆盖drawRect方法。而在iOS5之后，苹果通过两个协议（UIAppearance和UIAppearanceContainer） &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">My Octopress Blog</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:nsdifficult.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:nsdifficult.github.io">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">使用UIAppearance协议自定义视图</h2>
+	<div class="entry-content"><h3>背景</h3>
+
+<p>在iOS5之前，如果想更改原生控件的外观，且如果想一次性更改系统中所有的控件外观，就只能定义子类且所有使用的地方都替换成自定义的子类，且覆盖drawRect方法。而在iOS5之后，苹果通过两个协议（UIAppearance和UIAppearanceContainer）规范了对许多UIKit控件定制的支持。<!--more--></p>
+
+<h3>介绍</h3>
+
+<p>使用UIAppearance协议可以得到一个类的外观代理协议。你可以通过类的外观代理协议（UIAppearance）发送外观更改消息来定制类实例的外观。<br/>
+但请注意：</p>
+
+<blockquote><p>注意：iOS会在一个view进入窗口时更改外观，在已经在窗口的view不会更改。如果需要更改已经在窗口的view，需要从view层次中删除再放回。</p></blockquote>
+
+<h3>使用</h3>
+
+<p>有两种使用方式取定制外观：对<strong>所有</strong>实例，对<strong>特定</strong>的包含再container中的类实例.但前提是实现了UIAppearance协议且存取器（accessor）标志为UI_APPEARANCE_SELECTOR的方法。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@property(nonatomic,retain)   UIColor     *tintColor NS_AVAILABLE_IOS(5_0) UI_APPEARANCE_SELECTOR; </span></code></pre></td></tr></table></div></figure>
+
+
+<h4>对<strong>所有</strong>实例</h4>
+
+<p>通过类（class）获得UIAppearance更改外观。如更改UINavigationBar的背景着色：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[[UINavigationBar appearance] setBarTintColor:myNavBarBackgroundColor];</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>对<strong>特定</strong>的包含在container中的类实例</h4>
+
+<p>对<strong>特定</strong>的包含在container中的类实例，或者在view层级（hierarchy）中的实例，使用appearanceWhenContainedIn去获得appearance代理协议。如更改在navigation bar 中的UIButtonItem的一些属性：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setBackgroundImage:myNavBarButtonBackgroundImage forState:state barMetrics:metrics];
+</span><span class='line'>
+</span><span class='line'>[[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], [UIPopoverController class], nil] setBackgroundImage:myPopoverNavBarButtonBackgroundImage forState:state barMetrics:metrics];
+</span><span class='line'>
+</span><span class='line'>[[UIBarButtonItem appearanceWhenContainedIn:[UIToolbar class], nil] setBackgroundImage:myToolbarButtonBackgroundImage forState:state barMetrics:metrics];
+</span><span class='line'>
+</span><span class='line'>[[UIBarButtonItem appearanceWhenContainedIn:[UIToolbar class], [UIPopoverController class], nil] setBackgroundImage:myPopoverToolbarButtonBackgroundImage forState:state barMetrics:metrics];</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h3>让自定义的view支持UIAppearance协议</h3>
+
+<p>UIView已经实现了UIAppearance协议。所以任何继承自UIControl或者UIView的子类，且存取器标志为UI_APPEARANCE_SELECTOR的方法都支持像原生类（如UIButton）那样使用UIAppearance协议。</p>
+
+<h3>一些链接</h3>
+
+<p><a href="https://developer.apple.com/library/ios/recipes/UIAppearanceContainer_Protocol/Reference/Reference.html#//apple_ref/c/macro/UI_APPEARANCE_SELECTOR">UIAppearanceContainer Protocol Reference官方文档</a>  <br/>
+<a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIAppearance_Protocol/Reference/Reference.html">UIAppearance Protocol Reference官方文档</a>     <br/>
+<a href="http://www.ituring.com.cn/article/30658">图灵社区的UIAppearance介绍</a>  <br/>
+<a href="http://petersteinberger.com/blog/2013/uiappearance-for-custom-views/">Peter Steinberger的一篇深入介绍UIAppearance的文章：UIAppearance for Custom Views</a></p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Dec 17th, 2013</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Your Name
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>

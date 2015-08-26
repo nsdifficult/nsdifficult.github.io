@@ -1,0 +1,218 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>MySql分区调研笔记 - My Octopress Blog</title>
+	<meta name="author" content="Your Name">
+
+	
+	<meta name="description" content="先介绍索引分类 key 通常是index的同义词 index 索引，同key primary key 主键，也是unique key（即unique index）。每个表只能有一个。 unique key 即唯一索引，每个表可以有多个。 unique index 即唯一索引，同unique key &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">My Octopress Blog</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:nsdifficult.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:nsdifficult.github.io">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">MySql分区调研笔记</h2>
+	<div class="entry-content"><h2>先介绍索引分类</h2>
+
+<h3>key</h3>
+
+<p>通常是index的同义词</p>
+
+<h3>index</h3>
+
+<p>索引，同key</p>
+
+<h3>primary key</h3>
+
+<p>主键，也是unique key（即unique index）。每个表只能有一个。</p>
+
+<h3>unique key</h3>
+
+<p>即唯一索引，每个表可以有多个。<!--more--></p>
+
+<h3>unique index</h3>
+
+<p>即唯一索引，同unique key</p>
+
+<h2>MySQL分区简介<a href="http://breezey.blog.51cto.com/2400275/1568014">转载自文章：MySQL分区</a></h2>
+
+<p>当mysql一张数据表中的数据达到一定的量时，在其中查询某一个数据，需要花费大量的时间。为了避免这种查询的等待，可以对一张大的数据表做拆分。将其拆分成多张小的数据表。可以基于<strong>物理的拆分</strong>，将一张表拆分成多张小表，分别存放于不同的服务器上，以分散对mysql服务器的写的压力。也可以基于<strong>逻辑的拆分</strong>，将一张表存放到不同的区块或磁盘上，以提高mysql的读写性能。</p>
+
+<p>mysql数据拆分基于拆分方式的不同，又分为<strong>水平拆分</strong>和<strong>垂直拆分</strong>，水平拆分也叫基于行的拆分，它不改变表结构，只是把多行数据分成多个表来进行存放，每个表只存放其中一部分行的数据。垂直拆分也叫基于列的拆分，它是将一张表中的多个列分开，拆分后的每张表只存放一部分列。</p>
+
+<p>mysql分区是一种基于<strong>逻辑</strong>的<strong>水平拆分</strong>的方式。</p>
+
+<h2>MySQL分区类型</h2>
+
+<p>这里只简单介绍下，详细可以看<a href="http://dev.mysql.com/doc/refman/5.7/en/partitioning-types.html">官方文档</a></p>
+
+<h3>RANGE Partitioning</h3>
+
+<p>根据某个字段的范围来分区，如时间</p>
+
+<h3>LIST Partitioning</h3>
+
+<p>类似RANGE Partitioning，但不是根据范围，而是一个预设的list来分区</p>
+
+<h3>COLUMNS Partitioning</h3>
+
+<p>类似RANGE Partitioning，不过是针对多个列的范围来分区</p>
+
+<h3>HASH Partitioning</h3>
+
+<p>HASH分区主要用来确保数据在预先确定数目的分区中平均分布，你所要做的只是基于将要被哈希的列值指定一个列值或表达式，以 及指定被分区的表将要被分割成的分区数量。</p>
+
+<h3>KEY Partitioning</h3>
+
+<p>按照KEY进行分区类似于按照HASH分区，除了HASH分区使用的用户定义的表达式，而KEY分区的哈希函数是由MySQL 服务器提供。</p>
+
+<h3>Subpartitioning</h3>
+
+<p>也被称之为子分区。是分区表中每个分区的再次分割，子分区既可以使用HASH希分区，也可以使用KEY分区。</p>
+
+<h2>详细说下分区限制</h2>
+
+<p>这里只简单介绍下，详细可以看<a href="http://dev.mysql.com/doc/refman/5.6/en/partitioning-limitations-partitioning-keys-unique-keys.html">官方文档</a>
+先说结论：</p>
+
+<blockquote><blockquote><p>The rule governing this relationship can be expressed as follows: All columns used in the partitioning expression for a partitioned table must be part of every unique key that the table may have.   <br/>
+In other words, every unique key on the table must use every column in the table&rsquo;s partitioning expression. (This also includes the table&rsquo;s primary key, since it is by definition a unique key. This particular case is discussed later in this section.) s</p></blockquote></blockquote>
+
+<p>即：<strong>不能对每个UNIQUE KEY都包括的字段之外的字段进行分区</strong></p>
+
+<h2>其他</h2>
+
+<h3>分区对SQL语句透明</h3>
+
+<h3>可以通过<code>SHOW PLUGINS</code>来看使用的MySql版本是否支持分区</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> partition                   | ACTIVE | STORAGE ENGINE     | NULL    | GPL</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>查看某个表的数据在各个分区的分布</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">PARTITION_NAME</span><span class="p">,</span><span class="n">TABLE_ROWS</span>  <span class="k">FROM</span> <span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">PARTITIONS</span>  <span class="k">WHERE</span> <span class="k">TABLE_NAME</span> <span class="o">=</span> <span class="s1">&#39;user&#39;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>关于分区的使用，查询等这里不做介绍了（不符合项目需求，没有使用，所以就不多说了～）。想仔细理解可以看看<a href="http://dev.mysql.com/doc/refman/5.7/en/partitioning.html">官方的文档</a></p>
+
+<h2>疑问</h2>
+
+<p>话说mysql的分区限制这么死，你们都怎么用的？</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+May 12th, 2015</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Your Name
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>

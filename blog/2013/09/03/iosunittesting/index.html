@@ -1,0 +1,272 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>iOS开发中的单元测试 - My Octopress Blog</title>
+	<meta name="author" content="Your Name">
+
+	
+	<meta name="description" content="OCUnit和GHUnit OCUnit：由Sen:te开发的Objective-C单元测试框架，自Xcode的2.1版本后集成了OCUnit。OCUnit中的测试分为两类，一类称为Logic Tests，另一类称为Application Tests。Logic Tests更倾向于所谓的白盒测试， &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">My Octopress Blog</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:nsdifficult.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:nsdifficult.github.io">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">iOS开发中的单元测试</h2>
+	<div class="entry-content"><h2>OCUnit和GHUnit</h2>
+
+<p><a href="www.sente.ch/software/ocunit/%E2%80%8E">OCUnit</a>：由Sen:te开发的Objective-C单元测试框架，自Xcode的2.1版本后集成了OCUnit。OCUnit中的测试分为两类，一类称为Logic Tests，另一类称为Application Tests。Logic Tests更倾向于所谓的白盒测试，用于测试工程中较细节的逻辑；Application Tests更倾向于黑盒测试，或接口测试，用于测试直接与用户交互的接口。  <!--more-->
+<a href="https://github.com/gabriel/gh-unit">GHUnit</a>：是一款Objective-C的测试框架，支持iOS工程还支持OSX的工程。GHUnit不同于OCUnit，它提供了GUI界面来操作测试用例，而且也不区分Logic Tests和Application Tests。</p>
+
+<h3>增加OCUnit</h3>
+
+<p>OCUnit包括两部分Logic Tests和Application Tests。
+在项目中添加OCUnit分两种情况：</p>
+
+<ol>
+<li><p>建立项目时添加 <br/>
+<img src="/images/iosunittestingimage/iosunittesting001.png"><br/>
+这样在项目建立时XCode便自动帮我们添加了OCUnit。<br/>
+<img src="/images/iosunittestingimage/iosunittesting002.png"></p></li>
+<li><p>给已有的项目添加OCUnit</p>
+
+<p> 向已存在的工程中添加OCUnit Logic Tests只需要添加一个类型为：“Cocoa Touch Unit Testing Bundle”的Target即可。      <br/>
+<img src="/images/iosunittestingimage/iosunittesting003.jpg">  <br/>
+  向已有工程中添加一个测试Target时，XCode会自动生成一个Scheme，运行单元测试用例和Build原工程需要切换不同的Scheme。如果认为切换Scheme非常麻烦，也可以在添加Target之前，在“Manage Scheme”菜单中取消“Autocreate schemes”。取消后就不需要切换了，如果想测试，直接选择TEST。    <br/>
+<img src="/images/iosunittestingimage/iosunittesting008.png">   <br/>
+  向已有的工程添加Application Tests。</p>
+
+<ul>
+<li>首先添加一个类型为：“Cocoa Touch Unit Testing Bundle”的Target（与Logic Tests一致）。</li>
+<li><p>然后设置Build Settings中的<code>Bundle Loader</code>为 <code>$(BUILT_PRODUCTS_DIR)/&lt;app_name&gt;.app/&lt;app_name&gt;</code> <br/>
+<img src="/images/iosunittestingimage/iosunittesting005.jpg"></p></li>
+<li><p>设置<code>Test Host</code>为<code>$(BUNDLE_LOADER)</code> <br/>
+<img src="/images/iosunittestingimage/iosunittesting006.jpg"></p></li>
+<li><p>在Build Phases-Target Dependencies中添加依赖，选择主程序Target。 <br/>
+官方文档：<a href="https://developer.apple.com/library/ios/documentation/DeveloperTools/Conceptual/UnitTesting/00-About_Unit_Testing/about.html#//apple_ref/doc/uid/TP40002143-CH1-SW1">Xcode Unit Testing Guide</a></p></li>
+</ul>
+</li>
+</ol>
+
+
+<h3>增加GHUnit</h3>
+
+<ul>
+<li>给工程添加一个EmptyApplication Target。</li>
+<li>下载GHUnit，将GHUnitIOS.framework添加至刚才新加的target。</li>
+<li>在Build Settings中搜索“linker flags”，设置Other Linker Flags - Debug - 添加一个支持全架构和全版本SDK的标示“-ObjC -all_load”。</li>
+<li><p>删除刚添加的Target中的AppDelegate。修改main函数，导入GHUnitIOSAppDelegate代替原来的AppDelegate，修改UIApplicationMain的参数。<br/>
+<img src="/images/iosunittestingimage/iosunittesting009.png"></p>
+
+<h2>OCMock</h2>
+
+<p>OCMock是针对Objective-C的一个用来模拟对象的框架</p></li>
+<li><p>下载<a href="http://ocmock.org/">OCMock</a></p></li>
+<li>在原始工程目录下创建Libraries文件夹，将下载的libOCMock.a和OCMock文件夹添加至其中。 <br/>
+<img src="/images/iosunittestingimage/iosunittesting010.png"></li>
+<li>在 GHUnitTest 工程中新建名为 Libraries 的 group，导入libOCMock.a 和目录 OCMock，注意 target 是 Tests。</li>
+<li>设置 Tests 的 Build Setting。让 Libray Search Paths 包含 $(SRCROOT)/Libraries。 <br/>
+<img src="/images/iosunittestingimage/iosunittesting012.jpg"></li>
+<li>在 Header Search Paths 中增加 $(SRCROOT)/Libraries。 <br/>
+<img src="/images/iosunittestingimage/iosunittesting013.jpg" title="" ></li>
+<li>更多OCMock安装与介绍见<a href="http://ocmock.org/">OCMock</a></li>
+</ul>
+
+
+<h2>OCHamcrest</h2>
+
+<p>Hamcrest是比较流行的匹配引擎，他提供了很多自带的匹配，同时也支持自定义匹配。 <br/>
+同时它也支持Java，Python，Ruby，Objective-C， PHP， Erlang</p>
+
+<h3>添加OCHamcrest</h3>
+
+<ul>
+<li>从<a href="http://qualitycoding.org/resources/">qualitycoding</a>下载或者从Github下载源代码编译获得OCHamcrestIOS.framework。</li>
+<li>将OCHamcrestIOS.framework添加至tests的target。</li>
+</ul>
+
+
+<h2>GHUnit+OCHamcrest+OCMock完整的代码例子</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#import &lt;Foundation/Foundation.h&gt;
+</span><span class='line'>#import &lt;GHUnitIOS/GHUnit.h&gt;
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>@interface OCMockSampleTest : GHTestCase
+</span><span class='line'>
+</span><span class='line'>@end</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#import "OCMockSampleTest.h"
+</span><span class='line'>#import &lt;OCMock/OCMock.h&gt;
+</span><span class='line'>#define HC_SHORTHAND
+</span><span class='line'>#import &lt;OCHamcrestIOS/OCHamcrestIOS.h&gt;
+</span><span class='line'>@implementation OCMockSampleTest
+</span><span class='line'>
+</span><span class='line'>- (void)testEquals
+</span><span class='line'>{
+</span><span class='line'>    NSString * str1 = [NSString stringWithFormat:@"dfdf"];
+</span><span class='line'>    NSString * str2 = [NSString stringWithFormat:@"dfdf"];
+</span><span class='line'>    assertThat(str1, equalTo(str2));
+</span><span class='line'>}
+</span><span class='line'>- (void)testStub {
+</span><span class='line'>    
+</span><span class='line'>    id mock = [OCMockObject mockForClass:[NSString class]];
+</span><span class='line'>    
+</span><span class='line'>    [[[mock stub] andReturn:@"testStub"] substringFromIndex:1];
+</span><span class='line'>    
+</span><span class='line'>    NSString *returnStr = [mock substringFromIndex:1];
+</span><span class='line'>    
+</span><span class='line'>    HC_assertThat(returnStr, equalTo(@"testStub"));
+</span><span class='line'>    
+</span><span class='line'>}
+</span><span class='line'>@end</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Sep 3rd, 2013</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Your Name
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>

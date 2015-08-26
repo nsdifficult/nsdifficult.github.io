@@ -1,0 +1,353 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>《Java编程思想》读书笔记之String - My Octopress Blog</title>
+	<meta name="author" content="Your Name">
+
+	
+	<meta name="description" content="一、不可变的String 每当把String对象作为方法的参数时，都会复制一份引用（肯定的，无需赘言）。
+String对象是不可变的。但String类中每一个看起来会修改string值的方法，实际上都是创建了一个全新的String对象，而最初的String对象不变。 1
+2
+3
+4
+String &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">My Octopress Blog</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:nsdifficult.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:nsdifficult.github.io">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">《Java编程思想》读书笔记之String</h2>
+	<div class="entry-content"><h3>一、不可变的String</h3>
+
+<ol>
+<li>每当把String对象作为方法的参数时，都会复制一份引用（肯定的，无需赘言）。</li>
+<li>String对象是不可变的。但String类中每一个看起来会修改string值的方法，实际上都是创建了一个全新的String对象，而最初的String对象不变。<!--more--></li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">String</span> <span class="n">q</span> <span class="o">=</span> <span class="s">&quot;abc&quot;</span><span class="o">;</span>
+</span><span class='line'><span class="n">String</span> <span class="n">qq</span> <span class="o">=</span> <span class="n">upcase</span><span class="o">(</span><span class="n">q</span><span class="o">);</span>
+</span><span class='line'><span class="n">print</span><span class="o">(</span><span class="n">qq</span><span class="o">);</span><span class="c1">//ABC</span>
+</span><span class='line'><span class="n">print</span><span class="o">(</span><span class="n">q</span><span class="o">);</span><span class="c1">//abc</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>二、重载“＋”与StringBuilder</h3>
+
+<ol>
+<li>用于String的“＋”与“＋＝”是java中仅有的两个重载过的操作符。Java不允许程序员重载任何操作符。（原文：The ‘+’ and ‘+=‘ for String are the only operators that are overloaded in Java, and Java does not allow the programmer to overload any others.）</li>
+<li>用“＋”或者“＋＝”连接String时，Java会自动引入StringBuilder。</li>
+<li>如果在for循环中连接字符串，推荐使用StringBuilder。如果使用“＋”或者“＋＝”，java会在每次循环中创建一个StringBuilder，造成多次分配缓存。</li>
+<li>如果拿不准使用哪种方式，可使用javap命令分析程序。</li>
+</ol>
+
+
+<p>避免：</p>
+
+<pre><code>public String implicit(String[] fields) {
+    String result = "";
+    for (int i = 0; i &lt; fields.length; i++)
+        result += fields[i];
+    return result;
+}
+</code></pre>
+
+<p>推荐：</p>
+
+<pre><code>public String explicit(String[] fields) {
+    StringBuilder result = new StringBuilder();
+    for (int i = 0; i &lt; fields.length; i++)
+        result.append(fields[i]);
+    return result.toString();
+}
+</code></pre>
+
+<h3>三、格式化输出</h3>
+
+<ol>
+<li>Java使用System.out.format()方法模仿C的printf()实现格式化输出，java中也可使用printf，与System.out.format()一致。</li>
+<li>Java种，所有新的格式化的功能都由java.util.Formatter类处理。</li>
+<li>String.format()方法则参考自C中的sprintf()方法以生成格式化的String对象，它是一个static方法，接受与java.util.Formatter类的format()方法一样的参数，但返回一个String对象。其内部也是使用Formatter。</li>
+<li>格式化说明符：%[argument_index$][flags][width][.precision]conversion。如</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Receipt</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kd">private</span> <span class="kt">double</span> <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>  <span class="kd">private</span> <span class="n">Formatter</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Formatter</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">);</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">printTitle</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>      <span class="n">f</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;%-15s %5s %10s\n&quot;</span><span class="o">,</span> <span class="s">&quot;Item&quot;</span><span class="o">,</span> <span class="s">&quot;Qty&quot;</span><span class="o">,</span> <span class="s">&quot;Price&quot;</span><span class="o">);</span>
+</span><span class='line'>      <span class="n">f</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;%-15s %5s %10s\n&quot;</span><span class="o">,</span> <span class="s">&quot;----&quot;</span><span class="o">,</span> <span class="s">&quot;---&quot;</span><span class="o">,</span> <span class="s">&quot;-----&quot;</span><span class="o">);</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">int</span> <span class="n">qty</span><span class="o">,</span> <span class="kt">double</span> <span class="n">price</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>      <span class="n">f</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;%-15.15s %5d %10.2f\n&quot;</span><span class="o">,</span> <span class="n">name</span><span class="o">,</span> <span class="n">qty</span><span class="o">,</span> <span class="n">price</span><span class="o">);</span>
+</span><span class='line'>      <span class="n">total</span> <span class="o">+=</span> <span class="n">price</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">printTotal</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>      <span class="n">f</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;%-15s %5s %10.2f\n&quot;</span><span class="o">,</span> <span class="s">&quot;Tax&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span><span class="o">,</span> <span class="n">total</span> <span class="o">*</span> <span class="mf">0.06</span><span class="o">);</span>
+</span><span class='line'>      <span class="n">f</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;%-15s %5s %10s\n&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span><span class="o">,</span> <span class="s">&quot;-----&quot;</span><span class="o">);</span>
+</span><span class='line'>      <span class="n">f</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;%-15s %5s %10.2f\n&quot;</span><span class="o">,</span> <span class="s">&quot;Total&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span><span class="o">,</span> <span class="n">total</span> <span class="o">*</span> <span class="mf">1.06</span><span class="o">);</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>      <span class="n">Receipt</span> <span class="n">receipt</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Receipt</span><span class="o">();</span>
+</span><span class='line'>      <span class="n">receipt</span><span class="o">.</span><span class="na">printTitle</span><span class="o">();</span>
+</span><span class='line'>      <span class="n">receipt</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">&quot;Jack’s Magic Beans&quot;</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mf">4.25</span><span class="o">);</span>
+</span><span class='line'>      <span class="n">receipt</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">&quot;Princess Peas&quot;</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mf">5.1</span><span class="o">);</span>
+</span><span class='line'>      <span class="n">receipt</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">&quot;Three Bears Porridge&quot;</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mf">14.29</span><span class="o">);</span>
+</span><span class='line'>      <span class="n">receipt</span><span class="o">.</span><span class="na">printTotal</span><span class="o">();</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>输出</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Item</span>              <span class="n">Qty</span>      <span class="n">Price</span>
+</span><span class='line'><span class="o">----</span>              <span class="o">---</span>      <span class="o">-----</span>
+</span><span class='line'><span class="n">Jack</span><span class="err">’</span><span class="n">s</span> <span class="n">Magic</span> <span class="n">Be</span>     <span class="mi">4</span>       <span class="mf">4.25</span>
+</span><span class='line'><span class="n">Princess</span> <span class="n">Peas</span>       <span class="mi">3</span>       <span class="mf">5.10</span>
+</span><span class='line'><span class="n">Three</span> <span class="n">Bears</span> <span class="n">Por</span>     <span class="mi">1</span>      <span class="mf">14.29</span>
+</span><span class='line'><span class="n">Tax</span>                         <span class="mf">1.42</span>
+</span><span class='line'>                           <span class="o">-----</span>
+</span><span class='line'><span class="n">Total</span>                      <span class="mf">25.06</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>"%-15s %5s %10.2f\n"</code> 中  -15s：－15表示左起长度为15，s表示字符串</p>
+
+<p>System.out.format()例子</p>
+
+<pre><code>public class SimpleFormat {
+public static void main(String[] args) {
+    int x = 5;
+    double y = 5.332542;
+    // The old way:
+    System.out.println("Row 1: [" + x + " " + y + "]");
+    // The new way:
+    System.out.format("Row 1: [%d %f]\n", x, y);
+    // or
+    System.out.printf("Row 1: [%d %f]\n", x, y);
+    }
+}
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code>Row 1: [5 5.332542]
+Row 1: [5 5.332542]
+Row 1: [5 5.332542]
+</code></pre>
+
+<h3>四、使用Scanner类用于扫描输入，其构造器可以接受任何类型的输入对象（String、File对象、实现Readable接口的对象等）。</h3>
+
+<h4>Scanner分词：默认Scanner使用空白字符对输入进行分词，但是也可以使用正则表达式指定所需的定界符。 如：</h4>
+
+<p>使用“，”分隔：</p>
+
+<pre><code>import java.util.*;
+public class ScannerDelimiter {
+public static void main(String[] args) {
+    Scanner scanner = new Scanner("12, 42, 78, 99, 42");
+    scanner.useDelimiter("\\s*,\\s*");
+    while(scanner.hasNextInt())
+        System.out.println(scanner.nextInt());
+    }
+}
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code>12
+42
+78
+99
+42
+</code></pre>
+
+<p>使用正则表达式分隔：</p>
+
+<pre><code>import java.util.regex.*;
+import java.util.*;
+
+public class ThreatAnalyzer {
+    static String threatData = "58.27.82.161@02/10/2005\n"
+        + "204.45.234.40@02/11/2005\n" + "58.27.82.161@02/11/2005\n"
+        + "58.27.82.161@02/12/2005\n" + "58.27.82.161@02/12/2005\n"
+        + "[Next log section with different data format]";
+
+public static void main(String[] args) {
+    Scanner scanner = new Scanner(threatData);
+    String pattern = "(\\d+[.]\\d+[.]\\d+[.]\\d+)@"
+            + "(\\d{2}/\\d{2}/\\d{4})";
+    while (scanner.hasNext(pattern)) {
+        scanner.next(pattern);
+        MatchResult match = scanner.match();
+        String ip = match.group(1);
+        String date = match.group(2);
+        System.out.format("Threat on %s from %s\n", date, ip);
+    }
+}
+}
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code>Threat on 02/10/2005 from 58.27.82.161
+Threat on 02/11/2005 from 204.45.234.40
+Threat on 02/11/2005 from 58.27.82.161
+Threat on 02/12/2005 from 58.27.82.161
+Threat on 02/12/2005 from 58.27.82.161
+</code></pre>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+May 28th, 2014</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Your Name
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>

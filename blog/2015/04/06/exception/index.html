@@ -1,0 +1,217 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>关于异常的一些问答 - My Octopress Blog</title>
+	<meta name="author" content="Your Name">
+
+	
+	<meta name="description" content="1、什么叫做异常？ 异常处理，是编程语言或计算机硬件里的一种机制，用于处理软件或信息系统中出现的异常状况（即超出程序正常执行流程的某些特殊条件）。 2、Java中关于异常／错误怎么理解？ Java的基本理念是：“结构不佳的代码不能运行”。 发现错误的最佳时机是在编译阶段。 &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">My Octopress Blog</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:nsdifficult.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:nsdifficult.github.io">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">关于异常的一些问答</h2>
+	<div class="entry-content"><h2>1、什么叫做异常？</h2>
+
+<p>异常处理，是编程语言或计算机硬件里的一种机制，用于处理软件或信息系统中出现的异常状况（即超出程序正常执行流程的某些特殊条件）。</p>
+
+<h2>2、Java中关于异常／错误怎么理解？</h2>
+
+<p>Java的基本理念是：“结构不佳的代码不能运行”。 <br/>
+发现错误的最佳时机是在编译阶段。但编译期间不能找出所有的错误，余下的错误只能在运行期解决。这就需要错误源能通过某种方式，把适当的信息传递给某个接收者（该接收者知道该如何处理这个错误）。Java使用异常来提供一致的错误报告模型。<!--more--></p>
+
+<h2>3、Java中异常的分类？</h2>
+
+<p>在Java中,异常分为受检查异常,与运行时异常. 两者都在异常类层次结构中.其最大的区别受检查异常是必须要捕获和处理的，否则编译期不通过，运行时异常则不需要。</p>
+
+<h2>4、Java中的异常的类结构图？</h2>
+
+<p><img src="/images/exception/1.jpeg" title="Diagram of Exception Hierarchy " alt="Diagram of Exception Hierarchy" />  <br/>
+粉红色的是受检查的异常(checked exceptions),其必须被 try{}catch语句块所捕获,或者在方法签名里通过throws子句声明.受检查的异常必须在编译时被捕捉处理,命名为 CHecked Exception 是因为Java编译器要进行检查,Java虚拟机也要进行检查,以确保这个规则得到遵守.</p>
+
+<p>绿色的异常是运行时异常(runtime exceptions),需要程序员自己分析代码决定是否捕获和处理,比如 空指针,被0除&hellip;。而声明为Error的，则属于严重错误,需要根据业务信息进行特殊处理,Error不需要捕捉。</p>
+
+<h2>5、那么问题来了，RuntimeException异常为什么是非检查异常？且可以不捕获处理？</h2>
+
+<ol>
+<li>首先，Java认为RuntimeException为错误，无法解决。如除以0，空指针等。</li>
+<li>其次，RuntimeException会自动被虚拟机抛出，无需在程序中再单独列出来。</li>
+<li>最后，如果RuntimeException不被捕获和处理，会直达main方法，最后程序退出（程序退出前自动调用异常的printStatck方法）。</li>
+</ol>
+
+
+<h2>6、运行时异常（RuntimeException）不捕获也不会有编译错误，那么该何时捕获，何时不捕获？</h2>
+
+<p>看你的需求：
+1. 如果你希望发生异常后立即停止程序，就不捕获。
+2. 如果你希望发生异常后还继续运行，就捕获。</p>
+
+<h2>7、异常管理的最佳实践？</h2>
+
+<p>如果能处理异常就捕获并处理，不能就抛出。</p>
+
+<h2>8、异常处理流程：捕获－》处理－》清理（可选，如关闭打开的连接，文件等）</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>     <span class="o">...</span>
+</span><span class='line'><span class="o">}</span> <span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span><span class="c1">//1、捕获异常</span>
+</span><span class='line'>     <span class="c1">//2、处理异常</span>
+</span><span class='line'><span class="o">}</span> <span class="n">finaly</span>  <span class="o">{</span>
+</span><span class='line'>  <span class="c1">//3、最后要做的，如清理工作</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>9、Java中的方法声明为什么跟着throws XXException？</h2>
+
+<p>这个叫做异常声明，通常我们的程序不会同源代码一同发布，这样客户程序调用我们的方法就不能知道我们的方法可能会抛出哪些异常，便不能处理了。Java为了解决这个问题，便提供了异常声明这个语法。</p>
+
+<h2>10、为什么我的程序什么错误都没有报错(没有输出错误信息)，就直接退出了？</h2>
+
+<p>因为你的代码没有捕获一个特定的运行时异常，且由于某些原因还导致了异常丢失(没有输出错误信息)。（如在finaly里return了，这里是个人理解和猜测，欢迎指正）。</p>
+
+<h2>11、如何捕获所有异常，包括可能的运行时异常？</h2>
+
+<p>捕获Exception。</p>
+
+<h2>12、一般不要调用fillInStackTrace，这样会丢失栈信息</h2>
+
+<p>即不要使用Exception的fillInStackTrace()方法。因为调用后，调用行就成了异常的新发地了。</p>
+
+<h2>13、自定义异常要注意不要丢失原始异常链</h2>
+
+<p>要将原始Exception传入自定义异常（通常通过构造器）。如：<code>throw new MyException(e,"msg");</code></p>
+
+<h2>什么是异常限制（待续）？</h2>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://book.douban.com/subject/2130190/">《Java编程思想》</a></li>
+<li><a href="http://www.programcreek.com/2009/02/diagram-for-hierarchy-of-exception-classes/"> Diagram of Exception Hierarchy </a></li>
+<li><a href="http://www.programcreek.com/2013/10/top-10-questions-about-java-exceptions/"> Top 10 Questions about Java Exceptions </a></li>
+<li><a href="http://www.ibm.com/developerworks/cn/java/j-lo-exception-misdirection/">Java 异常处理的误区和经验总结</a></li>
+</ul>
+
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Apr 6th, 2015</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Your Name
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>
