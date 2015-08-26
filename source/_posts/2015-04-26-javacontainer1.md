@@ -7,10 +7,10 @@ categories:
 
 ---
 
-#先上容器的类图
+#先上容器的类图<!--more-->
 {% img /images/container/container.png %}
 
-点线框表示接口；实线框表示普通类（具体类）；虚线框表示抽象类；带有空心箭头的点线表示一个特定的类实现了一个接口；实心箭头表示某个类可以生成箭头所指向类的对象。例如任意的Collection可以生成Iterator，而List可以生成ListIterator（也能生成普通的Iterator，因为List继承自Collection）。<!--more-->   
+点线框表示接口；实线框表示普通类（具体类）；虚线框表示抽象类；带有空心箭头的点线表示一个特定的类实现了一个接口；实心箭头表示某个类可以生成箭头所指向类的对象。例如任意的Collection可以生成Iterator，而List可以生成ListIterator（也能生成普通的Iterator，因为List继承自Collection）。   
 ####1) Collection
 一个独立元素的序列，其中List按照元素的插入顺序保存元素，而set不能有重复元素，Queue按照先进先出（FIFO）的方式来管理数据，Stack按照后进先出（LIFO）的顺序管理数据。    
 ####2) Map
