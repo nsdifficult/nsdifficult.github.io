@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
-  <link href="http://nsdifficult.github.io/atom.xml" rel="self"/>
-  <link href="http://nsdifficult.github.io/"/>
-  <updated>2015-08-27T00:15:24+08:00</updated>
-  <id>http://nsdifficult.github.io/</id>
+  <title><![CDATA[rongyi.work]]></title>
+  <link href="rongyi.work/atom.xml" rel="self"/>
+  <link href="rongyi.work/"/>
+  <updated>2015-08-27T00:21:25+08:00</updated>
+  <id>rongyi.work/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[易荣义]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[再谈数据库事务]]></title>
-    <link href="http://nsdifficult.github.io/blog/2015/07/14/dbTransaction/"/>
+    <link href="rongyi.work/blog/2015/07/14/dbTransaction/"/>
     <updated>2015-07-14T09:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2015/07/14/dbTransaction</id>
+    <id>rongyi.work/blog/2015/07/14/dbTransaction</id>
     <content type="html"><![CDATA[<h2>放在前面要说的</h2>
 
 <p>本文文字完全总结（95%）自《Spring3.x企业应用开发实战》，《高性能MySQL》。写在这里是为了方便自己查阅。<!--more--></p>
@@ -44,19 +44,19 @@
 <h3>脏读(dirty read)</h3>
 
 A事务读取B事务尚未提交的更改数据，并在这个数据的基础上操作。如果恰巧B事务回滚，那么A事务读到的数据根本是不被承认的。来看取款事务和转账事务并发时引发的脏读场景： <br/>
-<img src="http://nsdifficult.github.io/images/transaction/dirtyread.png" alt="dirtyread.png" />
+<img src="rongyi.work/images/transaction/dirtyread.png" alt="dirtyread.png" />
 
 <h3>不可重复读</h3>
 
 <p>不可重复读是指A事务读取了B事务已经提交的更改数据（<strong>更改</strong>和<strong>删除</strong>）和在B事务未完成时读的数据不一致。假设A在取款事务的过程中，B往该账户转账100元，A两次读取账户的余额发生不一致： <br/>
-<img src="http://nsdifficult.github.io/images/transaction/nonrepeatRead.png" alt="nonrepeatRead.png" /></p></li>
+<img src="rongyi.work/images/transaction/nonrepeatRead.png" alt="nonrepeatRead.png" /></p></li>
 </ul>
 
 
 <h3>幻象读</h3>
 
 <p>A事务读取B事务提交的<strong>新增</strong>数据，这时A事务将出现幻象读的问题。幻象读一般发生在计算统计数据的事务中，举一个例子，假设银行系统在同一个事务中，两次统计存款账户的总金额，在两次统计过程中，刚好新增了一个存款账户，并存入100元，这时，两次统计的总金额将不一致： <br/>
-<img src="http://nsdifficult.github.io/images/transaction/phantomRead.png" alt="phantomRead.png" /></p>
+<img src="rongyi.work/images/transaction/phantomRead.png" alt="phantomRead.png" /></p>
 
 <p>如果新增数据刚好满足事务的查询条件,这个新数据就进入了事务的视野，因而产生了两个统计不一致的情况。   <br/>
 幻象读和不可重复读是两个容易混淆的概念，前者是指读到了其他已经提交事务的<strong>新增</strong>数据，而后者是指读到了已经提交事务的更改数据（<strong>更改</strong>或<strong>删除</strong>），为了避免这两种情况，采取的对策是不同的，防止读取到更改数据，只需要对操作的数据添加<strong>行级锁</strong>，阻止操作中的数据发生变化，而防止读取到新增数据，则往往需要添加<strong>表级锁</strong>——将整个表锁定，防止新增数据。</p>
@@ -64,12 +64,12 @@ A事务读取B事务尚未提交的更改数据，并在这个数据的基础上
 <h3>第一类丢失更新</h3>
 
 <p>A事务撤销时，把已经提交的B事务的更新数据覆盖了。
-<img src="http://nsdifficult.github.io/images/transaction/1thLostUpdate.png" alt="1thLostUpdate.png" /></p>
+<img src="rongyi.work/images/transaction/1thLostUpdate.png" alt="1thLostUpdate.png" /></p>
 
 <h3>第二类丢失更新</h3>
 
 <p>A事务覆盖B事务已经提交的数据，造成B事务所做的操作丢失。
-<img src="http://nsdifficult.github.io/images/transaction/2thLostUpdate.png" alt="2thLostUpdate.png" /></p>
+<img src="rongyi.work/images/transaction/2thLostUpdate.png" alt="2thLostUpdate.png" /></p>
 
 <h2>数据库锁机制</h2>
 
@@ -78,7 +78,7 @@ A事务读取B事务尚未提交的更改数据，并在这个数据的基础上
 <h3>隔离级别</h3>
 
 <p>尽管数据库为用户提供了锁的DML(data manipulation language即数据操纵语言：SELECT、UPDATE、INSERT、DELETE)操作方式，但直接使用锁管理非常麻烦，因此数据库为用户提供了自动锁机制。只要用户指定会话的事务隔离级别，数据库就会分析事务中的SQL语句，然后自动为事务操作的数据资源加上适合的锁。   <br/>
-<img src="http://nsdifficult.github.io/images/transaction/IsolationLevel.png" alt="IsolationLevel.png" /></p>
+<img src="rongyi.work/images/transaction/IsolationLevel.png" alt="IsolationLevel.png" /></p>
 
 <h4>READ UNCOMMITTED(未提交读)</h4>
 
@@ -100,9 +100,9 @@ A事务读取B事务尚未提交的更改数据，并在这个数据的基础上
   
   <entry>
     <title type="html"><![CDATA[《Java编程思想》读书笔记之多线程(二)]]></title>
-    <link href="http://nsdifficult.github.io/blog/2015/06/18/javaThread2/"/>
+    <link href="rongyi.work/blog/2015/06/18/javaThread2/"/>
     <updated>2015-06-18T09:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2015/06/18/javaThread2</id>
+    <id>rongyi.work/blog/2015/06/18/javaThread2</id>
     <content type="html"><![CDATA[<h2>共享受限资源</h2>
 
 <p>基本上所有的并发模式在解决线程冲突问题的时候，都是采用序列化访问共享资源的方案。这意味着在给定时刻只允许一个任务访问共享资源。通常这是通过在代码前加上一条锁语句来实现的，这就使得一段时间内只有一个任务可以运行这段代码。因为锁语句产生了一种互相排斥的效果，所以这种机制称为互赤量(mutex)。 <br/>
@@ -420,9 +420,9 @@ Java语言规范第三版中对volatile的定义如下：</p>
   
   <entry>
     <title type="html"><![CDATA[《Java编程思想》读书笔记之多线程(一)]]></title>
-    <link href="http://nsdifficult.github.io/blog/2015/06/15/javaThread/"/>
+    <link href="rongyi.work/blog/2015/06/15/javaThread/"/>
     <updated>2015-06-15T09:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2015/06/15/javaThread</id>
+    <id>rongyi.work/blog/2015/06/15/javaThread</id>
     <content type="html"><![CDATA[<h2>线程状态</h2>
 
 <p>new->runnable->running->block->dead<!--more--></p>
@@ -841,9 +841,9 @@ wait：使线程进入阻塞且放弃锁。必须使用notify或者notifyAlll或
   
   <entry>
     <title type="html"><![CDATA[leetcode之two sum]]></title>
-    <link href="http://nsdifficult.github.io/blog/2015/05/22/leetcodeTwosum/"/>
+    <link href="rongyi.work/blog/2015/05/22/leetcodeTwosum/"/>
     <updated>2015-05-22T16:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2015/05/22/leetcodeTwosum</id>
+    <id>rongyi.work/blog/2015/05/22/leetcodeTwosum</id>
     <content type="html"><![CDATA[<h2>问题描述</h2>
 
 <p><a href="https://leetcode.com/problems/two-sum/">two sum原题链接</a></p>
@@ -1291,9 +1291,9 @@ Output: index1=1, index2=2</p></blockquote>
   
   <entry>
     <title type="html"><![CDATA[MySql分区调研笔记]]></title>
-    <link href="http://nsdifficult.github.io/blog/2015/05/12/MySqlPartitions/"/>
+    <link href="rongyi.work/blog/2015/05/12/MySqlPartitions/"/>
     <updated>2015-05-12T16:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2015/05/12/MySqlPartitions</id>
+    <id>rongyi.work/blog/2015/05/12/MySqlPartitions</id>
     <content type="html"><![CDATA[<h2>先介绍索引分类</h2>
 
 <h3>key</h3>
@@ -1389,9 +1389,9 @@ In other words, every unique key on the table must use every column in the table
   
   <entry>
     <title type="html"><![CDATA[《Java编程思想》读书笔记之容器(二)]]></title>
-    <link href="http://nsdifficult.github.io/blog/2015/05/07/javacontainer2/"/>
+    <link href="rongyi.work/blog/2015/05/07/javacontainer2/"/>
     <updated>2015-05-07T17:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2015/05/07/javacontainer2</id>
+    <id>rongyi.work/blog/2015/05/07/javacontainer2</id>
     <content type="html"><![CDATA[<h2>理解Map</h2>
 
 <p>映射表（也称关联数组）的基本思想是它维护的键-值对关联，因此你可以使用键来查找值。标准的Java类库中包含了Map的几种基本实现，包括：HashMap,TreeMap,LinkedHashMap,WeakHashMap,ConcurrentHashMap,IdentiyHashMap.它们都有同样的基本接口Map，但是行为特性各不相同，这表现在效率、键值对的保存及呈现次序、对象的保存周期
@@ -1414,12 +1414,12 @@ In other words, every unique key on the table must use every column in the table
   
   <entry>
     <title type="html"><![CDATA[《Java编程思想》读书笔记之容器(一)]]></title>
-    <link href="http://nsdifficult.github.io/blog/2015/04/26/javacontainer1/"/>
+    <link href="rongyi.work/blog/2015/04/26/javacontainer1/"/>
     <updated>2015-04-26T17:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2015/04/26/javacontainer1</id>
+    <id>rongyi.work/blog/2015/04/26/javacontainer1</id>
     <content type="html"><![CDATA[<h1>先上容器的类图</h1>
 
-<p><img src="http://nsdifficult.github.io/images/container/container.png"></p>
+<p><img src="rongyi.work/images/container/container.png"></p>
 
 <p>点线框表示接口；实线框表示普通类（具体类）；虚线框表示抽象类；带有空心箭头的点线表示一个特定的类实现了一个接口；实心箭头表示某个类可以生成箭头所指向类的对象。例如任意的Collection可以生成Iterator，而List可以生成ListIterator（也能生成普通的Iterator，因为List继承自Collection）。<!--more--></p>
 
@@ -1653,9 +1653,9 @@ Arrays工具类提供的#Arrays.asList#：</p>
   
   <entry>
     <title type="html"><![CDATA[MySql索引的使用笔记]]></title>
-    <link href="http://nsdifficult.github.io/blog/2015/04/20/mysqlIndex/"/>
+    <link href="rongyi.work/blog/2015/04/20/mysqlIndex/"/>
     <updated>2015-04-20T17:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2015/04/20/mysqlIndex</id>
+    <id>rongyi.work/blog/2015/04/20/mysqlIndex</id>
     <content type="html"><![CDATA[<h2>什么是数据库索引？</h2>
 
 <p>数据库索引，是数据库管理系统中一个排序的数据结构，以协助快速查询、更新数据库表中数据。</p>
@@ -1730,9 +1730,9 @@ Arrays工具类提供的#Arrays.asList#：</p>
   
   <entry>
     <title type="html"><![CDATA[关于异常的一些问答]]></title>
-    <link href="http://nsdifficult.github.io/blog/2015/04/06/exception/"/>
+    <link href="rongyi.work/blog/2015/04/06/exception/"/>
     <updated>2015-04-06T01:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2015/04/06/exception</id>
+    <id>rongyi.work/blog/2015/04/06/exception</id>
     <content type="html"><![CDATA[<h2>1、什么叫做异常？</h2>
 
 <p>异常处理，是编程语言或计算机硬件里的一种机制，用于处理软件或信息系统中出现的异常状况（即超出程序正常执行流程的某些特殊条件）。</p>
@@ -1748,7 +1748,7 @@ Arrays工具类提供的#Arrays.asList#：</p>
 
 <h2>4、Java中的异常的类结构图？</h2>
 
-<p><img src="http://nsdifficult.github.io/images/exception/1.jpeg" title="Diagram of Exception Hierarchy " alt="Diagram of Exception Hierarchy" />  <br/>
+<p><img src="rongyi.work/images/exception/1.jpeg" title="Diagram of Exception Hierarchy " alt="Diagram of Exception Hierarchy" />  <br/>
 粉红色的是受检查的异常(checked exceptions),其必须被 try{}catch语句块所捕获,或者在方法签名里通过throws子句声明.受检查的异常必须在编译时被捕捉处理,命名为 CHecked Exception 是因为Java编译器要进行检查,Java虚拟机也要进行检查,以确保这个规则得到遵守.</p>
 
 <p>绿色的异常是运行时异常(runtime exceptions),需要程序员自己分析代码决定是否捕获和处理,比如 空指针,被0除&hellip;。而声明为Error的，则属于严重错误,需要根据业务信息进行特殊处理,Error不需要捕捉。</p>
@@ -1827,9 +1827,9 @@ Arrays工具类提供的#Arrays.asList#：</p>
   
   <entry>
     <title type="html"><![CDATA[jpg转png命令sips]]></title>
-    <link href="http://nsdifficult.github.io/blog/2014/12/28/jpg2png/"/>
+    <link href="rongyi.work/blog/2014/12/28/jpg2png/"/>
     <updated>2014-12-28T09:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2014/12/28/jpg2png</id>
+    <id>rongyi.work/blog/2014/12/28/jpg2png</id>
     <content type="html"><![CDATA[<p>（很久以前的笔记了，今天提交了吧，免得下次再找）。</p>
 
 <h2>sips介绍</h2>
@@ -1856,9 +1856,9 @@ Arrays工具类提供的#Arrays.asList#：</p>
   
   <entry>
     <title type="html"><![CDATA[算法之希尔排序]]></title>
-    <link href="http://nsdifficult.github.io/blog/2014/09/08/shellsort/"/>
+    <link href="rongyi.work/blog/2014/09/08/shellsort/"/>
     <updated>2014-09-08T18:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2014/09/08/shellsort</id>
+    <id>rongyi.work/blog/2014/09/08/shellsort</id>
     <content type="html"><![CDATA[<h3>介绍</h3>
 
 <p>希尔排序，也称递减增量排序算法，是插入排序的一种更高效的改进版本。希尔排序是非稳定排序算法。</p>
@@ -2088,16 +2088,16 @@ Arrays工具类提供的#Arrays.asList#：</p>
   
   <entry>
     <title type="html"><![CDATA[算法之快速排序]]></title>
-    <link href="http://nsdifficult.github.io/blog/2014/09/08/quickSort/"/>
+    <link href="rongyi.work/blog/2014/09/08/quickSort/"/>
     <updated>2014-09-08T18:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2014/09/08/quickSort</id>
+    <id>rongyi.work/blog/2014/09/08/quickSort</id>
     <content type="html"><![CDATA[<h3>介绍</h3>
 
 <p>通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比另外一部分的所有数据都要小，然后再按此方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，以此达到整个数据变成有序序列。<!--more--></p>
 
 <p>快速排序的图解：</p>
 
-<p><img src="http://nsdifficult.github.io/images/quicksort/1.png"></p>
+<p><img src="rongyi.work/images/quicksort/1.png"></p>
 
 <h3>步骤</h3>
 
@@ -2420,9 +2420,9 @@ Arrays工具类提供的#Arrays.asList#：</p>
   
   <entry>
     <title type="html"><![CDATA[算法之插入排序]]></title>
-    <link href="http://nsdifficult.github.io/blog/2014/09/08/insertsort/"/>
+    <link href="rongyi.work/blog/2014/09/08/insertsort/"/>
     <updated>2014-09-08T18:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2014/09/08/insertsort</id>
+    <id>rongyi.work/blog/2014/09/08/insertsort</id>
     <content type="html"><![CDATA[<h3>前言</h3>
 
 <p>插入排序（Insertion Sort）的算法描述是一种简单直观的排序算法。它的工作原理是通过构建有序序列，对于未排序数据，在已排序序列中从后向前扫描，找到相应位置并插入。插入排序在实现上，通常采用in-place排序（即只需用到O(1)的额外空间的排序，详情见<a href="http://zh.wikipedia.org/zh/%E5%8E%9F%E5%9C%B0%E7%AE%97%E6%B3%95">原地算法</a>），因而在从后向前扫描过程中，需要反复把已排序元素逐步向后挪位，为最新元素提供插入空间。<!--more-->　</p>
@@ -2603,16 +2603,16 @@ Arrays工具类提供的#Arrays.asList#：</p>
   
   <entry>
     <title type="html"><![CDATA[算法之冒泡排序]]></title>
-    <link href="http://nsdifficult.github.io/blog/2014/09/08/bubblesort/"/>
+    <link href="rongyi.work/blog/2014/09/08/bubblesort/"/>
     <updated>2014-09-08T18:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2014/09/08/bubblesort</id>
+    <id>rongyi.work/blog/2014/09/08/bubblesort</id>
     <content type="html"><![CDATA[<h3>介绍</h3>
 
 <p>冒泡排序的原理可以顾名思义：把每个数据看成一个气泡，按初始顺序自底向上依次对两两气泡进行比较，对上重下轻的气泡交换顺序（这里用气泡轻、重表示数据大、小），保证轻的气泡总能浮在重的气泡上面，直到最轻的气泡浮到最上面；保持最后浮出的气泡不变，对余下气泡循环上述步骤，直到所有气泡从轻到重排列完毕。<!--more--></p>
 
 <p>冒泡排序的图解：</p>
 
-<p><img src="http://nsdifficult.github.io/images/bubblesort/1.gif"></p>
+<p><img src="rongyi.work/images/bubblesort/1.gif"></p>
 
 <h3>步骤</h3>
 
@@ -2770,16 +2770,16 @@ Arrays工具类提供的#Arrays.asList#：</p>
   
   <entry>
     <title type="html"><![CDATA[算法之归并排序]]></title>
-    <link href="http://nsdifficult.github.io/blog/2014/09/07/mergesort/"/>
+    <link href="rongyi.work/blog/2014/09/07/mergesort/"/>
     <updated>2014-09-07T18:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2014/09/07/mergesort</id>
+    <id>rongyi.work/blog/2014/09/07/mergesort</id>
     <content type="html"><![CDATA[<h3>前言</h3>
 
 <p>归并排序由<a href="http://en.wikipedia.org/wiki/John_von_Neumann">John von Neumann（约翰·冯·诺伊曼）</a>发明于1945年。 <br/>
 归并排序（Merge sort）是建立在归并操作上的一种有效的排序算法。该算法是采用分治法（Divide and Conquer）的一个非常典型的应用。是一种稳定排序方法。<!--more-->    <br/>
 图解归并排序：</p>
 
-<p><img src="http://nsdifficult.github.io/images/mergesort/1.gif"></p>
+<p><img src="rongyi.work/images/mergesort/1.gif"></p>
 
 <h3>开始之前</h3>
 
@@ -2989,9 +2989,9 @@ Arrays工具类提供的#Arrays.asList#：</p>
   
   <entry>
     <title type="html"><![CDATA[Servlet是线程安全的吗]]></title>
-    <link href="http://nsdifficult.github.io/blog/2014/09/02/servletthreadsafe/"/>
+    <link href="rongyi.work/blog/2014/09/02/servletthreadsafe/"/>
     <updated>2014-09-02T18:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2014/09/02/servletthreadsafe</id>
+    <id>rongyi.work/blog/2014/09/02/servletthreadsafe</id>
     <content type="html"><![CDATA[<h2>线程安全解释</h2>
 
 <p>线程安全的解释有很多。
@@ -3209,9 +3209,9 @@ Arrays工具类提供的#Arrays.asList#：</p>
   
   <entry>
     <title type="html"><![CDATA[iPhone开发图片尺寸]]></title>
-    <link href="http://nsdifficult.github.io/blog/2014/09/02/iphoneimage/"/>
+    <link href="rongyi.work/blog/2014/09/02/iphoneimage/"/>
     <updated>2014-09-02T18:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2014/09/02/iphoneimage</id>
+    <id>rongyi.work/blog/2014/09/02/iphoneimage</id>
     <content type="html"><![CDATA[<h2>说明</h2>
 
 <p>（iOS8不适用了）</p>
@@ -3227,11 +3227,11 @@ Arrays工具类提供的#Arrays.asList#：</p>
 <p>| 名称      |  尺寸（ps） | 系统及iPhone  | 说明 |
 | :&mdash;&mdash;&ndash; | &mdash;&mdash;&ndash;:| :&ndash;: | :&ndash;: |
 | Icon-60.png  | 60x60 |  iOS7及以上，非Retina  | 应用图标 |
-| <a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#111;&#58;&#73;&#x63;&#x6f;&#110;&#x2d;&#x31;&#x32;&#x30;&#64;&#x32;&#120;&#46;&#x70;&#110;&#103;">&#x49;&#99;&#111;&#x6e;&#45;&#x31;&#50;&#48;&#64;&#x32;&#x78;&#46;&#112;&#110;&#103;</a>  | 120x120 |  iOS7及以上，Retina  | 应用图标 |
+| <a href="&#109;&#97;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#x49;&#x63;&#x6f;&#x6e;&#x2d;&#49;&#50;&#48;&#64;&#x32;&#x78;&#x2e;&#112;&#x6e;&#x67;">&#x49;&#x63;&#x6f;&#x6e;&#45;&#x31;&#50;&#48;&#64;&#50;&#120;&#46;&#x70;&#x6e;&#x67;</a>  | 120x120 |  iOS7及以上，Retina  | 应用图标 |
 | Icon-40.png  | 40x40 |  iOS7及以上，非Retina  | 应用图标，搜索中用 |
-| <a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#111;&#x3a;&#73;&#x63;&#x6f;&#x6e;&#45;&#56;&#48;&#64;&#50;&#x78;&#46;&#112;&#x6e;&#103;">&#x49;&#x63;&#x6f;&#x6e;&#45;&#56;&#x30;&#64;&#x32;&#x78;&#46;&#112;&#110;&#103;</a>  | 80x80 |  iOS7及以上，Retina  | 应用图标，搜索中用 |
+| <a href="&#109;&#97;&#105;&#x6c;&#116;&#x6f;&#58;&#73;&#99;&#111;&#x6e;&#x2d;&#56;&#x30;&#64;&#x32;&#x78;&#x2e;&#112;&#110;&#x67;">&#x49;&#99;&#x6f;&#x6e;&#45;&#56;&#x30;&#x40;&#x32;&#120;&#x2e;&#112;&#x6e;&#x67;</a>  | 80x80 |  iOS7及以上，Retina  | 应用图标，搜索中用 |
 | Icon-29.png  | 29x29 |  iOS7及以上，非Retina | 应用图标，设置中用 |
-| <a href="&#x6d;&#97;&#x69;&#x6c;&#116;&#111;&#x3a;&#73;&#99;&#x6f;&#110;&#45;&#x35;&#56;&#64;&#50;&#x78;&#x2e;&#x70;&#110;&#x67;">&#73;&#99;&#111;&#110;&#x2d;&#53;&#x38;&#x40;&#50;&#x78;&#46;&#x70;&#110;&#103;</a>  | 58x58 |  iOS7及以上，Retina  | 应用图标，设置中用
+| <a href="&#109;&#97;&#x69;&#108;&#116;&#x6f;&#x3a;&#x49;&#x63;&#x6f;&#x6e;&#45;&#53;&#x38;&#x40;&#50;&#120;&#46;&#x70;&#110;&#103;">&#x49;&#99;&#x6f;&#x6e;&#x2d;&#53;&#56;&#x40;&#x32;&#x78;&#x2e;&#x70;&#110;&#x67;</a>  | 58x58 |  iOS7及以上，Retina  | 应用图标，设置中用
  |</p>
 
 <h3>应用加载图片</h3>
@@ -3253,13 +3253,13 @@ Arrays工具类提供的#Arrays.asList#：</p>
 <td style="text-align:center;"> 启动图片 </td>
 </tr>
 <tr>
-<td style="text-align:left;"> <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#111;&#x3a;&#x44;&#x65;&#x66;&#97;&#x75;&#108;&#x74;&#x40;&#50;&#120;&#x2e;&#x70;&#x6e;&#x67;">&#68;&#x65;&#102;&#97;&#x75;&#x6c;&#116;&#64;&#x32;&#120;&#x2e;&#112;&#x6e;&#103;</a>  </td>
+<td style="text-align:left;"> <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#111;&#x3a;&#68;&#101;&#102;&#x61;&#117;&#108;&#x74;&#x40;&#50;&#x78;&#x2e;&#112;&#x6e;&#103;">&#68;&#x65;&#102;&#x61;&#117;&#108;&#x74;&#x40;&#50;&#120;&#x2e;&#112;&#x6e;&#x67;</a>  </td>
 <td style="text-align:right;"> 640x960 </td>
 <td style="text-align:center;">  iOS7及以上，Retina，iPhone4s  </td>
 <td style="text-align:center;"> 启动图片 </td>
 </tr>
 <tr>
-<td style="text-align:left;"> <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#x6f;&#58;&#x44;&#x65;&#102;&#97;&#117;&#108;&#x74;&#x5f;&#x31;&#49;&#x33;&#54;&#x40;&#x32;&#120;&#46;&#112;&#110;&#103;">&#68;&#101;&#102;&#97;&#117;&#x6c;&#116;&#95;&#x31;&#x31;&#x33;&#54;&#64;&#50;&#120;&#46;&#112;&#110;&#x67;</a>  </td>
+<td style="text-align:left;"> <a href="&#109;&#x61;&#105;&#108;&#x74;&#111;&#x3a;&#68;&#101;&#102;&#x61;&#x75;&#108;&#116;&#x5f;&#x31;&#49;&#x33;&#54;&#x40;&#x32;&#120;&#x2e;&#112;&#x6e;&#x67;">&#68;&#x65;&#102;&#97;&#117;&#108;&#x74;&#95;&#49;&#x31;&#51;&#x36;&#x40;&#50;&#x78;&#46;&#x70;&#x6e;&#x67;</a>  </td>
 <td style="text-align:right;"> 640x1136 </td>
 <td style="text-align:center;">  iOS7及以上，Retina，iPhone5、iPhone5s </td>
 <td style="text-align:center;"> 启动图片 </td>
@@ -3288,9 +3288,9 @@ Arrays工具类提供的#Arrays.asList#：</p>
   
   <entry>
     <title type="html"><![CDATA[《SQL必知必会》读书笔记（一）]]></title>
-    <link href="http://nsdifficult.github.io/blog/2014/09/01/SQL1/"/>
+    <link href="rongyi.work/blog/2014/09/01/SQL1/"/>
     <updated>2014-09-01T18:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2014/09/01/SQL1</id>
+    <id>rongyi.work/blog/2014/09/01/SQL1</id>
     <content type="html"><![CDATA[<h2>1、检索数据</h2>
 
 <p>select 语句非常简单。就不复述了。需要注意几个点：</p>
@@ -3786,9 +3786,9 @@ Arrays工具类提供的#Arrays.asList#：</p>
   
   <entry>
     <title type="html"><![CDATA[缓存库Ehcahe简单介绍]]></title>
-    <link href="http://nsdifficult.github.io/blog/2014/08/25/ehcache/"/>
+    <link href="rongyi.work/blog/2014/08/25/ehcache/"/>
     <updated>2014-08-25T19:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2014/08/25/ehcache</id>
+    <id>rongyi.work/blog/2014/08/25/ehcache</id>
     <content type="html"><![CDATA[<h2>介绍</h2>
 
 <p>Ehcache在2003年推出，旨在减少潜在的资源加载。<br/>
@@ -3901,9 +3901,9 @@ Ehcache不仅用在一般用途的缓存，如Hibernate，数据访问对象，�
   
   <entry>
     <title type="html"><![CDATA[《Java核心技术》读书笔记之注解]]></title>
-    <link href="http://nsdifficult.github.io/blog/2014/08/20/anotation/"/>
+    <link href="rongyi.work/blog/2014/08/20/anotation/"/>
     <updated>2014-08-20T19:06:00+08:00</updated>
-    <id>http://nsdifficult.github.io/blog/2014/08/20/anotation</id>
+    <id>rongyi.work/blog/2014/08/20/anotation</id>
     <content type="html"><![CDATA[<h2>定义</h2>
 
 <p>注解（也被称为元数据）为我们在代码中添加信息提供了一种形式化的方法，使我们可以在稍后某个时刻非常方便地使用这些数据。<!--more--></p>
