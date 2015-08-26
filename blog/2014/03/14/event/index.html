@@ -1,0 +1,226 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>事件传递之响应链（Event Delivery: The Responder Chain）[译] - My Octopress Blog</title>
+	<meta name="author" content="Your Name">
+
+	
+	<meta name="description" content="当你设计App时你可能需要动态的响应事件。例如，一个触摸事件可能发生在屏幕上不同的对象中，你需要决定哪个对象来响应这个给定的事件，理解对象如何接收事件。 当用户触发的一个事件发生，UIKit会创建一个包含要处理的事件信息的事件对象。然后她会将事件对象放入active app's（应用程序对象， &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">My Octopress Blog</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:nsdifficult.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:nsdifficult.github.io">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">事件传递之响应链（Event Delivery: The Responder Chain）[译]</h2>
+	<div class="entry-content"><p>当你设计App时你可能需要动态的响应事件。例如，一个触摸事件可能发生在屏幕上不同的对象中，你需要决定哪个对象来响应这个给定的事件，理解对象如何接收事件。<!--more--></p>
+
+<p>当用户触发的一个事件发生，UIKit会创建一个包含要处理的事件信息的事件对象。然后她会将事件对象放入active app's（应用程序对象，每个程序对应唯一一个）事件队列。对于触摸事件，事件对象就是UIevent对象封装的一系列触摸集合。对于动作事件，这个事件对象依赖于使用的framework和你关心哪种动作事件。</p>
+
+<p>事件通过特殊的路径传递直到被传递到一个可以处理该事件的对象。首先，单例的UIApplication对象从顶层的队列中获取事件，然后分发。典型的，它将事件发送到App的关键window（key window）对象，window则为了处理该事件而发送它到初始化对象（initial object），这个初始化对像依靠事件类型。</p>
+
+<ul>
+<li><strong>触摸事件（Touch events）</strong>。对于触摸事件，window对象首先会尝试将事件传递给事件发生的view。这个view就是所谓的hit-test view。寻找hit-test view的方法叫 hit-testing,具体描述可见<a href="https://developer.apple.com/library/ios/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/event_delivery_responder_chain/event_delivery_responder_chain.html#//apple_ref/doc/uid/TP40009541-CH4-SW4">“Hit-Testing Returns the View Where a Touch Occurred.”</a>。</li>
+<li><strong>动作事件和远程控制事件（Motion and remote control events）</strong>。在这些事件中，window对象发送事件到第一个响应器。第一个响应器的描述见<a href="https://developer.apple.com/library/ios/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/event_delivery_responder_chain/event_delivery_responder_chain.html#//apple_ref/doc/uid/TP40009541-CH4-SW1">“The Responder Chain Is Made Up of Responder Objects.”</a>。</li>
+</ul>
+
+
+<p>事件传递路径的最终目的时找出能处理和响应该事件的对象。因此，UIKit给适合处理该事件的对象发送事件。对于触摸事件，这个对象就是hit-test view，对于其他事件，这个对象就是第一个响应器（first responder）。下面的章节解释了hit-test view和first responder对象是如何被确定的。</p>
+
+<h2>Hit-Testing返回触摸发生的view</h2>
+
+<p>iOS使用hit-testing寻找触摸的view。 Hit-Testing通过检查触摸点是否在关联的view边界内，如果在，则递归地（recursively）检查该view的所有子view。在层级上处于lowest（我理解就是离用户最近的view）且边界范围包含触摸点的view成为hit-test view。确定hit-test view后，它传递触摸事件给该view。</p>
+
+<p>举例说明，假设用户触摸了图中的view E。iOS通过如下顺序查找hit-test view。</p>
+
+<p><img src="/images/eventimage/hit_testing_2x.png"></p>
+
+<ol>
+<li>触摸点在view A中，所以要检查子view B和C。</li>
+<li>触摸点不在view B中，但在C中，所以检查C的子view D和E。</li>
+<li>触摸点不在D中，但在E中。</li>
+</ol>
+
+
+<p>View E是这个层级上处于lowest的view的边界范围包含触摸点，所以它成为了hit-test view。</p>
+
+<p> <a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIView_Class/UIView/UIView.html#//apple_ref/occ/instm/UIView/hitTest:withEvent:">hitTest:withEvent:</a>方法通过传递进来CGPoint和UIEvent返回hit test view。该方法调用<a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIView_Class/UIView/UIView.html#//apple_ref/occ/instm/UIView/pointInside:withEvent:">pointInside:withEvent:</a>方法，如果传入hitTest:withEvent:的point在view的边界范围内，则pointInside:withEvent:返回YES。然后，这个方法会在view的所有子view中递归的调用hitTest:withEvent:。</p>
+
+<p>如果传入hitTest:withEvent:的point在view的边界范围内，则pointInside:withEvent:返回NO。这个point会被忽略，hitTest:withEvent:返回nil。如果一个子view返回NO，则它所在的view的层级上的分支的子view都会被忽略。</p>
+
+<p>Hit-test view是处理触摸事件的第一选择，如果hit-test view不能处理事件，该事件将从事件响应链中寻找响应器，直到系统找到一个处理事件的对象。具体见<a href="https://developer.apple.com/library/ios/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/event_delivery_responder_chain/event_delivery_responder_chain.html#//apple_ref/doc/uid/TP40009541-CH4-SW1">“The Responder Chain Is Made Up of Responder Objects”</a>。</p>
+
+<h2>响应器链由响应器对象组成（The Responder Chain Is Made Up of Responder Objects）</h2>
+
+<p>一些类型的事件的传递依赖响应器链。响应器链（responder chain）是一系列相关的响应器对象。它开始于第一个响应器终止于应用对象（application object）。如果第一个responder不处理事件，则会根据responder chain将event传递给下一个responder。</p>
+
+<p>Responder object，即可以响应和处理事件的对象。UIResponder类是所有responder对象的基类，它定义了动态的接口，不仅处理事件也包括处理响应行为。包括UIApplication，UIViewController，和UIView类都是responder，这意味着所有view和大部分关键的controller对象都是responder。足以Core Animation layers不是responders。</p>
+
+<p>First responder被设计来第一个接收事件。典型的，first responder是一个view object。之所以成为第一个responder由于两个原因：</p>
+
+<ol>
+<li>覆盖canBecomeFirstResponder方法，返回YES。</li>
+<li>接收becomeFirstResponder消息。如果必须，一个object能发送给自身这个消息。</li>
+</ol>
+
+
+<p>。。。</p>
+
+<h2>响应器链遵照一个特殊的传递路径（The Responder Chain Follows a Specific Delivery Path）</h2>
+
+<p>如果初始化对象（initial object）—— 即hit-test view或者first responder —— 不处理事件，UIKit会将事件传递给responder chain的下一个responder。每个responder决定它是传递事件还是通过nextResponder方法传递给它的下一个responder。这个操作继续直到一个responder处理event或者没有responder了。</p>
+
+<p>Responder chain 序列在iOS确定一个事件并将它传递给initial object（通常是view）时开始。所以initial view有处理事件的第一个机会。下图描述了两个不同的事件传递路径（因为不同的app 设置）。一个App的事件传递路径由app特殊的构成决定，但事件传递路径会遵守相同的规则。</p>
+
+<p><img src="/images/eventimage/iOS_responder_chain_2x.png"></p>
+
+<h2>关键方法</h2>
+
+<p><code>- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event</code> 返回在层级上离当前view最远（离用户最近）且包含指定的point的view。</p>
+
+<p>关于hitTest方法的解释见<a href="http://www.winddisk.com/2012/10/11/hittest_withevent/">hitTest:withEvent:方法流程</a></p>
+
+<p><code>- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event</code> 返回boolean值指出receiver是否包含指定的point。</p>
+
+<p>如下调用：手动指定当前view不响应事件</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>-(BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
+</span><span class='line'>    for (UIView *view in self.subviews) {
+</span><span class='line'>        if (!view.hidden && view.userInteractionEnabled && [view pointInside:[self convertPoint:point toView:view] withEvent:event])
+</span><span class='line'>            return YES;
+</span><span class='line'>    }
+</span><span class='line'>    return NO;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>总结：</h2>
+
+<p>事件的传递和响应分两个链：</p>
+
+<ul>
+<li>传递链：由系统向离用户最近的view传递。UIKit -> active app&rsquo;s event queue -> window -> root view ->&hellip;&hellip;->lowest view</li>
+<li>响应链：由离用户最近的view向系统传递。initial view -> super view -> &hellip;..-> view controller -> window -> Application</li>
+</ul>
+
+
+<p><a href="https://developer.apple.com/library/ios/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/event_delivery_responder_chain/event_delivery_responder_chain.html#//apple_ref/doc/uid/TP40009541-CH4-SW2">原文</a></p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Mar 14th, 2014</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Your Name
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>

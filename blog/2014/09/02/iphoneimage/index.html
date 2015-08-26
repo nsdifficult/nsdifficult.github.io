@@ -1,0 +1,200 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>iPhone开发图片尺寸 - My Octopress Blog</title>
+	<meta name="author" content="Your Name">
+
+	
+	<meta name="description" content="说明 （iOS8不适用了） 关于系统 建议支持iOS7以上，目前iOS7占比91%。关于占比，见官方说明。 图标尺寸 icon说明 | 名称 | 尺寸（ps） | 系统及iPhone | 说明 |
+| :&mdash;&mdash;&ndash; | &mdash;&mdash;&ndash &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">My Octopress Blog</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:nsdifficult.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:nsdifficult.github.io">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">iPhone开发图片尺寸</h2>
+	<div class="entry-content"><h2>说明</h2>
+
+<p>（iOS8不适用了）</p>
+
+<h3>关于系统</h3>
+
+<p>建议支持iOS7以上，目前iOS7占比91%。关于占比，见<a href="https://developer.apple.com/support/appstore/">官方说明</a>。<!--more--></p>
+
+<h2>图标尺寸</h2>
+
+<h3>icon说明</h3>
+
+<p>| 名称      |  尺寸（ps） | 系统及iPhone  | 说明 |
+| :&mdash;&mdash;&ndash; | &mdash;&mdash;&ndash;:| :&ndash;: | :&ndash;: |
+| Icon-60.png  | 60x60 |  iOS7及以上，非Retina  | 应用图标 |
+| <a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#111;&#58;&#73;&#x63;&#111;&#x6e;&#45;&#49;&#50;&#48;&#x40;&#x32;&#120;&#x2e;&#112;&#110;&#x67;">&#73;&#99;&#x6f;&#x6e;&#x2d;&#49;&#x32;&#48;&#x40;&#50;&#x78;&#46;&#x70;&#110;&#103;</a>  | 120x120 |  iOS7及以上，Retina  | 应用图标 |
+| Icon-40.png  | 40x40 |  iOS7及以上，非Retina  | 应用图标，搜索中用 |
+| <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#111;&#58;&#73;&#99;&#x6f;&#x6e;&#45;&#56;&#48;&#64;&#x32;&#120;&#x2e;&#112;&#x6e;&#103;">&#73;&#x63;&#x6f;&#x6e;&#x2d;&#56;&#48;&#64;&#x32;&#120;&#x2e;&#112;&#110;&#x67;</a>  | 80x80 |  iOS7及以上，Retina  | 应用图标，搜索中用 |
+| Icon-29.png  | 29x29 |  iOS7及以上，非Retina | 应用图标，设置中用 |
+| <a href="&#109;&#97;&#x69;&#x6c;&#116;&#111;&#58;&#73;&#99;&#111;&#x6e;&#45;&#x35;&#56;&#64;&#50;&#120;&#x2e;&#x70;&#x6e;&#103;">&#73;&#99;&#111;&#110;&#x2d;&#x35;&#56;&#x40;&#x32;&#x78;&#x2e;&#112;&#110;&#103;</a>  | 58x58 |  iOS7及以上，Retina  | 应用图标，设置中用
+ |</p>
+
+<h3>应用加载图片</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;"> 名称      </th>
+<th style="text-align:right;">  尺寸（ps） </th>
+<th style="text-align:center;"> 系统及iPhone  </th>
+<th style="text-align:center;"> 说明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;"> Default.png  </td>
+<td style="text-align:right;"> 320x480 </td>
+<td style="text-align:center;">  iOS7及以上，非Retina，iPhone4及之前iPhone </td>
+<td style="text-align:center;"> 启动图片 </td>
+</tr>
+<tr>
+<td style="text-align:left;"> <a href="&#109;&#97;&#x69;&#x6c;&#116;&#x6f;&#58;&#68;&#101;&#102;&#x61;&#x75;&#108;&#116;&#64;&#50;&#120;&#x2e;&#112;&#x6e;&#x67;">&#x44;&#101;&#x66;&#97;&#x75;&#108;&#x74;&#x40;&#50;&#120;&#46;&#112;&#x6e;&#x67;</a>  </td>
+<td style="text-align:right;"> 640x960 </td>
+<td style="text-align:center;">  iOS7及以上，Retina，iPhone4s  </td>
+<td style="text-align:center;"> 启动图片 </td>
+</tr>
+<tr>
+<td style="text-align:left;"> <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#x6f;&#58;&#68;&#x65;&#102;&#97;&#x75;&#x6c;&#x74;&#x5f;&#49;&#x31;&#51;&#54;&#64;&#50;&#x78;&#x2e;&#112;&#x6e;&#x67;">&#68;&#x65;&#102;&#x61;&#117;&#x6c;&#x74;&#x5f;&#49;&#49;&#51;&#x36;&#64;&#x32;&#x78;&#x2e;&#x70;&#110;&#103;</a>  </td>
+<td style="text-align:right;"> 640x1136 </td>
+<td style="text-align:center;">  iOS7及以上，Retina，iPhone5、iPhone5s </td>
+<td style="text-align:center;"> 启动图片 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>　</h3>
+
+<ol>
+<li>如果需要定制navigaion bar，tab bar等iOS标准控件，其上的图片需要具体分析。</li>
+<li>所有图片需提供两套图片，一套给非Retina屏幕使用，为正常尺寸；一套给Retina屏幕使用，为正常尺寸的二倍，且需要命名为@2x。（如果只需要支持iPhone4s及之后的iPhone，只需要提供@2x图片，即正常尺寸的二倍的图片）</li>
+</ol>
+
+
+<h2>切图建议</h2>
+
+<ol>
+<li>所有图片需要为png格式</li>
+<li>图片命名请和用途关联，最好一看就知道用在哪的（图片太多，这样容易分辨）。</li>
+</ol>
+
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Sep 2nd, 2014</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Your Name
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>

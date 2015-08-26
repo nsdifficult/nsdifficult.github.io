@@ -1,0 +1,242 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>ThreadLocal - My Octopress Blog</title>
+	<meta name="author" content="Your Name">
+
+	
+	<meta name="description" content="解释 Thread-local storage 是为每一个线程提供独立的变量存储的存储。
+维基百科解释 Thread-local storage (TLS) is a computer programming method that uses static or global memory &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">My Octopress Blog</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:nsdifficult.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:nsdifficult.github.io">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">ThreadLocal</h2>
+	<div class="entry-content"><h2>解释</h2>
+
+<p>Thread-local storage 是为每一个线程提供独立的变量存储的存储。<br/>
+<a href="https://en.wikipedia.org/wiki/Thread-local_storage#Java">维基百科解释</a></p>
+
+<blockquote><p>Thread-local storage (TLS) is a computer programming method that uses static or global memory local to a thread.<!--more--></p></blockquote>
+
+<p>Thread-local storage有各个语言版本的实现。见<a href="https://en.wikipedia.org/wiki/Thread-local_storage#Java">Thread-local storage</a></p>
+
+<h2>Java实现：ThreadLocal</h2>
+
+<p>JDK 1.2的版本中就提供java.lang.ThreadLocal，ThreadLocal为解决多线程程序的并发问题提供了一种新的思路。使用这个工具类可以很简洁地编写出优美的多线程程序，ThreadLocal并不是一个Thread，而是Thread的局部变量。</p>
+
+<p><code>java.lang.ThreadLocal&lt;GeneratorSession&gt;</code></p>
+
+<h3>源代码 (只显示set和get方法)</h3>
+
+<pre><code> public void set(T value) {  
+    Thread t = Thread.currentThread();  
+    ThreadLocalMap map = getMap(t);  
+    if (map != null)  
+        map.set(this, value);  
+    else  
+        createMap(t, value);  
+}  
+public T get() {  
+    Thread t = Thread.currentThread();  
+    ThreadLocalMap map = getMap(t);  
+    if (map != null)  
+        return (T)map.get(this);  
+
+    // Maps are constructed lazily.  if the map for this thread  
+    // doesn't exist, create it, with this ThreadLocal and its  
+    // initial value as its only entry.  
+    T value = initialValue();  
+    createMap(t, value);  
+    return value;  
+}  
+</code></pre>
+
+<h3>应用</h3>
+
+<h4>hibernate中的一个典型应用</h4>
+
+<pre><code>private static final ThreadLocal threadSession = new ThreadLocal();
+public static Session getSession() throws InfrastructureException {
+    Session s = (Session) threadSession.get();
+    try {
+        if (s == null) {
+            s = getSessionFactory().openSession();
+            threadSession.set(s);
+        }
+    } catch (HibernateException ex) {
+        throw new InfrastructureException(ex);
+    }
+    return s;
+}
+</code></pre>
+
+<p>可以看到在getSession()方法中，首先判断当前线程中有没有放进去session，如果还没有，那么通过sessionFactory().openSession()来创建一个session，再将session set到线程中，实际是放到当前线程的ThreadLocalMap这个map中，这时，对于这个session的唯一引用就是当前线程中的那个ThreadLocalMap（下面会讲到），而threadSession作为这个值的key，要取得这个session可以通过threadSession.get()来得到，里面执行的操作实际是先取得当前线程中的ThreadLocalMap，然后将threadSession作为key将对应的值取出。这个session相当于线程的私有变量，而不是public的。
+显然，其他线程中是取不到这个session的，他们也只能取到自己的ThreadLocalMap中的东西。要是session是多个线程共享使用的，那还不乱套了。
+试想如果不用ThreadLocal怎么来实现呢？可能就要在action中创建session，然后把session一个个传到service和dao中，这可够麻烦的。或者可以自己定义一个静态的map，将当前thread作为key，创建的session作为值，put到map中，应该也行，这也是一般人的想法，但事实上，ThreadLocal的实现刚好相反，它是在每个线程中有一个map，而将ThreadLocal实例作为key，这样每个map中的项数很少，而且当线程销毁时相应的东西也一起销毁了，不知道除了这些还有什么其他的好处。</p>
+
+<p>此段文字来自：<a href="http://www.iteye.com/topic/103804">http://www.iteye.com/topic/103804</a></p>
+
+<h4>实际项目的一个用处</h4>
+
+<p>需要对每个请求线程分配一个GeneratorSession，且要求GeneratorSession能支持高并发。使用到了ThreadLocal。</p>
+
+<pre><code>public class GeneratorSessionFactoryImpl implements GeneratorSessionFactory {
+
+private ThreadLocal&lt;GeneratorSession&gt; generatorSessions = new ThreadLocal&lt;GeneratorSession&gt;();
+
+private Settings settings;
+
+public GeneratorSessionFactoryImpl(Settings settings) {
+    this.settings = settings;
+}
+
+/**
+ * 线程安全创建GeneratorSession
+ * 
+ * @see com.trs.dev4.jdk16.cms.GeneratorSessionFactory#getCurrentSession()
+ * @since yangyu @ Apr 11, 2013
+ */
+public GeneratorSession getCurrentSession() {
+
+    GeneratorSession generatorSession = generatorSessions.get();
+    if (generatorSession == null) {
+        generatorSession = new GeneratorSessionImpl(settings);
+        generatorSessions.set(generatorSession);
+    }
+    return generatorSession;
+}
+
+public Settings getSettings() {
+    return settings;
+}
+
+}
+</code></pre>
+
+<h2>Objective-C实现</h2>
+
+<p>在Cocoa中，每个NSThread对象都有一个独立的dictionary。</p>
+
+<pre><code>NSMutableDictionary *dict = [[NSThread currentThread] threadDictionary];
+dict[@"A key"] = @"Some data";
+</code></pre>
+
+<p>参考文章：<br/>
+<a href="https://en.wikipedia.org/wiki/Thread-local_storage#C.2B.2B">https://en.wikipedia.org/wiki/Thread-local_storage#C.2B.2B</a><br/>
+<a href="http://www.iteye.com/topic/103804">http://www.iteye.com/topic/103804</a></p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Jun 3rd, 2014</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Your Name
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>

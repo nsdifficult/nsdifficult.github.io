@@ -1,0 +1,458 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>《java核心技术》读书笔记之泛型 - My Octopress Blog</title>
+	<meta name="author" content="Your Name">
+
+	
+	<meta name="description" content="为什么要使用泛型程序设计 泛型程序设计（Generic programming）意味着编写的代码可以被很多不同类型的对象所重用。例如我们不希望为聚集String和File对象分别设计不同的类。实际上也不需要，因为一个ArrayList类可以聚集任何类型的对象，这就是一个泛型程序设计的实例。 &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">My Octopress Blog</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:nsdifficult.github.io">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:nsdifficult.github.io">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">《java核心技术》读书笔记之泛型</h2>
+	<div class="entry-content"><h2>为什么要使用泛型程序设计</h2>
+
+<p>泛型程序设计（Generic programming）意味着编写的代码可以被很多不同类型的对象所重用。例如我们不希望为聚集String和File对象分别设计不同的类。实际上也不需要，因为一个ArrayList类可以聚集任何类型的对象，这就是一个泛型程序设计的实例。<!--more--></p>
+
+<p>在Java SE 5.0之前，Java泛型程序设计是用继承实现的。ArrayList只维护一个Object引用的数组：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ArrayList</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">public</span> <span class="n">Object</span><span class="o">[]</span> <span class="n">elementData</span><span class="o">;</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">get</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{}</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">add</span><span class="o">(</span><span class="n">Object</span> <span class="n">o</span><span class="o">)</span> <span class="o">{}</span>
+</span><span class='line'>  <span class="o">....</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样实现有两个问题.</p>
+
+<ul>
+<li>1）当获取一个值时必须进行强制类型转换。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">ArrayList</span> <span class="n">files</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ArrayList</span><span class="o">();</span>
+</span><span class='line'><span class="o">...</span>
+</span><span class='line'><span class="n">String</span> <span class="n">fileName</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span><span class="n">names</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>2）没有错误检查。可以向数组列表添加任何类的对象。</li>
+</ul>
+
+
+<p>对于这个调用，编译和运行都不会出错。然而在其他地方，如果将get的结果强制类型转换为String类型，就会产生一个错误。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">files</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nf">file</span><span class="o">(</span><span class="s">&quot;&quot;</span><span class="o">));</span>
+</span><span class='line'><span class="n">files</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="s">&quot;&quot;</span><span class="o">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>泛型提供了一个更好的解决方案：类型参数（type parameters）。例如，ArrayList类有一个类型参数用来指示元素的类型：<br/>
+<code>ArrayList&lt;String&gt; files = new ArrayList&lt;String&gt;();</code> <br/>
+这样便不需要进行强制类型转换，而且如果add不是String或者其子类的对象，在编译时期便会报错：<br/>
+<code>can only add String objects to an ArrayList&lt;String&gt;</code></p>
+
+<h2>泛型使用</h2>
+
+<h3>定义一个泛型类</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">Point</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;{</span>  <span class="c1">// 此处可以随便写标识符号，T是type的简称  </span>
+</span><span class='line'> <span class="kd">private</span> <span class="n">T</span> <span class="n">var</span> <span class="o">;</span> <span class="c1">// var的类型由T指定，即：由外部指定  </span>
+</span><span class='line'> <span class="kd">public</span> <span class="n">T</span> <span class="nf">getVar</span><span class="o">(){</span> <span class="c1">// 返回值的类型由外部决定  </span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">var</span> <span class="o">;</span>
+</span><span class='line'> <span class="o">}</span>
+</span><span class='line'> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setVar</span><span class="o">(</span><span class="n">T</span> <span class="n">var</span><span class="o">){</span> <span class="c1">// 设置的类型也由外部决定  </span>
+</span><span class='line'>  <span class="k">this</span><span class="o">.</span><span class="na">var</span> <span class="o">=</span> <span class="n">var</span> <span class="o">;</span>
+</span><span class='line'> <span class="o">}</span>
+</span><span class='line'><span class="o">};</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">GenericsDemo06</span><span class="o">{</span>
+</span><span class='line'> <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span> <span class="n">args</span><span class="o">[]){</span>
+</span><span class='line'>  <span class="n">Point</span><span class="o">&lt;</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Point</span><span class="o">&lt;</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">;</span> <span class="c1">// 里面的var类型为String类型  </span>
+</span><span class='line'>  <span class="n">p</span><span class="o">.</span><span class="na">setVar</span><span class="o">(</span><span class="s">&quot;it&quot;</span><span class="o">)</span> <span class="o">;</span>  <span class="c1">// 设置字符串  </span>
+</span><span class='line'>  <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">getVar</span><span class="o">().</span><span class="na">length</span><span class="o">())</span> <span class="o">;</span> <span class="c1">// 取得字符串的长度  </span>
+</span><span class='line'> <span class="o">}</span>
+</span><span class='line'><span class="o">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>两个类型变量的泛型类：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">Notepad</span><span class="o">&lt;</span> <span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;{</span>  <span class="c1">// 此处指定了两个泛型类型  </span>
+</span><span class='line'>  <span class="kd">private</span> <span class="n">K</span> <span class="n">key</span> <span class="o">;</span>  <span class="c1">// 此变量的类型由外部决定  </span>
+</span><span class='line'>  <span class="kd">private</span> <span class="n">V</span> <span class="n">value</span> <span class="o">;</span> <span class="c1">// 此变量的类型由外部决定  </span>
+</span><span class='line'>  <span class="kd">public</span> <span class="n">K</span> <span class="nf">getKey</span><span class="o">(){</span>
+</span><span class='line'>          <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">key</span> <span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="n">V</span> <span class="nf">getValue</span><span class="o">(){</span>
+</span><span class='line'>          <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setKey</span><span class="o">(</span><span class="n">K</span> <span class="n">key</span><span class="o">){</span>
+</span><span class='line'>          <span class="k">this</span><span class="o">.</span><span class="na">key</span> <span class="o">=</span> <span class="n">key</span> <span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setValue</span><span class="o">(</span><span class="n">V</span> <span class="n">value</span><span class="o">){</span>
+</span><span class='line'>          <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">};</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">GenericsDemo09</span><span class="o">{</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span> <span class="n">args</span><span class="o">[]){</span>
+</span><span class='line'>      <span class="n">Notepad</span><span class="o">&lt;</span> <span class="n">String</span><span class="o">,</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">t</span> <span class="o">=</span> <span class="kc">null</span> <span class="o">;</span>  <span class="c1">// 定义两个泛型类型的对象  </span>
+</span><span class='line'>          <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Notepad</span><span class="o">&lt;</span> <span class="n">String</span><span class="o">,</span><span class="n">Integer</span><span class="o">&gt;()</span> <span class="o">;</span>  <span class="c1">// 里面的key为String，value为Integer  </span>
+</span><span class='line'>          <span class="n">t</span><span class="o">.</span><span class="na">setKey</span><span class="o">(</span><span class="s">&quot;汤姆&quot;</span><span class="o">)</span> <span class="o">;</span>  <span class="c1">// 设置第一个内容  </span>
+</span><span class='line'>          <span class="n">t</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="mi">20</span><span class="o">)</span> <span class="o">;</span>   <span class="c1">// 设置第二个内容  </span>
+</span><span class='line'>          <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">&quot;姓名；&quot;</span> <span class="o">+</span> <span class="n">t</span><span class="o">.</span><span class="na">getKey</span><span class="o">())</span> <span class="o">;</span>  <span class="c1">// 取得信息  </span>
+</span><span class='line'>          <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">&quot;，年龄；&quot;</span> <span class="o">+</span> <span class="n">t</span><span class="o">.</span><span class="na">getValue</span><span class="o">())</span> <span class="o">;</span>  <span class="c1">// 取得信息  </span>
+</span><span class='line'>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> <strong>注释</strong>：
+ 类型变量使用大写形式，且比较短。在java库中：<br/>
+ <code>E</code>：表示集合的元素类型。<br/>
+ <code>K,V</code>：表示关键字和值的类型。<br/>
+ <code>T或者U，S</code>：表示任意类型。</p>
+
+<h3>定义一个泛型方法</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">Demo</span><span class="o">{</span>
+</span><span class='line'> <span class="kd">public</span> <span class="o">&lt;</span> <span class="n">T</span><span class="o">&gt;</span> <span class="n">T</span> <span class="nf">fun</span><span class="o">(</span><span class="n">T</span> <span class="n">t</span><span class="o">){</span>   <span class="c1">// 可以接收任意类型的数据  </span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">t</span> <span class="o">;</span>     <span class="c1">// 直接把参数返回  </span>
+</span><span class='line'> <span class="o">}</span>
+</span><span class='line'><span class="o">};</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">GenericsDemo26</span><span class="o">{</span>
+</span><span class='line'> <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span> <span class="n">args</span><span class="o">[]){</span>
+</span><span class='line'>  <span class="n">Demo</span> <span class="n">d</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Demo</span><span class="o">()</span> <span class="o">;</span> <span class="c1">// 实例化Demo对象  </span>
+</span><span class='line'>  <span class="n">String</span> <span class="n">str</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="na">fun</span><span class="o">(</span><span class="s">&quot;汤姆&quot;</span><span class="o">)</span> <span class="o">;</span> <span class="c1">// 传递字符串  </span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="na">fun</span><span class="o">(</span><span class="mi">30</span><span class="o">)</span> <span class="o">;</span>  <span class="c1">// 传递数字，自动装箱  </span>
+</span><span class='line'>  <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">str</span><span class="o">)</span> <span class="o">;</span> <span class="c1">// 输出内容  </span>
+</span><span class='line'>  <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">i</span><span class="o">)</span> <span class="o">;</span>  <span class="c1">// 输出内容  </span>
+</span><span class='line'> <span class="o">}</span>
+</span><span class='line'><span class="o">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>泛型方法可以定义在普通类中，亦可以定义在泛型类中。</li>
+<li>当调用一个泛型方法时，在方法名前的尖括号中放入具体的类型：</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">String</span> <span class="n">str</span> <span class="o">=</span> <span class="n">d</span><span class="o">.&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="n">fun</span><span class="o">(</span><span class="s">&quot;汤姆&quot;</span><span class="o">)</span> <span class="o">;</span>
+</span><span class='line'><span class="n">String</span> <span class="n">str</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="na">fun</span><span class="o">(</span><span class="s">&quot;汤姆&quot;</span><span class="o">)</span> <span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在这种情况下（实际也时大多数情况下），方法调用中可以省略<String>类型参数。编译器有足够的信息推断出所调用的方法的T表示的是String类型。</p>
+
+<h2>类型变量的限定</h2>
+
+<ul>
+<li><code>extends</code>限定
+<code>T extends Bounding Type</code><br/>
+如果是接口，则extends 可以限定为多个接口 <code>public static &lt;T extends Comparable &amp; Serializable&gt; T min(T[] a)</code>
+如果是类，则只允许限定为一个类。</li>
+</ul>
+
+
+<h2>泛型代码和虚拟机</h2>
+
+<p><strong>java泛型是类型擦除的</strong></p>
+
+<p>虚拟机中没有泛型类型对象————所有对象都属于普通类。<br/>
+无论何时定义一个泛型类型，都自动提供了一个相应的原始类型（raw type）。原始类型的名字就是删去类型参数后的泛型类型名。擦除（erased）类型变量，并替换为限定类型（无限定的变量用Object）。</p>
+
+<p>如<code>Point&lt;T&gt;</code>擦除后变成<code>Point&lt;Object&gt;</code>。就像本文开始举例那样，编译器也会进行强制类型转换<code>String fileName = (String)names.get(0);</code>，一切就像Java SE 5之前那样。</p>
+
+<p>有关Java泛型转换的事实：</p>
+
+<ul>
+<li>虚拟机中没有泛型，只有普通的类和方法</li>
+<li>所有的类型参数都用它们的限定类型替换</li>
+<li>桥方法被合成来保持多态</li>
+<li>为保持类型安全性，必要时插入强制类型转换</li>
+</ul>
+
+
+<h2>结束与局限性</h2>
+
+<p>使用Java泛型时需要考虑一些限制，大多数限制是由类型擦除引起的。</p>
+
+<h3>不能用基本类型实例化类型参数</h3>
+
+<p>不能用类型参数代替基本类型。因此没有<code>Pair&lt;double&gt;</code>，只有Pair<Double>。原因是类型擦除后，Pair类含有Object类型的域，而Object不能存储double值。</p>
+
+<h3>运行时类型查询只适用于原始类型</h3>
+
+<p>虚拟机中的对象总有一个特定的非泛型类型。因此，所有的类型查询只产生原始类型。<br/>
+<code>if (a instanceof Pair&lt;String&gt;) //same as a instanceof Pair</code><br/>
+实际上仅仅测试a是否是任意类型的一个Pair。<br/>
+同样<code>getClass()</code>都将返回Pair.class</p>
+
+<h3>不能抛出也不能捕获泛型类的对象</h3>
+
+<p>不能抛出也不能捕获泛型类的对象。事实上，泛型类扩展Throwable都不合法。<br/>
+<code>public class Problem&lt;T&gt; extends Exception</code>
+不能通过编译。</p>
+
+<h3>参数化类型的数组不合法</h3>
+
+<p>不能声明参数化类型的数组，如：<br/>
+<code>Pair&lt;String&gt;[] table = new Pair&lt;String&gt;[10];</code>不能通过编译。<br/>
+类型擦除后，table为：<code>Object[] objarray = table</code> <br/>
+<code>objarray[0] = "Hello"</code>会抛出<code>ArrayStoreException异常</code>，而<code>objarray[0] = new Pair&lt;Emploee&gt;</code>会通过数组存储的检查，但仍然会导致类型错误。<br/>
+所以，索性Java就禁止了参数化类型数组。</p>
+
+<h3>不能实例化类型变量</h3>
+
+<p><code>new T()</code>或者<code>new T[]</code>或者<code>T.class</code>非法。</p>
+
+<h3>泛型类的静态上下文中类型变量无效</h3>
+
+<p>不能在静态方法或者静态变量中引用类型变量<br/>
+<code>public static T getSingleInstance(){}</code>错误</p>
+
+<p><code>private static T singleInstance;</code>错误</p>
+
+<h3>注意擦除后的冲突</h3>
+
+<p>如泛型方法<code>public boolean equals(T value){}</code>在类型擦除后会让我们将它与Ojbect的<code>equals()</code>方法混淆，并引发冲突。 <br/>
+ 解决办法是重新命名引发错误的方法</p>
+
+<h2>泛型类型的继承规则</h2>
+
+<p>在使用泛型类时，需要了解一些有关继承和子类型的准则。 <br/>
+Employee是Manager的父类。但Pair<Manager>不是Pair<Employee>的子类。<br/>
+而<code>Pair&lt;Manager&gt; a = new Pair&lt;Employee&gt;()</code>错误。</p>
+
+<p>但ArrayList<Manager>可以被转换为一个List<Manager>，即<br/>
+<code>List&lt;Manager&gt; a ＝ new ArrayList&lt;Manager&gt;()</code>正确</p>
+
+<h2>通配符类型</h2>
+
+<p>固定的泛型类型系统使用起来并没有那么令人愉快，Java设计者发明了通配符<br/>
+如：<br/>
+<code>Pair&lt;? extends Employee&gt;</code>表示任何泛型的Pair的类型，它的类型参数是Employee的子类。</p>
+
+<h3>通配符的超类型指定</h3>
+
+<p>通配符限定与类型变量限定十分类似，但是，还有一个附加的能力，即可以指定一个超类型限定。如下所示：<br/>
+<code>? super Manager</code><br/>
+这个通配符限制为Manager的所有超类型。</p>
+
+<h3>无限定通配符</h3>
+
+<p><code>Pair&lt;?&gt;</code>与原始类型的Pair类型有很大的不同。<br/>
+类型Pair&lt;?>有方法如：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">?</span> <span class="n">getFist</span><span class="o">(){}</span>
+</span><span class='line'><span class="kt">void</span> <span class="nf">setFirst</span><span class="o">(?){}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>getFist的返回值只能赋值给一个Object。setFirst方法不能被调用，甚至不能用Object调用。所以Pair&lt;?>和Pair本质不同在于：<strong>可以用任意Object对象调用原始的Pair类的setObject方法</strong></p>
+
+<p>此外，带有通配符的版本可读性更强。</p>
+
+<h2>另外有篇文章详细说了使用泛型的注意点<a href="http://ray-yui.iteye.com/blog/1933127">Java高质量代码之 — 泛型与反射</a></h2>
+
+<p>其中有一点本文没有提及：</p>
+
+<p>建议采用顺序为<code>List&lt;T&gt;，List&lt;?&gt;，List&lt;Object&gt;</code></p>
+
+<p>以上三者都可以容纳所有的对象,但使用的顺序应该是首选<code>List&lt;T&gt;</code>,然后<code>List&lt;?&gt;</code>,最后才使用<code>List&lt;Object&gt;</code>,原因是<code>List&lt;T&gt;</code>是确定为某一类型的,安全的,也是Java所推荐的,而<code>List&lt;?&gt;</code>代表为任意类型,与<code>List&lt;T&gt;</code>类似,而<code>List&lt;Object&gt;</code>中全部为<code>Object</code>类型,这与不使用泛型无异,而<code>List&lt;T&gt;</code>是可读可写的,因为已经明确了T类型,而其他两者在读取时需要进行向下转型,造成了不必要的转型</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Aug 7th, 2014</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Your Name
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>
