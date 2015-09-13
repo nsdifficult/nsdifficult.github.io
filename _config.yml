@@ -99,3 +99,6 @@ google_analytics_tracking_id:
 
 # Facebook Like
 facebook_like: false
+
+duoshuo_comments: true
+duoshuo_short_name: 24yi
