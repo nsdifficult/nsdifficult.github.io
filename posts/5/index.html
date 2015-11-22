@@ -7,7 +7,7 @@
 	<meta name="author" content="易荣义">
 
 	
-	<meta name="description" content=" 概述 如果程序支持后台运行，当程序从在前后台切换时会需要保存一些数据或者更新视图。这时候就需要UIViewController知道程序的前后台切换时得事件。 Read on &rarr; Sep 18th, 2013 ">
+	<meta name="description" content="简介 Operation Queue是 concurrent dispatch queue在Cocoa上的同等实现，由NSOperationQueue类实现。不同于dispatch queues的FIFO运行方式，Operation Queues中的任务执行顺序也会考虑其他因素， &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -74,6 +74,37 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/10/12/concurrency2/">
+		
+			iOS中并发编程之Operation Queues（二）</a>
+	</h2>
+	<div class="entry-content">
+		<h2>简介</h2>
+
+<p>Operation Queue是 concurrent dispatch queue在Cocoa上的同等实现，由NSOperationQueue类实现。不同于dispatch queues的FIFO运行方式，Operation Queues中的任务执行顺序也会考虑其他因素，其中主要考虑任务的依赖性。你在创建任务时需要定义其依赖性来实现复杂的任务执行顺序图。
+		
+		<a href="/blog/2013/10/12/concurrency2/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Oct 12th, 2013</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">

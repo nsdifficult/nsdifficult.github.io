@@ -4,7 +4,7 @@
   <title><![CDATA[RONGYI.WORK]]></title>
   <link href="rongyi.work/atom.xml" rel="self"/>
   <link href="rongyi.work/"/>
-  <updated>2015-11-23T00:25:42+08:00</updated>
+  <updated>2015-11-23T00:48:12+08:00</updated>
   <id>rongyi.work/</id>
   <author>
     <name><![CDATA[易荣义]]></name>
@@ -12,6 +12,332 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Log]]></title>
+    <link href="rongyi.work/blog/2015/11/22/log/"/>
+    <updated>2015-11-22T00:00:00+08:00</updated>
+    <id>rongyi.work/blog/2015/11/22/log</id>
+    <content type="html"><![CDATA[<h1>slf4j简单梳理</h1>
+
+<h2>slf4j简单介绍</h2>
+
+<p>slf4j是Simple Logging Facade for Java (SLF4J)的缩写。我理解的就是，它通过门面模式使得使用者不用关心具体的各个实际日志实现库（如java.util.logging, logback and log4j）的内部细节，只需要按照slf4j提供的协议使用即可，这样一个系统不同模块便可以使用不同日志实现库，且替换简单（换jar包即可，不需要改代码）。</p>
+
+<h2>slf4j和日志具体实现的关系</h2>
+
+<p>先来看看sl4j官网的这张图
+<img src="./log/1.png" title="slf4j" alt="Alt Text" /></p>
+
+<p>从这张图可以看出来：
+1. slf4j只提供接口，不提供具体实现。
+2. 支持slf4j的日志实现分native implemention和非native implemention，且非本地实现需要adapter。logback属于本地实现，而log4j是非本地实现。
+3. 各个日志实现搭配slf4j需要的jar包。</p>
+
+<h2>slf4j原理的简单分析</h2>
+
+<ol>
+<li>当用户获取logger时（LoggerFactory.getLogger(App.class)）开始初始化</li>
+<li>getLogger方法则尝试获得ILoggerFactory</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="n">Logger</span> <span class="nf">getLogger</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">ILoggerFactory</span> <span class="n">iLoggerFactory</span> <span class="o">=</span> <span class="n">getILoggerFactory</span><span class="o">();</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">iLoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>getILoggerFactory()里会执行初始化</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="n">ILoggerFactory</span> <span class="nf">getILoggerFactory</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">INITIALIZATION_STATE</span> <span class="o">==</span> <span class="n">UNINITIALIZED</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">INITIALIZATION_STATE</span> <span class="o">=</span> <span class="n">ONGOING_INITIALIZATION</span><span class="o">;</span>
+</span><span class='line'>            <span class="n">performInitialization</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="k">switch</span> <span class="o">(</span><span class="n">INITIALIZATION_STATE</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">SUCCESSFUL_INITIALIZATION:</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">StaticLoggerBinder</span><span class="o">.</span><span class="na">getSingleton</span><span class="o">().</span><span class="na">getLoggerFactory</span><span class="o">();</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">NOP_FALLBACK_INITIALIZATION:</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">NOP_FALLBACK_FACTORY</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">FAILED_INITIALIZATION:</span>
+</span><span class='line'>            <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalStateException</span><span class="o">(</span><span class="n">UNSUCCESSFUL_INIT_MSG</span><span class="o">);</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">ONGOING_INITIALIZATION:</span>
+</span><span class='line'>            <span class="c1">// support re-entrant behavior.</span>
+</span><span class='line'>            <span class="c1">// See also http://jira.qos.ch/browse/SLF4J-97</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">TEMP_FACTORY</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalStateException</span><span class="o">(</span><span class="s">&quot;Unreachable code&quot;</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>performInitialization()方法里执行绑定操作会绑定LoggerFactoryBinder的实现（由具体日志实现库提供）</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">performInitialization</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">bind</span><span class="o">();</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">INITIALIZATION_STATE</span> <span class="o">==</span> <span class="n">SUCCESSFUL_INITIALIZATION</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">versionSanityCheck</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>bind()方法找到指定路径下的StaticLoggerBinder，并绑定。</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">bind</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">Set</span><span class="o">&lt;</span><span class="n">URL</span><span class="o">&gt;</span> <span class="n">staticLoggerBinderPathSet</span> <span class="o">=</span> <span class="n">findPossibleStaticLoggerBinderPathSet</span><span class="o">();</span>
+</span><span class='line'>            <span class="n">reportMultipleBindingAmbiguity</span><span class="o">(</span><span class="n">staticLoggerBinderPathSet</span><span class="o">);</span>
+</span><span class='line'>            <span class="c1">// the next line does the binding</span>
+</span><span class='line'>            <span class="n">StaticLoggerBinder</span><span class="o">.</span><span class="na">getSingleton</span><span class="o">();</span>
+</span><span class='line'>            <span class="n">INITIALIZATION_STATE</span> <span class="o">=</span> <span class="n">SUCCESSFUL_INITIALIZATION</span><span class="o">;</span>
+</span><span class='line'>            <span class="n">reportActualBinding</span><span class="o">(</span><span class="n">staticLoggerBinderPathSet</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">fixSubstitutedLoggers</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NoClassDefFoundError</span> <span class="n">ncde</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">String</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">ncde</span><span class="o">.</span><span class="na">getMessage</span><span class="o">();</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">messageContainsOrgSlf4jImplStaticLoggerBinder</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">INITIALIZATION_STATE</span> <span class="o">=</span> <span class="n">NOP_FALLBACK_INITIALIZATION</span><span class="o">;</span>
+</span><span class='line'>                <span class="n">Util</span><span class="o">.</span><span class="na">report</span><span class="o">(</span><span class="s">&quot;Failed to load class \&quot;org.slf4j.impl.StaticLoggerBinder\&quot;.&quot;</span><span class="o">);</span>
+</span><span class='line'>                <span class="n">Util</span><span class="o">.</span><span class="na">report</span><span class="o">(</span><span class="s">&quot;Defaulting to no-operation (NOP) logger implementation&quot;</span><span class="o">);</span>
+</span><span class='line'>                <span class="n">Util</span><span class="o">.</span><span class="na">report</span><span class="o">(</span><span class="s">&quot;See &quot;</span> <span class="o">+</span> <span class="n">NO_STATICLOGGERBINDER_URL</span> <span class="o">+</span> <span class="s">&quot; for further details.&quot;</span><span class="o">);</span>
+</span><span class='line'>            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">failedBinding</span><span class="o">(</span><span class="n">ncde</span><span class="o">);</span>
+</span><span class='line'>                <span class="k">throw</span> <span class="n">ncde</span><span class="o">;</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">NoSuchMethodError</span> <span class="n">nsme</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">String</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">nsme</span><span class="o">.</span><span class="na">getMessage</span><span class="o">();</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">msg</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">msg</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">&quot;org.slf4j.impl.StaticLoggerBinder.getSingleton()&quot;</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">INITIALIZATION_STATE</span> <span class="o">=</span> <span class="n">FAILED_INITIALIZATION</span><span class="o">;</span>
+</span><span class='line'>                <span class="n">Util</span><span class="o">.</span><span class="na">report</span><span class="o">(</span><span class="s">&quot;slf4j-api 1.6.x (or later) is incompatible with this binding.&quot;</span><span class="o">);</span>
+</span><span class='line'>                <span class="n">Util</span><span class="o">.</span><span class="na">report</span><span class="o">(</span><span class="s">&quot;Your binding is version 1.5.5 or earlier.&quot;</span><span class="o">);</span>
+</span><span class='line'>                <span class="n">Util</span><span class="o">.</span><span class="na">report</span><span class="o">(</span><span class="s">&quot;Upgrade your binding to version 1.6.x.&quot;</span><span class="o">);</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>            <span class="k">throw</span> <span class="n">nsme</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">failedBinding</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+</span><span class='line'>            <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalStateException</span><span class="o">(</span><span class="s">&quot;Unexpected initialization failure&quot;</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>findPossibleStaticLoggerBinderPathSet()方法找可能的StaticLoggerBinder.class</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">STATIC_LOGGER_BINDER_PATH</span> <span class="o">=</span> <span class="s">&quot;org/slf4j/impl/StaticLoggerBinder.class&quot;</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">URL</span><span class="o">&gt;</span> <span class="nf">findPossibleStaticLoggerBinderPathSet</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="c1">// use Set instead of list in order to deal with bug #138</span>
+</span><span class='line'>        <span class="c1">// LinkedHashSet appropriate here because it preserves insertion order during iteration</span>
+</span><span class='line'>        <span class="n">Set</span><span class="o">&lt;</span><span class="n">URL</span><span class="o">&gt;</span> <span class="n">staticLoggerBinderPathSet</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LinkedHashSet</span><span class="o">&lt;</span><span class="n">URL</span><span class="o">&gt;();</span>
+</span><span class='line'>        <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">ClassLoader</span> <span class="n">loggerFactoryClassLoader</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getClassLoader</span><span class="o">();</span>
+</span><span class='line'>            <span class="n">Enumeration</span><span class="o">&lt;</span><span class="n">URL</span><span class="o">&gt;</span> <span class="n">paths</span><span class="o">;</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">loggerFactoryClassLoader</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">paths</span> <span class="o">=</span> <span class="n">ClassLoader</span><span class="o">.</span><span class="na">getSystemResources</span><span class="o">(</span><span class="n">STATIC_LOGGER_BINDER_PATH</span><span class="o">);</span>
+</span><span class='line'>            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">paths</span> <span class="o">=</span> <span class="n">loggerFactoryClassLoader</span><span class="o">.</span><span class="na">getResources</span><span class="o">(</span><span class="n">STATIC_LOGGER_BINDER_PATH</span><span class="o">);</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>            <span class="k">while</span> <span class="o">(</span><span class="n">paths</span><span class="o">.</span><span class="na">hasMoreElements</span><span class="o">())</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">URL</span> <span class="n">path</span> <span class="o">=</span> <span class="n">paths</span><span class="o">.</span><span class="na">nextElement</span><span class="o">();</span>
+</span><span class='line'>                <span class="n">staticLoggerBinderPathSet</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">path</span><span class="o">);</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ioe</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">Util</span><span class="o">.</span><span class="na">report</span><span class="o">(</span><span class="s">&quot;Error getting resources from path&quot;</span><span class="o">,</span> <span class="n">ioe</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">staticLoggerBinderPathSet</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>StaticLoggerBinder则提供具体的ILoggerFactory实现</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="nf">StaticLoggerBinder</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">loggerFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">SimpleLoggerFactory</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">ILoggerFactory</span> <span class="nf">getLoggerFactory</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">loggerFactory</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>得到ILoggerFactory后，便可从其获得具体的Logger实现</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">Logger</span> <span class="nf">getLogger</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Logger</span> <span class="n">simpleLogger</span> <span class="o">=</span> <span class="n">loggerMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">simpleLogger</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">simpleLogger</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">Logger</span> <span class="n">newInstance</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">SimpleLogger</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">Logger</span> <span class="n">oldInstance</span> <span class="o">=</span> <span class="n">loggerMap</span><span class="o">.</span><span class="na">putIfAbsent</span><span class="o">(</span><span class="n">name</span><span class="o">,</span> <span class="n">newInstance</span><span class="o">);</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">oldInstance</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">?</span> <span class="n">newInstance</span> <span class="o">:</span> <span class="n">oldInstance</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>之后便可以打印日志了，哈哈～～简单吧</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">App</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">Logger</span> <span class="n">log</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">App</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testLog</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;yirongyi&quot;</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;Hello,{}!&quot;</span><span class="o">,</span><span class="n">name</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span> <span class="n">String</span><span class="o">[]</span> <span class="n">args</span> <span class="o">)</span>
+</span><span class='line'>    <span class="o">{</span>
+</span><span class='line'>        <span class="n">App</span> <span class="n">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">App</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">app</span><span class="o">.</span><span class="na">testLog</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>日志使用的一些技巧总结</h2>
+
+<p>1.不要使用＋连接字符，slf4j支持占位符，更省内存。
+2.尽量简单扼要，用词统一，便于查找。
+3.在关键地方打印关键信息，如和其他系统交互的地方，打印发送和返回数据。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[再谈数据库事务]]></title>
@@ -3227,11 +3553,11 @@ Arrays工具类提供的#Arrays.asList#：</p>
 <p>| 名称      |  尺寸（ps） | 系统及iPhone  | 说明 |
 | :&mdash;&mdash;&ndash; | &mdash;&mdash;&ndash;:| :&ndash;: | :&ndash;: |
 | Icon-60.png  | 60x60 |  iOS7及以上，非Retina  | 应用图标 |
-| <a href="&#x6d;&#x61;&#105;&#x6c;&#x74;&#x6f;&#58;&#x49;&#x63;&#x6f;&#x6e;&#x2d;&#49;&#x32;&#48;&#64;&#x32;&#x78;&#46;&#x70;&#110;&#x67;">&#x49;&#x63;&#111;&#110;&#45;&#49;&#50;&#48;&#x40;&#50;&#x78;&#x2e;&#x70;&#x6e;&#x67;</a>  | 120x120 |  iOS7及以上，Retina  | 应用图标 |
+| <a href="&#109;&#97;&#x69;&#x6c;&#116;&#111;&#x3a;&#x49;&#x63;&#x6f;&#x6e;&#45;&#49;&#x32;&#48;&#64;&#50;&#120;&#x2e;&#112;&#x6e;&#x67;">&#73;&#x63;&#111;&#x6e;&#x2d;&#x31;&#x32;&#x30;&#64;&#x32;&#x78;&#x2e;&#x70;&#x6e;&#103;</a>  | 120x120 |  iOS7及以上，Retina  | 应用图标 |
 | Icon-40.png  | 40x40 |  iOS7及以上，非Retina  | 应用图标，搜索中用 |
-| <a href="&#x6d;&#97;&#105;&#108;&#x74;&#111;&#x3a;&#73;&#99;&#x6f;&#x6e;&#x2d;&#x38;&#48;&#x40;&#x32;&#120;&#x2e;&#x70;&#110;&#x67;">&#x49;&#x63;&#x6f;&#x6e;&#x2d;&#x38;&#48;&#64;&#50;&#x78;&#x2e;&#112;&#110;&#103;</a>  | 80x80 |  iOS7及以上，Retina  | 应用图标，搜索中用 |
+| <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#x3a;&#x49;&#99;&#111;&#x6e;&#45;&#x38;&#48;&#x40;&#x32;&#120;&#x2e;&#x70;&#x6e;&#103;">&#73;&#99;&#x6f;&#x6e;&#45;&#x38;&#48;&#x40;&#50;&#120;&#x2e;&#x70;&#110;&#103;</a>  | 80x80 |  iOS7及以上，Retina  | 应用图标，搜索中用 |
 | Icon-29.png  | 29x29 |  iOS7及以上，非Retina | 应用图标，设置中用 |
-| <a href="&#x6d;&#97;&#x69;&#x6c;&#116;&#111;&#58;&#x49;&#99;&#x6f;&#x6e;&#x2d;&#x35;&#56;&#64;&#x32;&#x78;&#x2e;&#112;&#110;&#103;">&#x49;&#x63;&#x6f;&#x6e;&#x2d;&#53;&#x38;&#x40;&#50;&#x78;&#46;&#112;&#110;&#x67;</a>  | 58x58 |  iOS7及以上，Retina  | 应用图标，设置中用
+| <a href="&#x6d;&#x61;&#x69;&#108;&#x74;&#x6f;&#58;&#x49;&#x63;&#111;&#x6e;&#45;&#53;&#56;&#x40;&#50;&#120;&#46;&#112;&#110;&#x67;">&#73;&#x63;&#x6f;&#x6e;&#x2d;&#53;&#56;&#x40;&#50;&#120;&#46;&#x70;&#110;&#x67;</a>  | 58x58 |  iOS7及以上，Retina  | 应用图标，设置中用
  |</p>
 
 <h3>应用加载图片</h3>
@@ -3253,13 +3579,13 @@ Arrays工具类提供的#Arrays.asList#：</p>
 <td style="text-align:center;"> 启动图片 </td>
 </tr>
 <tr>
-<td style="text-align:left;"> <a href="&#109;&#97;&#105;&#108;&#116;&#x6f;&#x3a;&#x44;&#101;&#x66;&#x61;&#x75;&#108;&#x74;&#64;&#50;&#x78;&#x2e;&#112;&#110;&#x67;">&#x44;&#x65;&#102;&#x61;&#x75;&#x6c;&#x74;&#64;&#x32;&#x78;&#46;&#x70;&#x6e;&#103;</a>  </td>
+<td style="text-align:left;"> <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#x6f;&#x3a;&#68;&#x65;&#x66;&#97;&#x75;&#108;&#116;&#64;&#50;&#x78;&#46;&#x70;&#110;&#103;">&#68;&#101;&#102;&#x61;&#117;&#x6c;&#116;&#64;&#x32;&#x78;&#x2e;&#112;&#110;&#x67;</a>  </td>
 <td style="text-align:right;"> 640x960 </td>
 <td style="text-align:center;">  iOS7及以上，Retina，iPhone4s  </td>
 <td style="text-align:center;"> 启动图片 </td>
 </tr>
 <tr>
-<td style="text-align:left;"> <a href="&#109;&#97;&#x69;&#x6c;&#116;&#111;&#x3a;&#x44;&#101;&#102;&#x61;&#x75;&#x6c;&#x74;&#x5f;&#49;&#49;&#51;&#x36;&#64;&#x32;&#120;&#x2e;&#x70;&#110;&#103;">&#68;&#x65;&#x66;&#x61;&#x75;&#x6c;&#x74;&#x5f;&#x31;&#x31;&#x33;&#54;&#64;&#50;&#120;&#46;&#x70;&#x6e;&#x67;</a>  </td>
+<td style="text-align:left;"> <a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#111;&#x3a;&#68;&#101;&#x66;&#97;&#117;&#108;&#116;&#x5f;&#x31;&#49;&#51;&#x36;&#x40;&#x32;&#120;&#46;&#x70;&#110;&#x67;">&#68;&#x65;&#x66;&#97;&#117;&#108;&#x74;&#x5f;&#49;&#49;&#51;&#x36;&#64;&#50;&#x78;&#46;&#x70;&#x6e;&#103;</a>  </td>
 <td style="text-align:right;"> 640x1136 </td>
 <td style="text-align:center;">  iOS7及以上，Retina，iPhone5、iPhone5s </td>
 <td style="text-align:center;"> 启动图片 </td>
@@ -3896,168 +4222,6 @@ Ehcache不仅用在一般用途的缓存，如Hibernate，数据访问对象，�
 1. <a href="http://www.cnblogs.com/hoojo/archive/2012/07/12/2587556.html">Ehcache 整合Spring 使用页面、对象缓存</a><br/>
 2. <a href="http://raychase.iteye.com/blog/1545906">Ehcache详细解读</a> <br/>
 3. <a href="http://ehcache.org/documentation/index">Ehcache官方文档</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[《Java核心技术》读书笔记之注解]]></title>
-    <link href="rongyi.work/blog/2014/08/20/anotation/"/>
-    <updated>2014-08-20T19:06:00+08:00</updated>
-    <id>rongyi.work/blog/2014/08/20/anotation</id>
-    <content type="html"><![CDATA[<h2>定义</h2>
-
-<p>注解（也被称为元数据）为我们在代码中添加信息提供了一种形式化的方法，使我们可以在稍后某个时刻非常方便地使用这些数据。<!--more--></p>
-
-<h3>解释</h3>
-
-<p>注解在一定程度上是在把元数据与源代码文件结合在一起，而不是保存在外部文档中这一大的趋势之下催生的。同时，注解也是对来自像C#之类的其他语言对Java造成的语言特性压力所作出的一种回应。</p>
-
-<h3>作用</h3>
-
-<ol>
-<li>注解用来完整描述程序所需，且无法用Java来表达的信息。</li>
-<li>注解使得我们能够以将由编译器来测试和验证的格式，存储有关程序的额外信息。</li>
-<li>注解可以用来生成描述符文件，甚至或是新的类定义，并且有助于减轻编写“样板”代码的负担。</li>
-<li><p>通过使用注解，我们可以将这些元数据保存在更加干净易读的代码以及编译期类型检查等。</p>
-
-<h3>Java内置的三种标准注解和四种元注解</h3>
-
-<p>定义在java.lang中。<br/>
-标准注解</p></li>
-<li><p>@Override</p></li>
-<li>@Deprecated</li>
-<li>@SuppressWarnings</li>
-</ol>
-
-
-<p>元注解</p>
-
-<ol>
-<li>@Target</li>
-<li>@Retention</li>
-<li>@Documented：Include this annotation in the Javadocs.</li>
-<li>@Inherited：Allow subclasses to inherit parent annotations.</li>
-</ol>
-
-
-<h2>基本语法</h2>
-
-<pre><code>//: net/mindview/atunit/Test.java 
-// The @Test tag. 
-package net.mindview.atunit; 
-import java.lang.annotation.*; 
-@Target(ElementType.METHOD) 
-@Retention(RetentionPolicy.RUNTIME) 
-public @interface Test {} ///:~ 
-</code></pre>
-
-<p>定义注解时，会需要一些元注解（meta-annotation）</p>
-
-<ol>
-<li><code>@Target</code>用来定义你的注解将应用于什么地方。</li>
-<li><code>@Rectection</code>用来定义该注解在哪一个级别可用。在源代码（SOURCE）、类文件（CLASS）、或者运行时（RUNTIME）。</li>
-</ol>
-
-
-<p>没有元素的注解称为标记注解，例如上例中的@Test。</p>
-
-<p>下面是一个简单的注解，我们可以用它来跟踪一个项目中的用例。如果一个方法或者一组方法实现了某个用例的需求，那么程序员可以为此方法加上该注解。于是，项目经理通过计算已经实现的用例，就可以很好的掌控项目的进展。而如果要更新或者修改系统的业务逻辑，则维护该项目的开发人员也可以很容易地在代码中找到对应的用例。</p>
-
-<pre><code>import java.lang.annotation.*; 
-
-@Target(ElementType.METHOD) 
-@Retention(RetentionPolicy.RUNTIME) 
-public @interface UseCase { 
-  public int id(); 
-  public String description() default "no description"; 
-}
-</code></pre>
-
-<p>注意，id和description类似方法的定义。由于编译器会对id进行类型检查，因此将用例文档的追踪数据库与源代码相关联是可靠地。description有一个default的值。</p>
-
-<p>在下面的类中，有三个方法被注解为用例：<br/>
-    import java.util.*;</p>
-
-<pre><code>public class PasswordUtils { 
-  @UseCase(id = 47, description = 
-  "Passwords must contain at least one numeric") 
-  public boolean validatePassword(String password) { 
-return (password.matches("\\w*\\d\\w*")); 
-  } 
-  @UseCase(id = 48) 
-  public String encryptPassword(String password) { 
-   return new StringBuilder(password).reverse().toString(); 
-  } 
-  @UseCase(id = 49, description = 
-  "New passwords can’t equal previously used ones") 
-  public boolean checkForNewPassword( 
-List&lt;String&gt; prevPasswords, String password) { 
-return !prevPasswords.contains(password); 
-  } 
-}
-</code></pre>
-
-<h2>编写注解处理器</h2>
-
-<p>我们将用它来读取PasswordUtils类，并使用反射机制查找@UseCase标记。</p>
-
-<pre><code>import java.lang.reflect.*; 
-import java.util.*; 
-
-public class UseCaseTracker { 
-  public static void 
-  trackUseCases(List&lt;Integer&gt; useCases, Class&lt;?&gt; cl) { 
-for(Method m : cl.getDeclaredMethods()) { 
-  UseCase uc = m.getAnnotation(UseCase.class); 
-  if(uc != null) { 
-System.out.println("Found Use Case:" + uc.id() + 
-  " " + uc.description()); 
-useCases.remove(new Integer(uc.id())); 
-  } 
-} 
-for(int i : useCases) { 
-  System.out.println("Warning: Missing use case-" + i); 
-} 
-  } 
-  public static void main(String[] args) { 
-List&lt;Integer&gt; useCases = new ArrayList&lt;Integer&gt;(); 
-Collections.addAll(useCases, 47, 48, 49, 50); 
-trackUseCases(useCases, PasswordUtils.class); 
-  } 
-}
-</code></pre>
-
-<h3>注解元素</h3>
-
-<p>标签@UseCase由UserCase.java定义，其中包含int元素id，以及一个String元素description。注解元素可用的类型如下所示：</p>
-
-<ul>
-<li>所有基本类型</li>
-<li>String</li>
-<li>Class</li>
-<li>enum</li>
-<li>Annotation</li>
-<li>以上类型的数组</li>
-</ul>
-
-
-<h3>元素的默认值限制</h3>
-
-<ol>
-<li>不能有不确定的值。</li>
-<li>对于非基本类型的元素，无论在源代码中声明时，或者在注解接口中定义默认值时，都不能以null作为其值。</li>
-</ol>
-
-
-<h3>利用注解生成外部文件</h3>
-
-<p>类似hibernate的注解bean，生成一个数据库表。</p>
-
-<h3>注解不支持继承</h3>
-
-<h2>使用注解处理工具apt处理注解（待完成）</h2>
-
-<h2>基于注解的单元注释</h2>
 ]]></content>
   </entry>
   
