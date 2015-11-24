@@ -1,0 +1,303 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>《Java核心技术》读书笔记之注解 - RONGYI.WORK</title>
+	<meta name="author" content="易荣义">
+
+	
+	<meta name="description" content="定义 注解（也被称为元数据）为我们在代码中添加信息提供了一种形式化的方法，使我们可以在稍后某个时刻非常方便地使用这些数据。 解释 注解在一定程度上是在把元数据与源代码文件结合在一起，而不是保存在外部文档中这一大的趋势之下催生的。同时，注解也是对来自像C# &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="RONGYI.WORK" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="http://libs.useso.com/js/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">RONGYI.WORK</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">主页</a></li>
+	<li><a href="/blog/archives">所有文章</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">主页</a></li>
+	<li><a href="/blog/archives">所有文章</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:rongyi.work">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:rongyi.work">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">《Java核心技术》读书笔记之注解</h2>
+	<div class="entry-content"><h2>定义</h2>
+
+<p>注解（也被称为元数据）为我们在代码中添加信息提供了一种形式化的方法，使我们可以在稍后某个时刻非常方便地使用这些数据。<!--more--></p>
+
+<h3>解释</h3>
+
+<p>注解在一定程度上是在把元数据与源代码文件结合在一起，而不是保存在外部文档中这一大的趋势之下催生的。同时，注解也是对来自像C#之类的其他语言对Java造成的语言特性压力所作出的一种回应。</p>
+
+<h3>作用</h3>
+
+<ol>
+<li>注解用来完整描述程序所需，且无法用Java来表达的信息。</li>
+<li>注解使得我们能够以将由编译器来测试和验证的格式，存储有关程序的额外信息。</li>
+<li>注解可以用来生成描述符文件，甚至或是新的类定义，并且有助于减轻编写“样板”代码的负担。</li>
+<li><p>通过使用注解，我们可以将这些元数据保存在更加干净易读的代码以及编译期类型检查等。</p>
+
+<h3>Java内置的三种标准注解和四种元注解</h3>
+
+<p>定义在java.lang中。<br/>
+标准注解</p></li>
+<li><p>@Override</p></li>
+<li>@Deprecated</li>
+<li>@SuppressWarnings</li>
+</ol>
+
+
+<p>元注解</p>
+
+<ol>
+<li>@Target</li>
+<li>@Retention</li>
+<li>@Documented：Include this annotation in the Javadocs.</li>
+<li>@Inherited：Allow subclasses to inherit parent annotations.</li>
+</ol>
+
+
+<h2>基本语法</h2>
+
+<pre><code>//: net/mindview/atunit/Test.java 
+// The @Test tag. 
+package net.mindview.atunit; 
+import java.lang.annotation.*; 
+@Target(ElementType.METHOD) 
+@Retention(RetentionPolicy.RUNTIME) 
+public @interface Test {} ///:~ 
+</code></pre>
+
+<p>定义注解时，会需要一些元注解（meta-annotation）</p>
+
+<ol>
+<li><code>@Target</code>用来定义你的注解将应用于什么地方。</li>
+<li><code>@Rectection</code>用来定义该注解在哪一个级别可用。在源代码（SOURCE）、类文件（CLASS）、或者运行时（RUNTIME）。</li>
+</ol>
+
+
+<p>没有元素的注解称为标记注解，例如上例中的@Test。</p>
+
+<p>下面是一个简单的注解，我们可以用它来跟踪一个项目中的用例。如果一个方法或者一组方法实现了某个用例的需求，那么程序员可以为此方法加上该注解。于是，项目经理通过计算已经实现的用例，就可以很好的掌控项目的进展。而如果要更新或者修改系统的业务逻辑，则维护该项目的开发人员也可以很容易地在代码中找到对应的用例。</p>
+
+<pre><code>import java.lang.annotation.*; 
+
+@Target(ElementType.METHOD) 
+@Retention(RetentionPolicy.RUNTIME) 
+public @interface UseCase { 
+  public int id(); 
+  public String description() default "no description"; 
+}
+</code></pre>
+
+<p>注意，id和description类似方法的定义。由于编译器会对id进行类型检查，因此将用例文档的追踪数据库与源代码相关联是可靠地。description有一个default的值。</p>
+
+<p>在下面的类中，有三个方法被注解为用例：<br/>
+    import java.util.*;</p>
+
+<pre><code>public class PasswordUtils { 
+  @UseCase(id = 47, description = 
+  "Passwords must contain at least one numeric") 
+  public boolean validatePassword(String password) { 
+return (password.matches("\\w*\\d\\w*")); 
+  } 
+  @UseCase(id = 48) 
+  public String encryptPassword(String password) { 
+   return new StringBuilder(password).reverse().toString(); 
+  } 
+  @UseCase(id = 49, description = 
+  "New passwords can’t equal previously used ones") 
+  public boolean checkForNewPassword( 
+List&lt;String&gt; prevPasswords, String password) { 
+return !prevPasswords.contains(password); 
+  } 
+}
+</code></pre>
+
+<h2>编写注解处理器</h2>
+
+<p>我们将用它来读取PasswordUtils类，并使用反射机制查找@UseCase标记。</p>
+
+<pre><code>import java.lang.reflect.*; 
+import java.util.*; 
+
+public class UseCaseTracker { 
+  public static void 
+  trackUseCases(List&lt;Integer&gt; useCases, Class&lt;?&gt; cl) { 
+for(Method m : cl.getDeclaredMethods()) { 
+  UseCase uc = m.getAnnotation(UseCase.class); 
+  if(uc != null) { 
+System.out.println("Found Use Case:" + uc.id() + 
+  " " + uc.description()); 
+useCases.remove(new Integer(uc.id())); 
+  } 
+} 
+for(int i : useCases) { 
+  System.out.println("Warning: Missing use case-" + i); 
+} 
+  } 
+  public static void main(String[] args) { 
+List&lt;Integer&gt; useCases = new ArrayList&lt;Integer&gt;(); 
+Collections.addAll(useCases, 47, 48, 49, 50); 
+trackUseCases(useCases, PasswordUtils.class); 
+  } 
+}
+</code></pre>
+
+<h3>注解元素</h3>
+
+<p>标签@UseCase由UserCase.java定义，其中包含int元素id，以及一个String元素description。注解元素可用的类型如下所示：</p>
+
+<ul>
+<li>所有基本类型</li>
+<li>String</li>
+<li>Class</li>
+<li>enum</li>
+<li>Annotation</li>
+<li>以上类型的数组</li>
+</ul>
+
+
+<h3>元素的默认值限制</h3>
+
+<ol>
+<li>不能有不确定的值。</li>
+<li>对于非基本类型的元素，无论在源代码中声明时，或者在注解接口中定义默认值时，都不能以null作为其值。</li>
+</ol>
+
+
+<h3>利用注解生成外部文件</h3>
+
+<p>类似hibernate的注解bean，生成一个数据库表。</p>
+
+<h3>注解不支持继承</h3>
+
+<h2>使用注解处理工具apt处理注解（待完成）</h2>
+
+<h2>基于注解的单元注释</h2>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Aug 20th, 2014</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+
+  <section>
+    <h1>评论</h1>
+    <div id="comments" aria-live="polite"><!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/blog/2014/08/20/anotation" data-title="《Java核心技术》读书笔记之注解" data-url="http://rongyi.work/blog/2014/08/20/anotation/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"24yi"};
+    (function() {
+
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+ </script>
+ <!-- 多说公共JS代码 end -->
+</div>
+  </section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    易荣义
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>

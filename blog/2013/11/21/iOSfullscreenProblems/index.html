@@ -1,0 +1,250 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>iOS开发中全屏与非全屏之间的切换 - RONGYI.WORK</title>
+	<meta name="author" content="易荣义">
+
+	
+	<meta name="description" content="iOS6及之前的全屏与非全屏之间的切换 首先要设置status bar的隐藏与显示，然后设置相关view的frame。 1
+2
+3
+4
+5
+6
+7
+8
+BOOL isFullScreen = [UIApplication sharedApplication].statusBarHidden;
+if &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="RONGYI.WORK" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="http://libs.useso.com/js/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">RONGYI.WORK</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">主页</a></li>
+	<li><a href="/blog/archives">所有文章</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">主页</a></li>
+	<li><a href="/blog/archives">所有文章</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:rongyi.work">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:rongyi.work">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">iOS开发中全屏与非全屏之间的切换</h2>
+	<div class="entry-content"><h2>iOS6及之前的全屏与非全屏之间的切换</h2>
+
+<p>首先要设置status bar的隐藏与显示，然后设置相关view的frame。<!--more--></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>BOOL isFullScreen = [UIApplication sharedApplication].statusBarHidden;
+</span><span class='line'>if (isFullScreen) {
+</span><span class='line'>    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
+</span><span class='line'>    [self.view setFrame:[UIScreen mainScreen].bounds];
+</span><span class='line'>} else {
+</span><span class='line'>    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:NO];
+</span><span class='line'>    [self.view setFrame:[UIScreen mainScreen].bounds];
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>iOS7的全屏与非全屏之间的切换</h2>
+
+<p>苹果在在iOS7之后给UIViewController新增了一个方法prefersStatusBarHidden来设置状态栏的隐藏与显示，调用setStatusBarHidden方法不再有效。如果需要调用这个方法，只需调用</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[self setNeedsStatusBarAppearanceUpdate]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>即可</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> - (BOOL)prefersStatusBarHidden
+</span><span class='line'>{
+</span><span class='line'>    BOOL isFullScreen = [UIApplication sharedApplication].statusBarHidden;
+</span><span class='line'>    return !isFullScreen;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>当某个UIViewController需要全屏，需要调用UIViewController的setWantsFullScreenLayout方法</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>    [self setWantsFullScreenLayout:YES];
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果涉及到设备的方向之间切换、前后台切换等，不写这一句时会发生视图偏移。</p>
+
+<h2>在全屏且横屏时，发生设备方向改变，再切换回非全屏时，可能需要判断状态栏的方向，来确定view的偏移</h2>
+
+<p>设备方向改变会导致状态栏方向改变，所以需要设置view的偏移是20px还是-20px。
+判断状态栏的方向的方法：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>实际运用中的一个例子：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+</span><span class='line'>
+</span><span class='line'>UIViewController *rootViewController = (UIViewController *)delegate.window.rootViewController;
+</span><span class='line'>
+</span><span class='line'>[rootViewController.view addSubview:self.playerViewController.view];
+</span><span class='line'>
+</span><span class='line'>UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+</span><span class='line'>float offsetX = -20;
+</span><span class='line'>if (orientation == UIInterfaceOrientationLandscapeLeft) {
+</span><span class='line'>    offsetX = 20;
+</span><span class='line'>}
+</span><span class='line'>[rootViewController.view setFrame:CGRectMake(offsetX, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Nov 21st, 2013</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+
+  <section>
+    <h1>评论</h1>
+    <div id="comments" aria-live="polite"><!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/blog/2013/11/21/iOSfullscreenProblems" data-title="iOS开发中全屏与非全屏之间的切换" data-url="http://rongyi.work/blog/2013/11/21/iOSfullscreenProblems/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"24yi"};
+    (function() {
+
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+ </script>
+ <!-- 多说公共JS代码 end -->
+</div>
+  </section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    易荣义
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>

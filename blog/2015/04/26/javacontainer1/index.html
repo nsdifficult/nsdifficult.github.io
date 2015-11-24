@@ -1,0 +1,380 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>《Java编程思想》读书笔记之容器(一) - RONGYI.WORK</title>
+	<meta name="author" content="易荣义">
+
+	
+	<meta name="description" content="先上容器的类图 点线框表示接口；实线框表示普通类（具体类）；虚线框表示抽象类；带有空心箭头的点线表示一个特定的类实现了一个接口；实心箭头表示某个类可以生成箭头所指向类的对象。例如任意的Collection可以生成Iterator，而List可以生成ListIterator（ &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="RONGYI.WORK" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="http://libs.useso.com/js/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">RONGYI.WORK</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">主页</a></li>
+	<li><a href="/blog/archives">所有文章</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">主页</a></li>
+	<li><a href="/blog/archives">所有文章</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:rongyi.work">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:rongyi.work">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">《Java编程思想》读书笔记之容器(一)</h2>
+	<div class="entry-content"><h1>先上容器的类图<!--more--></h1>
+
+<p><img src="/images/container/container.png"></p>
+
+<p>点线框表示接口；实线框表示普通类（具体类）；虚线框表示抽象类；带有空心箭头的点线表示一个特定的类实现了一个接口；实心箭头表示某个类可以生成箭头所指向类的对象。例如任意的Collection可以生成Iterator，而List可以生成ListIterator（也能生成普通的Iterator，因为List继承自Collection）。</p>
+
+<h4>1) Collection</h4>
+
+<p>一个独立元素的序列，其中List按照元素的插入顺序保存元素，而set不能有重复元素，Queue按照先进先出（FIFO）的方式来管理数据，Stack按照后进先出（LIFO）的顺序管理数据。</p>
+
+<h4>2) Map</h4>
+
+<p>一组键值对（key-value）对象的序列，可以使用key来查找value，其中key是不可以重复的，value可以重复。我们可以称其为字典或者关联数组。其中HashMap是无序的，TreeMap是有序的，WeakHashMap是弱类型的，Hashtable是线程安全的。</p>
+
+<h2>在容器中使用范型可以使容器类型安全。</h2>
+
+<p>通过使用范型，可以在编译期防止将错误类型的对象放置到容器中。</p>
+
+<h2>添加一组元素</h2>
+
+<p>工具类#Arrays#,#Collections#中有很多实用方法。 <br/>
+Arrays工具类提供的#Arrays.asList#：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">asList</span><span class="o">(</span><span class="n">T</span><span class="o">...</span> <span class="n">a</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;(</span><span class="n">a</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Collections工具类提供的#Collections.addAll#：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="kt">boolean</span> <span class="nf">addAll</span><span class="o">(</span><span class="n">Collection</span><span class="o">&lt;?</span> <span class="kd">super</span> <span class="n">T</span><span class="o">&gt;</span> <span class="n">c</span><span class="o">,</span> <span class="n">T</span><span class="o">...</span> <span class="n">elements</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kt">boolean</span> <span class="n">result</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">for</span> <span class="o">(</span><span class="n">T</span> <span class="n">element</span> <span class="o">:</span> <span class="n">elements</span><span class="o">)</span>
+</span><span class='line'>            <span class="n">result</span> <span class="o">|=</span> <span class="n">c</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">element</span><span class="o">);</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>各个具体容器提供的#Collection.addAll#：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kt">boolean</span> <span class="nf">addAll</span><span class="o">(</span><span class="n">Collection</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">E</span><span class="o">&gt;</span> <span class="n">c</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>容器的打印</h2>
+
+<p>打印数组必须使用#Arrays.toString()#来产生数组的可打印表示。但是容器的打印无需任何帮助。</p>
+
+<h2>List</h2>
+
+<h4>ArrayList</h4>
+
+<p>擅长随机访问元素，但是在List中间插入喝移除元素较慢。</p>
+
+<h4>LinkedList</h4>
+
+<p>它通过代价较低的在List中间进行的插入和删除操作，提供了优化的顺序访问。LinkedList在随机访问方面相对较慢。但是它的特性集较ArrayList更大。</p>
+
+<h2>迭代器Iterator</h2>
+
+<p>不需知道容器类型，就能使用容器。这正是迭代器（一个具体类，也是一种设计模式）的作用。</p>
+
+<h4>Iterator：只能单向移动</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+</span><span class='line'>  <span class="n">list1</span><span class="o">.</span><span class="na">addAll</span><span class="o">(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="s">&quot;a&quot;</span><span class="o">,</span><span class="s">&quot;b&quot;</span><span class="o">));</span>
+</span><span class='line'>  <span class="n">Iterator</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">it</span> <span class="o">=</span> <span class="n">list1</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span>
+</span><span class='line'>  <span class="k">while</span> <span class="o">(</span><span class="n">it</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+</span><span class='line'>      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">it</span><span class="o">);</span>
+</span><span class='line'>  <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>ListIterator：能双向移动，能替换元素，且在创建时可以指定元素index</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+</span><span class='line'>  <span class="n">list1</span><span class="o">.</span><span class="na">addAll</span><span class="o">(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="s">&quot;a&quot;</span><span class="o">,</span><span class="s">&quot;b&quot;</span><span class="o">,</span><span class="s">&quot;c&quot;</span><span class="o">));</span>
+</span><span class='line'>  <span class="n">ListIterator</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">lit</span> <span class="o">=</span> <span class="n">list1</span><span class="o">.</span><span class="na">listIterator</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">while</span> <span class="o">(</span><span class="n">lit</span><span class="o">.</span><span class="na">hasPrevious</span><span class="o">())</span> <span class="o">{</span>
+</span><span class='line'>      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">lit</span><span class="o">);</span>
+</span><span class='line'>  <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>LinkedList</h2>
+
+<p>和ArrayList一样实现了基本的List接口，但是它执行某些操作（如插入删除）比ArrayList更加高效，但随机访问稍微逊色。</p>
+
+<h2>Statck</h2>
+
+<p>是先进后出（FILO）的容器。LinkedList具有能够实现栈的所有功能的方法，因此可以直接将LinkedList作为Stack使用。</p>
+
+<h2>Queue</h2>
+
+<p>是先进先出（FIFO）的容器。LinkedList具有能够实现栈的所有功能的方法，因此可以直接将LinkedList作为Queue使用。</p>
+
+<h2>Set</h2>
+
+<p>不能有重复元素。有两种实现：#HashSet#访问速度快，#TreeSet#是有序的。</p>
+
+<h2>Map</h2>
+
+<p>有两种实现：#HashMap#;#TreeMap#</p>
+
+<h2>Collection接口与Iterator</h2>
+
+<p>Collection是所有序列容器的共性接口，它可能被认为是一个“附属接口”，即因为要表示其他若干个接口的共性而出现的接口。另外，java.util.AbstractCollection提供了Collection的默认实现。它可以使得你创建AbstractCollection的子类，从而避免了不必要的代码重复（相比直接实现Collection）。  <br/>
+但另外一点，C++中容器共性并不是由基类来保持，而是迭代器。当要实现一个不是Collection的外部类时，让它去实现Collection时非常麻烦和困难，因此使用Iterator就是一个好的选择。且有时Iterator的代码更少。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Created: yirongyi@2015年4月26日 下午6:09:01</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">edgar</span><span class="o">.</span><span class="na">chapter11</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.util.Iterator</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="kd">class</span> <span class="nc">Sequence</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kd">protected</span> <span class="n">String</span><span class="o">[]</span> <span class="n">strs</span> <span class="o">=</span> <span class="o">{</span><span class="s">&quot;a&quot;</span><span class="o">,</span><span class="s">&quot;b&quot;</span><span class="o">,</span><span class="s">&quot;c&quot;</span><span class="o">};</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">NonCollectionSequence</span> <span class="kd">extends</span> <span class="n">Sequence</span><span class="o">{</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="kd">public</span> <span class="n">Iterator</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">iterator</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="k">new</span> <span class="n">Iterator</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;(){</span>
+</span><span class='line'>          <span class="kd">private</span> <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>          <span class="nd">@Override</span>
+</span><span class='line'>          <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">hasNext</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>              <span class="k">return</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">strs</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="nd">@Override</span>
+</span><span class='line'>          <span class="kd">public</span> <span class="n">String</span> <span class="nf">next</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>              <span class="k">return</span> <span class="n">strs</span><span class="o">[</span><span class="n">index</span><span class="o">++];</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>          
+</span><span class='line'>          <span class="kd">public</span> <span class="kt">void</span> <span class="nf">remove</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>              <span class="k">throw</span> <span class="k">new</span> <span class="nf">UnsupportedOperationException</span><span class="o">();</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>          
+</span><span class='line'>      <span class="o">};</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">  * @param args</span>
+</span><span class='line'><span class="cm">  */</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>      <span class="n">NonCollectionSequence</span> <span class="n">ncs</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">NonCollectionSequence</span><span class="o">();</span>
+</span><span class='line'>      <span class="n">Iterator</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">it</span> <span class="o">=</span> <span class="n">ncs</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span>
+</span><span class='line'>      <span class="k">while</span><span class="o">(</span><span class="n">it</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+</span><span class='line'>          <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">it</span><span class="o">.</span><span class="na">next</span><span class="o">());</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>foreach与迭代器（Iterator）</h2>
+
+<p>foreach可以使用在数组中，同时也能使用在任何的Collection对象中（Map不行）。因为Collection的实现类都实现了Iterator接口，该接口拥有一个产生Iterator的iterator()方法，且Ieterator接口被foreach用来在序列中移动。因此任何实现了Itreator接口的类都可以使用foreach。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Apr 26th, 2015</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+
+  <section>
+    <h1>评论</h1>
+    <div id="comments" aria-live="polite"><!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/blog/2015/04/26/javacontainer1" data-title="《Java编程思想》读书笔记之容器(一)" data-url="http://rongyi.work/blog/2015/04/26/javacontainer1/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"24yi"};
+    (function() {
+
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+ </script>
+ <!-- 多说公共JS代码 end -->
+</div>
+  </section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    易荣义
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>

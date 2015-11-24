@@ -1,0 +1,229 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>使用UIControl类自定义视图 - RONGYI.WORK</title>
+	<meta name="author" content="易荣义">
+
+	
+	<meta name="description" content="介绍 UIControl是一些诸如buttons和sliders的控件的基类，它向应用传递用户意图。你不能直接使用UIControl。它替代它的子类来定义普通接口和行为结构。
+UIControl的主要角色是定义interface和为准备事件消息和当目标事件发生时初始化并传递它们到它们的目标。 &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="RONGYI.WORK" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="http://libs.useso.com/js/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">RONGYI.WORK</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">主页</a></li>
+	<li><a href="/blog/archives">所有文章</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">主页</a></li>
+	<li><a href="/blog/archives">所有文章</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:rongyi.work">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:rongyi.work">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">使用UIControl类自定义视图</h2>
+	<div class="entry-content"><h3>介绍</h3>
+
+<p>UIControl是一些诸如buttons和sliders的控件的基类，它向应用传递用户意图。你不能直接使用UIControl。它替代它的子类来定义普通接口和行为结构。<!--more--><br/>
+UIControl的主要角色是定义interface和为准备事件消息和当目标事件发生时初始化并传递它们到它们的目标。<br/>
+要了解target-action机制，可以查看Cocoa Fundamentals中的GuideTarget-Action in UIKit部分。Multi-Touch模式则可以查看<a href="https://developer.apple.com/library/ios/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40009541"> Event Handling Guide for iOS</a><br/>
+UIControl类也包括存取control state的方法。如决定一个control是否开启。</p>
+
+<h3>使用</h3>
+
+<p>你可能会处于两个原因来定义UIControl子类：<br/>
+1.去观察或者修改特定事件的action messages的传递。To do this, override sendAction:to:forEvent:, evaluate the passed-in selector, target object, or UIControlEvents bit mask, and proceed as required.－－－－翻译不好:( <br/>
+2.提供自定义的跟踪行为（如改变外观的高亮）。要做到这点，需要覆盖所有这三个方法：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>beginTrackingWithTouch:withEvent:
+</span><span class='line'>continueTrackingWithTouch:withEvent:
+</span><span class='line'>endTrackingWithTouch:withEvent:</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>继承自UIControl的自定义控件经常会发送一些UIControl中定义的特有的事件</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>typedef NS_OPTIONS(NSUInteger, UIControlEvents) {
+</span><span class='line'>    UIControlEventTouchDown           = 1 &lt;&lt;  0,      // on all touch downs
+</span><span class='line'>    UIControlEventTouchDownRepeat     = 1 &lt;&lt;  1,      // on multiple touchdowns (tap count &gt; 1)
+</span><span class='line'>    UIControlEventTouchDragInside     = 1 &lt;&lt;  2,
+</span><span class='line'>    UIControlEventTouchDragOutside    = 1 &lt;&lt;  3,
+</span><span class='line'>    UIControlEventTouchDragEnter      = 1 &lt;&lt;  4,
+</span><span class='line'>    UIControlEventTouchDragExit       = 1 &lt;&lt;  5,
+</span><span class='line'>    UIControlEventTouchUpInside       = 1 &lt;&lt;  6,
+</span><span class='line'>    UIControlEventTouchUpOutside      = 1 &lt;&lt;  7,
+</span><span class='line'>    UIControlEventTouchCancel         = 1 &lt;&lt;  8,
+</span><span class='line'>    UIControlEventValueChanged        = 1 &lt;&lt; 12,     // sliders, etc.
+</span><span class='line'>    UIControlEventEditingDidBegin     = 1 &lt;&lt; 16,     // UITextField
+</span><span class='line'>    UIControlEventEditingChanged      = 1 &lt;&lt; 17,
+</span><span class='line'>    UIControlEventEditingDidEnd       = 1 &lt;&lt; 18,
+</span><span class='line'>    UIControlEventEditingDidEndOnExit = 1 &lt;&lt; 19,     // 'return key' ending editing
+</span><span class='line'>    UIControlEventAllTouchEvents      = 0x00000FFF,  // for touch events
+</span><span class='line'>    UIControlEventAllEditingEvents    = 0x000F0000,  // for UITextField
+</span><span class='line'>    UIControlEventApplicationReserved = 0x0F000000,  // range available for application use
+</span><span class='line'>    UIControlEventSystemReserved      = 0xF0000000,  // range reserved for internal framework use
+</span><span class='line'>    UIControlEventAllEvents           = 0xFFFFFFFF
+</span><span class='line'>};</span></code></pre></td></tr></table></div></figure>
+
+
+<p>UIControl继承自UIView，UIView则继承自UIResponder。UIControl对事件进行了又一次的封装。使事件更易处理与理解。如UIControlEventValueChanged。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>    [self sendActionsForControlEvents:UIControlEventValueChanged];
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当UIControl子类发送了诸如UIControlEventValueChanged的事件，在UIViewController等中就可以使用addTarget方法类响应该事件了。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[switchView addTarget:self action:@selector(switchViewChanged:) forControlEvents:UIControlEventValueChanged];</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Dec 18th, 2013</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+
+  <section>
+    <h1>评论</h1>
+    <div id="comments" aria-live="polite"><!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/blog/2013/12/18/UIControl" data-title="使用UIControl类自定义视图" data-url="http://rongyi.work/blog/2013/12/18/UIControl/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"24yi"};
+    (function() {
+
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+ </script>
+ <!-- 多说公共JS代码 end -->
+</div>
+  </section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    易荣义
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>

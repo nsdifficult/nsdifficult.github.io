@@ -1,0 +1,226 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>再谈数据库事务 - RONGYI.WORK</title>
+	<meta name="author" content="易荣义">
+
+	
+	<meta name="description" content="放在前面要说的 本文文字完全总结（95%）自《Spring3.x企业应用开发实战》，《高性能MySQL》。写在这里是为了方便自己查阅。 定义 数据库事务(Database Transaction) ，是指作为单个逻辑工作单元执行的一系列操作，要么完全地执行，要么完全地不执行。 &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="RONGYI.WORK" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="http://libs.useso.com/js/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">RONGYI.WORK</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">主页</a></li>
+	<li><a href="/blog/archives">所有文章</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">主页</a></li>
+	<li><a href="/blog/archives">所有文章</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:rongyi.work">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:rongyi.work">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">再谈数据库事务</h2>
+	<div class="entry-content"><h2>放在前面要说的</h2>
+
+<p>本文文字完全总结（95%）自《Spring3.x企业应用开发实战》，《高性能MySQL》。写在这里是为了方便自己查阅。<!--more--></p>
+
+<h2>定义</h2>
+
+<blockquote><p>数据库事务(Database Transaction) ，是指作为单个逻辑工作单元执行的一系列操作，要么完全地执行，要么完全地不执行。 事务处理可以确保除非事务性单元内的所有操作都成功完成，否则不会永久更新面向数据的资源。通过将一组相关操作组合为一个要么全部成功要么全部失败的单元，可以简化错误恢复并使应用程序更加可靠。一个逻辑工作单元要成为事务，必须满足所谓的ACID（原子性、一致性、隔离性和持久性）属性。事务是数据库运行中的一个逻辑工作单位，由DBMS中的事务管理子系统负责事务的处理。</p></blockquote>
+
+<h3>ACID说明</h3>
+
+<ul>
+<li>原子性(Atomic)：表示组成一个事务的多个数据操作是一个不可分割的原子单元，只有所有的操作执行成功，整个事务才提交，事务中任何一个数据库操作失败，已经执行的任何操作都必须撤销，让数据库返回到初始状态。</li>
+<li>一致性(Consistency)：数据库总是从一个一致性的状态转换到另外一个一致性的状态。事务操作成功后，数据库所处的状态和它的业务规则是一致的，即数据不会被破坏。如从A账户转账100元到B账户，不管操作成功与否，A和B的存款总额是不变的。</li>
+<li>隔离性(Isolation)：在并发操作时，不同的事务拥有各自的数据空间，它们的操作不会对对方产生干扰。准确的说，并非要求做到完全干扰，数据库规定了多种事务隔离级别，不同隔离级别对应不同的干扰程度，隔离级别越高，数据一致性越好，但并发性越弱。</li>
+<li>持久性(Durabiliy)：一旦事务提交成功后，事务中所有的数据操作都必须被持久化到数据库中，即使提交事务后，数据库马上崩溃，在数据库重启时，也必须保证能够通过某种机制恢复数据。</li>
+<li>在这些事务特性中，数据“一致性”是最终目标，其他的特性都是为达到这个目标的措施、要求或手段。 <br/>
+数据库管理系统一般采用重新执行日志保证<strong>原子性</strong>、<strong>一致性</strong>和<strong>持久性</strong>。</li>
+<li>和Java程序采用对象锁机制进行线程同步类似，数据库管理系统采用数据库锁机制保证事务的<strong>隔离性</strong>。当多个事务试图对相同的数据进行操作时，只有持有锁的事务才能操作数据，直到前一个事务完成后，后面的事务才有机会对数据进行操作。
+
+<h2>数据并发的问题</h2>
+
+可能会有多个客户端同时访问数据库，多个事务可能同时访问相同的数据，如果没有采取必要的隔离措施，就会导致各种并发问题，破坏数据的完整性。这些问题可以归为5类，包括3类数据读问题（<strong>脏读</strong>、<strong>不可重复读</strong>、<strong>幻象读</strong>）以及2类数据更新问题（<strong>第一类丢失更新</strong>和<strong>第二类丢失更新</strong>）。
+
+<h3>脏读(dirty read)</h3>
+
+A事务读取B事务尚未提交的更改数据，并在这个数据的基础上操作。如果恰巧B事务回滚，那么A事务读到的数据根本是不被承认的。来看取款事务和转账事务并发时引发的脏读场景： <br/>
+<img src="/images/transaction/dirtyread.png" alt="dirtyread.png" />
+
+<h3>不可重复读</h3>
+
+<p>不可重复读是指A事务读取了B事务已经提交的更改数据（<strong>更改</strong>和<strong>删除</strong>）和在B事务未完成时读的数据不一致。假设A在取款事务的过程中，B往该账户转账100元，A两次读取账户的余额发生不一致： <br/>
+<img src="/images/transaction/nonrepeatRead.png" alt="nonrepeatRead.png" /></p></li>
+</ul>
+
+
+<h3>幻象读</h3>
+
+<p>A事务读取B事务提交的<strong>新增</strong>数据，这时A事务将出现幻象读的问题。幻象读一般发生在计算统计数据的事务中，举一个例子，假设银行系统在同一个事务中，两次统计存款账户的总金额，在两次统计过程中，刚好新增了一个存款账户，并存入100元，这时，两次统计的总金额将不一致： <br/>
+<img src="/images/transaction/phantomRead.png" alt="phantomRead.png" /></p>
+
+<p>如果新增数据刚好满足事务的查询条件,这个新数据就进入了事务的视野，因而产生了两个统计不一致的情况。   <br/>
+幻象读和不可重复读是两个容易混淆的概念，前者是指读到了其他已经提交事务的<strong>新增</strong>数据，而后者是指读到了已经提交事务的更改数据（<strong>更改</strong>或<strong>删除</strong>），为了避免这两种情况，采取的对策是不同的，防止读取到更改数据，只需要对操作的数据添加<strong>行级锁</strong>，阻止操作中的数据发生变化，而防止读取到新增数据，则往往需要添加<strong>表级锁</strong>——将整个表锁定，防止新增数据。</p>
+
+<h3>第一类丢失更新</h3>
+
+<p>A事务撤销时，把已经提交的B事务的更新数据覆盖了。
+<img src="/images/transaction/1thLostUpdate.png" alt="1thLostUpdate.png" /></p>
+
+<h3>第二类丢失更新</h3>
+
+<p>A事务覆盖B事务已经提交的数据，造成B事务所做的操作丢失。
+<img src="/images/transaction/2thLostUpdate.png" alt="2thLostUpdate.png" /></p>
+
+<h2>数据库锁机制</h2>
+
+<p>前文讲到，数据库管理系统采用数据库锁机制保证事务的<strong>隔离性</strong>。按照锁定的对象不同，一般分为表锁定和行锁定，前者对整个表进行锁定，而后者对表中特定行进行锁定。从并发事务锁定的关系上看，可以分为共享锁定和独占锁定。共享锁定会防止独占锁定，但允许其他的共享锁定。而独占锁定既防止其他的独占锁定，也防止其他的共享锁定。为了更改数据，数据库必须在进行更改的行上施加行独占锁定，INSERT、UPDATE、DELETE和SELECT FOR UPDATE语句都会隐式采用必要的行锁定。</p>
+
+<h3>隔离级别</h3>
+
+<p>尽管数据库为用户提供了锁的DML(data manipulation language即数据操纵语言：SELECT、UPDATE、INSERT、DELETE)操作方式，但直接使用锁管理非常麻烦，因此数据库为用户提供了自动锁机制。只要用户指定会话的事务隔离级别，数据库就会分析事务中的SQL语句，然后自动为事务操作的数据资源加上适合的锁。   <br/>
+<img src="/images/transaction/IsolationLevel.png" alt="IsolationLevel.png" /></p>
+
+<h4>READ UNCOMMITTED(未提交读)</h4>
+
+<p>在这个级别，事务中的修改，即使没有提交，对其他事务也都是可见的。事务可以读取未提交的数据，这也被称为脏读（dirty read）。这个级别会导致很多问题，从性能上来说，READ UNCOMMITED不会比其他的级别好太多，但缺乏其他级别的很多好处，除非非常必要的理由，在实际应用中一般很少使用。</p>
+
+<h4>READ COMMITTED(提交读)</h4>
+
+<p>大多数DBMS默认的隔离级别是READ COMMITTED（但MySQL不是）。这个事务满足：一个事务开始时，只能“看见”已经提交的事务所做的修改。换句话说，一个事务从开始直到提交之前，所做的任何修改对其他事务都是不可见的。这个级别也叫做不可重复读（nonrepeatable read）,因为两次执行同样的查询，可能会得到不一样的结果。</p>
+
+<h4>REPEATABLE READ(可重复读)</h4>
+
+<p>MySQL默认事务隔离级别。该级别解决了脏读的问题，但不能解决幻读（Phantom Read）的问题。InnoDB和XtraDB存储引擎通过多版本控制（MVCC,Multiversion Concurrency Control）解决了幻读的问题。</p>
+
+<h4>SERIALIZABLE(可串行化)</h4>
+
+<p>最高的隔离级别，通过强制事务串行执行，避免了幻读的问题。简单来说，SERIALIZABLE会在读取的每一行数据上都加锁。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Jul 14th, 2015</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		
+		
+		
+	</div>
+	
+</div>
+
+
+
+
+  <section>
+    <h1>评论</h1>
+    <div id="comments" aria-live="polite"><!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/blog/2015/07/14/dbTransaction" data-title="再谈数据库事务" data-url="http://rongyi.work/blog/2015/07/14/dbTransaction/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"24yi"};
+    (function() {
+
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+ </script>
+ <!-- 多说公共JS代码 end -->
+</div>
+  </section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+
+    易荣义
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>
