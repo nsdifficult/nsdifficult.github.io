@@ -4,7 +4,7 @@
   <title><![CDATA[RONGYI.WORK]]></title>
   <link href="http://rongyi.work/atom.xml" rel="self"/>
   <link href="http://rongyi.work/"/>
-  <updated>2015-11-25T00:14:09+08:00</updated>
+  <updated>2015-11-28T13:56:54+08:00</updated>
   <id>http://rongyi.work/</id>
   <author>
     <name><![CDATA[易荣义]]></name>
@@ -12,6 +12,59 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[帮家里推销蜂蜜]]></title>
+    <link href="http://rongyi.work/blog/2015/11/28/honey/"/>
+    <updated>2015-11-28T09:06:00+08:00</updated>
+    <id>http://rongyi.work/blog/2015/11/28/honey</id>
+    <content type="html"><![CDATA[<h3>产自哪？</h3>
+
+<p>都是我爸自己的蜂场产的。</p>
+
+<h3>我为啥要卖？</h3>
+
+<p>帮我爸卖的，卖给批发商太便宜。算是增加一个销路，欢迎购买</p>
+
+<h3>蜂蜜啥样的？</h3>
+
+<p><img src="http://rongyi.work/images/honey/1.jpg" alt="蜂蜜图片" />
+<img src="http://rongyi.work/images/honey/2.jpg" alt="蜂蜜图片" /></p>
+
+<h3>有几种蜂蜜？</h3>
+
+<p><em>有两种蜂蜜：<strong>荆条蜂蜜(混有少量枣花蜜)</strong>和<strong>洋槐蜂蜜</strong></em></p>
+
+<h3>怎么卖？</h3>
+
+<ol>
+<li><strong>荆条蜂蜜(混有少量枣花蜜)</strong>：  25元/斤</li>
+<li><strong>洋槐蜂蜜</strong>： 30元/斤</li>
+</ol>
+
+
+<h3>这个价格贵么？</h3>
+
+<p>可以到超市逛逛看看超市价格＝＝</p>
+
+<h3>购买方式？</h3>
+
+<ol>
+<li>直接联系我：15301399726，或者微信搜：chinazhidubu</li>
+<li>微店购买（荣义的蜂蜜小店）： <a href="http://weidian.com/s/838884573?wfr=c">http://weidian.com/s/838884573?wfr=c</a></li>
+<li>淘宝购买：<a href="https://item.taobao.com/item.htm?spm=686.1000925.0.0.O4ryl4&amp;id=38808390453">https://item.taobao.com/item.htm?spm=686.1000925.0.0.O4ryl4&amp;id=38808390453</a></li>
+</ol>
+
+
+<h3>不满意想退货？</h3>
+
+<p>直接联系我购买的，直接和我说，微信或者支付宝给您退钱，不用等您退货。</p>
+
+<h3>欢迎咨询购买</h3>
+
+<p><img src="http://rongyi.work/images/honey/3.jpg" alt="蜂蜜图片" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[slf4j简单梳理]]></title>
@@ -3560,11 +3613,11 @@ Arrays工具类提供的#Arrays.asList#：</p>
 <p>| 名称      |  尺寸（ps） | 系统及iPhone  | 说明 |
 | :&mdash;&mdash;&ndash; | &mdash;&mdash;&ndash;:| :&ndash;: | :&ndash;: |
 | Icon-60.png  | 60x60 |  iOS7及以上，非Retina  | 应用图标 |
-| <a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#111;&#x3a;&#73;&#99;&#111;&#110;&#45;&#49;&#50;&#x30;&#64;&#50;&#x78;&#46;&#x70;&#x6e;&#103;">&#73;&#99;&#111;&#x6e;&#45;&#49;&#x32;&#x30;&#64;&#50;&#120;&#46;&#x70;&#110;&#103;</a>  | 120x120 |  iOS7及以上，Retina  | 应用图标 |
+| <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#111;&#58;&#73;&#99;&#x6f;&#110;&#x2d;&#49;&#50;&#x30;&#64;&#x32;&#120;&#x2e;&#x70;&#x6e;&#103;">&#x49;&#x63;&#x6f;&#110;&#45;&#49;&#50;&#x30;&#64;&#x32;&#x78;&#x2e;&#112;&#110;&#103;</a>  | 120x120 |  iOS7及以上，Retina  | 应用图标 |
 | Icon-40.png  | 40x40 |  iOS7及以上，非Retina  | 应用图标，搜索中用 |
-| <a href="&#109;&#97;&#105;&#108;&#116;&#x6f;&#58;&#x49;&#99;&#111;&#x6e;&#x2d;&#x38;&#48;&#64;&#x32;&#120;&#46;&#x70;&#110;&#103;">&#73;&#x63;&#x6f;&#110;&#x2d;&#x38;&#48;&#64;&#x32;&#x78;&#x2e;&#112;&#x6e;&#x67;</a>  | 80x80 |  iOS7及以上，Retina  | 应用图标，搜索中用 |
+| <a href="&#109;&#97;&#105;&#108;&#x74;&#111;&#58;&#x49;&#x63;&#111;&#110;&#x2d;&#x38;&#48;&#64;&#x32;&#x78;&#x2e;&#x70;&#110;&#x67;">&#x49;&#99;&#111;&#x6e;&#x2d;&#x38;&#x30;&#x40;&#50;&#x78;&#x2e;&#112;&#x6e;&#x67;</a>  | 80x80 |  iOS7及以上，Retina  | 应用图标，搜索中用 |
 | Icon-29.png  | 29x29 |  iOS7及以上，非Retina | 应用图标，设置中用 |
-| <a href="&#109;&#97;&#105;&#x6c;&#116;&#111;&#58;&#x49;&#x63;&#x6f;&#x6e;&#45;&#x35;&#x38;&#64;&#x32;&#x78;&#46;&#112;&#110;&#103;">&#x49;&#x63;&#x6f;&#110;&#x2d;&#53;&#x38;&#x40;&#x32;&#120;&#x2e;&#112;&#110;&#x67;</a>  | 58x58 |  iOS7及以上，Retina  | 应用图标，设置中用
+| <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#111;&#x3a;&#x49;&#x63;&#x6f;&#x6e;&#x2d;&#53;&#56;&#64;&#50;&#x78;&#x2e;&#112;&#x6e;&#103;">&#x49;&#x63;&#x6f;&#110;&#x2d;&#53;&#56;&#x40;&#50;&#x78;&#x2e;&#x70;&#x6e;&#x67;</a>  | 58x58 |  iOS7及以上，Retina  | 应用图标，设置中用
  |</p>
 
 <h3>应用加载图片</h3>
@@ -3586,13 +3639,13 @@ Arrays工具类提供的#Arrays.asList#：</p>
 <td style="text-align:center;"> 启动图片 </td>
 </tr>
 <tr>
-<td style="text-align:left;"> <a href="&#109;&#x61;&#x69;&#108;&#116;&#111;&#x3a;&#x44;&#101;&#x66;&#x61;&#x75;&#108;&#x74;&#64;&#x32;&#x78;&#x2e;&#112;&#110;&#x67;">&#x44;&#101;&#102;&#97;&#117;&#x6c;&#116;&#64;&#x32;&#x78;&#46;&#112;&#110;&#103;</a>  </td>
+<td style="text-align:left;"> <a href="&#109;&#x61;&#105;&#x6c;&#116;&#x6f;&#x3a;&#x44;&#101;&#x66;&#x61;&#117;&#x6c;&#116;&#x40;&#50;&#x78;&#46;&#x70;&#110;&#x67;">&#68;&#x65;&#x66;&#97;&#x75;&#108;&#x74;&#64;&#x32;&#120;&#46;&#112;&#x6e;&#103;</a>  </td>
 <td style="text-align:right;"> 640x960 </td>
 <td style="text-align:center;">  iOS7及以上，Retina，iPhone4s  </td>
 <td style="text-align:center;"> 启动图片 </td>
 </tr>
 <tr>
-<td style="text-align:left;"> <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#x6f;&#x3a;&#68;&#x65;&#102;&#97;&#117;&#x6c;&#116;&#x5f;&#49;&#x31;&#51;&#54;&#64;&#x32;&#120;&#x2e;&#x70;&#110;&#103;">&#68;&#x65;&#x66;&#97;&#x75;&#108;&#x74;&#x5f;&#49;&#49;&#51;&#x36;&#x40;&#50;&#x78;&#x2e;&#112;&#110;&#x67;</a>  </td>
+<td style="text-align:left;"> <a href="&#x6d;&#97;&#x69;&#108;&#116;&#111;&#58;&#x44;&#x65;&#102;&#97;&#117;&#x6c;&#116;&#x5f;&#49;&#x31;&#51;&#x36;&#64;&#50;&#120;&#x2e;&#x70;&#110;&#103;">&#x44;&#x65;&#x66;&#97;&#x75;&#108;&#x74;&#95;&#49;&#x31;&#51;&#54;&#64;&#50;&#x78;&#46;&#112;&#110;&#x67;</a>  </td>
 <td style="text-align:right;"> 640x1136 </td>
 <td style="text-align:center;">  iOS7及以上，Retina，iPhone5、iPhone5s </td>
 <td style="text-align:center;"> 启动图片 </td>
@@ -4114,121 +4167,6 @@ Arrays工具类提供的#Arrays.asList#：</p>
 
 
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[缓存库Ehcahe简单介绍]]></title>
-    <link href="http://rongyi.work/blog/2014/08/25/ehcache/"/>
-    <updated>2014-08-25T19:06:00+08:00</updated>
-    <id>http://rongyi.work/blog/2014/08/25/ehcache</id>
-    <content type="html"><![CDATA[<h2>介绍</h2>
-
-<p>Ehcache在2003年推出，旨在减少潜在的资源加载。<br/>
-Ehcache不仅用在一般用途的缓存，如Hibernate，数据访问对象，安全证书和web页面。也能用于SOAP和RESTful服务端的缓存，应用持久化和分布式缓存。<!--more--></p>
-
-<h2>定义</h2>
-
-<ul>
-<li>cache：呃，即缓存。维基定义为：
-
-<blockquote><p>存储一些即将使用的东西，可以被快速的检索。</p></blockquote></li>
-<li>cache-hit：缓存命中</li>
-<li>cache-miss：缓存未命中</li>
-<li>system-of-record：可靠数据的缓存。通常是特殊的文件系统或者其他可靠的长期存储。对于Ehcache来说，SOR被假定为数据库。</li>
-<li>SOR：即system-of-record简称。</li>
-</ul>
-
-
-<h2>缓存如何工作</h2>
-
-<ul>
-<li>本地引用(Locality of Reference)：
-
-<blockquote><p>While Ehcache concerns itself with Java objects, caching is used throughout computing, from CPU caches to the internet Domain Name System (DNS) system. Why? Because many computer systems exhibit &ldquo;locality of reference&rdquo;. Data that is near other data or has recently been used is more likely to be used again.</p></blockquote></li>
-</ul>
-
-
-<p>系统通过引用访问数据，数据最近被使用过，一般会再次使用。</p>
-
-<ul>
-<li>长尾理论（The Long Tail）：
-
-<blockquote><p>The Long Tail is an example of a Power Law probability distribution, such as the Pareto distribution or 80:20 rule. If 20% of objects are used 80% of the time and a way can be found to reduce the cost of obtaining that 20%, system performance will improve.</p></blockquote></li>
-</ul>
-
-
-<p>当系统中80%的次数都在使用20%的数据，那么系统就需要使用缓存了。</p>
-
-<h2>缓存的好处</h2>
-
-<ul>
-<li>Speeding up CPU-bound Applications: 提速CPU限制型应用程序</li>
-<li>Speeding up I/O-bound Applications:提速I/O限制型应用程序</li>
-<li>Increased Application Scalability:提高应用程序伸缩性</li>
-</ul>
-
-
-<h1>对象</h1>
-
-<ol>
-<li>cache manager：缓存管理器，以前是只允许单例的，不过现在也可以多实例了</li>
-<li>cache：缓存管理器内可以放置若干cache，存放数据的实质，所有cache都实现了Ehcache</li>
-<li>element：单条缓存数据的组成单位</li>
-<li>system of record（SOR）：可以取到真实数据的组件，可以是真正的业务逻辑、外部接口调用、存放真实数据的数据库等等，缓存就是从SOR中读取或者写入到SOR中去的。</li>
-</ol>
-
-
-<h2>使用示例</h2>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>CacheManager manager = CacheManager.newInstance("src/config/ehcache.xml");  
-</span><span class='line'>manager.addCache("testCache");  
-</span><span class='line'>Cache test = singletonManager.getCache("testCache");  
-</span><span class='line'>test.put(new Element("key1", "value1"));  
-</span><span class='line'>manager.shutdown();  </span></code></pre></td></tr></table></div></figure>
-
-
-<p>Ehcache.xml</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;?xml version="1.0" encoding="gbk"?&gt;
-</span><span class='line'>&lt;ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-</span><span class='line'>  xsi:noNamespaceSchemaLocation="ehcache.xsd"&gt;
-</span><span class='line'>  &lt;diskStore path="java.io.tmpdir" /&gt;
-</span><span class='line'>  &lt;defaultCache maxElementsInMemory="10000" eternal="false"
-</span><span class='line'>      timeToIdleSeconds="30" timeToLiveSeconds="30" overflowToDisk="false" /&gt;
-</span><span class='line'>  &lt;!-- 配置自定义缓存 maxElementsInMemory：缓存中允许创建的最大对象数 eternal：缓存中对象是否为永久的，如果是，超时设置将被忽略，对象从不过期。 
-</span><span class='line'>      timeToIdleSeconds：缓存数据的钝化时间，也就是在一个元素消亡之前， 两次访问时间的最大时间间隔值，这只能在元素不是永久驻留时有效， 
-</span><span class='line'>      如果该值是 0 就意味着元素可以停顿无穷长的时间。 timeToLiveSeconds：缓存数据的生存时间，也就是一个元素从构建到消亡的最大时间间隔值， 
-</span><span class='line'>      这只能在元素不是永久驻留时有效，如果该值是0就意味着元素可以停顿无穷长的时间。 overflowToDisk：内存不足时，是否启用磁盘缓存。 memoryStoreEvictionPolicy：缓存满了之后的淘汰算法。 --&gt;
-</span><span class='line'>  &lt;cache name="SimplePageCachingFilter" maxElementsInMemory="10000"
-</span><span class='line'>      eternal="false" overflowToDisk="false" timeToIdleSeconds="900"
-</span><span class='line'>      timeToLiveSeconds="1800" memoryStoreEvictionPolicy="LFU" /&gt;
-</span><span class='line'>&lt;/ehcache&gt;</span></code></pre></td></tr></table></div></figure>
-
-
-<p>本文只是非常简单的介绍Ehcache,推荐阅读官方的文档和其他博客。<br/>
-1. <a href="http://www.cnblogs.com/hoojo/archive/2012/07/12/2587556.html">Ehcache 整合Spring 使用页面、对象缓存</a><br/>
-2. <a href="http://raychase.iteye.com/blog/1545906">Ehcache详细解读</a> <br/>
-3. <a href="http://ehcache.org/documentation/index">Ehcache官方文档</a></p>
 ]]></content>
   </entry>
   
