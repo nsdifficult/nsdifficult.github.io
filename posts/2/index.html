@@ -7,7 +7,7 @@
 	<meta name="author" content="易荣义">
 
 	
-	<meta name="description" content="1、什么叫做异常？ 异常处理，是编程语言或计算机硬件里的一种机制，用于处理软件或信息系统中出现的异常状况（即超出程序正常执行流程的某些特殊条件）。 2、Java中关于异常／错误怎么理解？ Java的基本理念是：“结构不佳的代码不能运行”。 发现错误的最佳时机是在编译阶段。 &hellip;">
+	<meta name="description" content="什么是数据库索引？ 数据库索引，是数据库管理系统中一个排序的数据结构，以协助快速查询、更新数据库表中数据。 MySql中索引使用的数据结构？ BTree。MyISAM引擎使用B+Tree作为索引结构；InnoDB存储引擎也使用B+Tree作为索引结构，但两者的具体实现方式不同， &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -74,6 +74,45 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/04/20/mysqlIndex/">
+		
+			MySql索引的使用笔记</a>
+	</h2>
+	<div class="entry-content">
+		<h2>什么是数据库索引？</h2>
+
+<p>数据库索引，是数据库管理系统中一个排序的数据结构，以协助快速查询、更新数据库表中数据。</p>
+
+<h2>MySql中索引使用的数据结构？</h2>
+
+<p>BTree。MyISAM引擎使用B+Tree作为索引结构；InnoDB存储引擎也使用B+Tree作为索引结构，但两者的具体实现方式不同，具体见<a href="http://blog.codinglabs.org/articles/theory-of-mysql-index.html">MySQL索引背后的数据结构及算法原理</a></p>
+
+<h2>什么是聚集索引和非聚集索引？</h2>
+
+<p>数据记录本身被存于索引
+		
+		<a href="/blog/2015/04/20/mysqlIndex/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+Apr 20th, 2015</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -375,43 +414,6 @@ Sep 2nd, 2014</div>
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/09/01/SQL1/">
-		
-			《SQL必知必会》读书笔记（一）</a>
-	</h2>
-	<div class="entry-content">
-		<h2>1、检索数据</h2>
-
-<p>select 语句非常简单。就不复述了。需要注意几个点：</p>
-
-<p><code>select * from products;</code>使用星号通配符来检索可以返回所有列。但需注意：</p>
-
-<ol>
-<li>除非确实需要检索表中每个列，否则最好不要使用*通配符。1）检索不需要的列会降低检索和应用程序的性能。2）可能会导致SQL注入。</li>
-<li>使用*通配符有一个优点：能检索出名字未知的列。
-		
-		<a href="/blog/2014/09/01/SQL1/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-Sep 1st, 2014</div>
-	<div class="tags">
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         
@@ -424,7 +426,7 @@ Sep 1st, 2014</div>
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav>
 </div>
-	<footer id="footer" class="inner">Copyright &copy; 2015
+	<footer id="footer" class="inner">Copyright &copy; 2016
 
     易荣义
 

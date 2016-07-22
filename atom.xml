@@ -4,7 +4,7 @@
   <title><![CDATA[RONGYI.WORK]]></title>
   <link href="http://rongyi.work/atom.xml" rel="self"/>
   <link href="http://rongyi.work/"/>
-  <updated>2015-11-29T16:22:10+08:00</updated>
+  <updated>2016-07-23T00:12:46+08:00</updated>
   <id>http://rongyi.work/</id>
   <author>
     <name><![CDATA[易荣义]]></name>
@@ -12,6 +12,67 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[关于异常的一些补充]]></title>
+    <link href="http://rongyi.work/blog/2016/07/22/exception2/"/>
+    <updated>2016-07-22T20:06:00+08:00</updated>
+    <id>http://rongyi.work/blog/2016/07/22/exception2</id>
+    <content type="html"><![CDATA[<h2>Checked Exception(受检查型异常)与Unchecked Exception(非检查型异常)</h2>
+
+<h3>1)Checked Exception</h3>
+
+<p>所有非运行时异常都是Checked Exception，这意味着调用抛出Checked Exception的方法必须处理该异常：处理或者向上抛出。在实际的编程中，如果认为方法的某个异常，其调用者必须处理，则可以抛出Checked Exception，且方法签名需要声明该Checked Exception。</p>
+
+<h3>2)Unchecked Exception</h3>
+
+<p>即可以不处理的异常，所有运行时异常（RuntimeException及其子类）都是Unchecked Exception。</p>
+
+<h2>使用异常的TIPS（整理于《Effective Java》）</h2>
+
+<h3>1)只针对异常的情况才使用异常</h3>
+
+<p>异常应该只用于异常的情况下；它们永远不应该用于正常的控制流。在实际编码中，有些情况下这条建议有时候并不容易遵守，因为在某些情况下正常情况与异常情况并不好区分＝＝、。曾经在一篇文章中有开发者建议将业务成功定义为正常，任何导致业务失败的情况都定义为异常并抛出，这样所有的非成功流程就都在catch中处理，能使代码看起来非常整齐。</p>
+
+<h3>2)对可恢复的情况使用Checked Exception，对编程错误使用Unchecked Exception</h3>
+
+<p>如果期望调用者能够适当地恢复，对于这种情况就应该使用Checked Exception。API的设计者让API用户面对Checked Exception，以此强制用户从这个异常条件中恢复，大大增强了可靠性。</p>
+
+<h3>3)避免不必要地使用Checked Exception</h3>
+
+<p>API编写者应该尽量避免抛出异常，如不能避免可以为调用者提供前置检查方法，如 Iterator的hasNext方法。而不是不必要的抛出Checked Exception。</p>
+
+<h3>4)优先使用标准的异常</h3>
+
+<p>如IllegalArgumentException、IndexOutOfBoundsException等。</p>
+
+<h3>5)抛出与方法相对应的异常</h3>
+
+<p>如果方法抛出的异常与它执行的任务没有明显的联系，这种情形将会使人不知所措。为了避免这种问题，更高层的实现应该捕获低层的异常，同时抛出可以按照高层抽象进行解释的异常。这种做法即为：异常转译（exception translation）。</p>
+
+<h3>6)每个方法抛出的异常都要有文档</h3>
+
+<h3>7)自定义Unchecked Exception的toString方法应返回失败信息，以便程序能打印出异常原因</h3>
+
+<p>可通过覆盖toString方法实现</p>
+
+<h3>8)努力使失败保持原子性</h3>
+
+<p>一般而言，失败的方法调用应该使对象保持在被调用之前的状态，具有种属性的方法被称为具有失败原子性（failure atomic）。一般有以下方法实现：</p>
+
+<h6>1. 对于在可变对象上执行操作的方法，获得失败原子性最常见的办法是，在执行操作之前检查参数的有效性。这可以在对象的状态被修改之前，先抛出适当的异常。</h6>
+
+<h6>2. 调整计算处理过程的顺序，使得任何可能会失败的计算部分都在对象状态被修改之前发生。</h6>
+
+<h6>3. 编写恢复代码，这种办法主要用于永久性的数据结构，如磁盘文件。很少用。</h6>
+
+<h6>4. 在对象的临时拷贝上执行操作，操作完成后再替换对象。如Collections.sort。</h6>
+
+<h3>9)不要忽略异常</h3>
+
+<p>即不要写空的catch块，只catch不处理。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[帮家里推销蜂蜜]]></title>
@@ -3612,11 +3673,11 @@ Arrays工具类提供的#Arrays.asList#：</p>
 <p>| 名称      |  尺寸（ps） | 系统及iPhone  | 说明 |
 | :&mdash;&mdash;&ndash; | &mdash;&mdash;&ndash;:| :&ndash;: | :&ndash;: |
 | Icon-60.png  | 60x60 |  iOS7及以上，非Retina  | 应用图标 |
-| <a href="&#109;&#97;&#x69;&#108;&#x74;&#111;&#x3a;&#73;&#99;&#x6f;&#110;&#45;&#49;&#50;&#x30;&#x40;&#x32;&#x78;&#46;&#112;&#x6e;&#103;">&#73;&#99;&#111;&#110;&#x2d;&#49;&#50;&#x30;&#64;&#x32;&#120;&#x2e;&#x70;&#x6e;&#x67;</a>  | 120x120 |  iOS7及以上，Retina  | 应用图标 |
+| <a href="&#x6d;&#97;&#105;&#x6c;&#116;&#x6f;&#x3a;&#73;&#99;&#111;&#x6e;&#45;&#x31;&#x32;&#x30;&#64;&#x32;&#120;&#x2e;&#112;&#x6e;&#103;">&#x49;&#x63;&#111;&#x6e;&#x2d;&#49;&#x32;&#x30;&#x40;&#50;&#x78;&#x2e;&#112;&#110;&#x67;</a>  | 120x120 |  iOS7及以上，Retina  | 应用图标 |
 | Icon-40.png  | 40x40 |  iOS7及以上，非Retina  | 应用图标，搜索中用 |
-| <a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#x6f;&#58;&#x49;&#x63;&#x6f;&#x6e;&#45;&#x38;&#x30;&#64;&#x32;&#120;&#46;&#x70;&#110;&#x67;">&#x49;&#99;&#111;&#x6e;&#x2d;&#56;&#x30;&#x40;&#x32;&#120;&#x2e;&#112;&#110;&#x67;</a>  | 80x80 |  iOS7及以上，Retina  | 应用图标，搜索中用 |
+| <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#x6f;&#x3a;&#73;&#x63;&#x6f;&#110;&#x2d;&#56;&#48;&#64;&#50;&#120;&#x2e;&#112;&#x6e;&#103;">&#73;&#x63;&#111;&#110;&#x2d;&#x38;&#x30;&#x40;&#x32;&#120;&#x2e;&#x70;&#110;&#x67;</a>  | 80x80 |  iOS7及以上，Retina  | 应用图标，搜索中用 |
 | Icon-29.png  | 29x29 |  iOS7及以上，非Retina | 应用图标，设置中用 |
-| <a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#111;&#58;&#x49;&#x63;&#x6f;&#x6e;&#45;&#x35;&#x38;&#x40;&#x32;&#120;&#46;&#112;&#110;&#x67;">&#x49;&#x63;&#111;&#110;&#45;&#x35;&#56;&#x40;&#x32;&#x78;&#46;&#112;&#110;&#x67;</a>  | 58x58 |  iOS7及以上，Retina  | 应用图标，设置中用
+| <a href="&#109;&#x61;&#105;&#x6c;&#116;&#x6f;&#x3a;&#x49;&#x63;&#x6f;&#110;&#x2d;&#x35;&#x38;&#x40;&#x32;&#120;&#x2e;&#112;&#110;&#x67;">&#x49;&#x63;&#x6f;&#x6e;&#x2d;&#x35;&#56;&#64;&#x32;&#x78;&#x2e;&#x70;&#x6e;&#103;</a>  | 58x58 |  iOS7及以上，Retina  | 应用图标，设置中用
  |</p>
 
 <h3>应用加载图片</h3>
@@ -3638,13 +3699,13 @@ Arrays工具类提供的#Arrays.asList#：</p>
 <td style="text-align:center;"> 启动图片 </td>
 </tr>
 <tr>
-<td style="text-align:left;"> <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#x6f;&#x3a;&#x44;&#101;&#102;&#97;&#117;&#108;&#116;&#64;&#50;&#x78;&#x2e;&#x70;&#110;&#103;">&#68;&#x65;&#102;&#x61;&#117;&#x6c;&#x74;&#64;&#x32;&#x78;&#x2e;&#x70;&#110;&#x67;</a>  </td>
+<td style="text-align:left;"> <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#111;&#x3a;&#68;&#101;&#102;&#x61;&#x75;&#108;&#116;&#x40;&#50;&#120;&#46;&#112;&#x6e;&#x67;">&#x44;&#101;&#x66;&#x61;&#117;&#108;&#116;&#x40;&#x32;&#120;&#46;&#x70;&#x6e;&#x67;</a>  </td>
 <td style="text-align:right;"> 640x960 </td>
 <td style="text-align:center;">  iOS7及以上，Retina，iPhone4s  </td>
 <td style="text-align:center;"> 启动图片 </td>
 </tr>
 <tr>
-<td style="text-align:left;"> <a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#68;&#101;&#x66;&#97;&#x75;&#108;&#x74;&#95;&#49;&#x31;&#51;&#x36;&#x40;&#x32;&#x78;&#46;&#x70;&#110;&#x67;">&#68;&#x65;&#102;&#97;&#x75;&#108;&#116;&#x5f;&#x31;&#49;&#51;&#54;&#64;&#50;&#x78;&#46;&#x70;&#110;&#x67;</a>  </td>
+<td style="text-align:left;"> <a href="&#109;&#97;&#105;&#108;&#116;&#x6f;&#x3a;&#x44;&#x65;&#102;&#97;&#117;&#108;&#116;&#95;&#x31;&#49;&#x33;&#x36;&#x40;&#50;&#x78;&#46;&#x70;&#110;&#x67;">&#x44;&#x65;&#x66;&#x61;&#117;&#x6c;&#x74;&#x5f;&#49;&#x31;&#51;&#x36;&#64;&#x32;&#x78;&#46;&#x70;&#x6e;&#103;</a>  </td>
 <td style="text-align:right;"> 640x1136 </td>
 <td style="text-align:center;">  iOS7及以上，Retina，iPhone5、iPhone5s </td>
 <td style="text-align:center;"> 启动图片 </td>
@@ -3667,504 +3728,6 @@ Arrays工具类提供的#Arrays.asList#：</p>
 <li>所有图片需要为png格式</li>
 <li>图片命名请和用途关联，最好一看就知道用在哪的（图片太多，这样容易分辨）。</li>
 </ol>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[《SQL必知必会》读书笔记（一）]]></title>
-    <link href="http://rongyi.work/blog/2014/09/01/SQL1/"/>
-    <updated>2014-09-01T18:06:00+08:00</updated>
-    <id>http://rongyi.work/blog/2014/09/01/SQL1</id>
-    <content type="html"><![CDATA[<h2>1、检索数据</h2>
-
-<p>select 语句非常简单。就不复述了。需要注意几个点：</p>
-
-<p><code>select * from products;</code>使用星号通配符来检索可以返回所有列。但需注意：</p>
-
-<ol>
-<li>除非确实需要检索表中每个列，否则最好不要使用*通配符。1）检索不需要的列会降低检索和应用程序的性能。2）可能会导致SQL注入。</li>
-<li>使用*通配符有一个优点：能检索出名字未知的列。<!--more--></li>
-</ol>
-
-
-<h2>2、排序检索数据</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">select</span> <span class="n">prod_id</span><span class="p">,</span><span class="n">prod_name</span><span class="p">,</span><span class="n">prod_price</span> <span class="k">from</span> <span class="n">products</span> <span class="k">order</span> <span class="k">by</span> <span class="n">prod_price</span> <span class="k">DESC</span><span class="p">,</span><span class="n">prod_id</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<ol>
-<li><code>order by</code>子句可以按照一个或者多个列进行排序，例如按照姓和名排序，如果有多个相同的姓，这样做很有用。</li>
-<li><code>order by</code>子句能按照列位置进行排序。如<code>select prod_id,prod_name from products order by 1, 2;</code></li>
-<li><code>order by</code>子句可以指定排序方向：<code>DESC</code>,<code>DESCENDING</code>。默认是升序：<code>DESCENDING</code></li>
-</ol>
-
-
-<h2>3、过滤数据</h2>
-
-<p>where子句的操作符解释：</p>
-
-<table>
-<thead>
-<tr>
-<th>操作符 </th>
-<th> 说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>＝ </td>
-<td> 等于</td>
-</tr>
-<tr>
-<td>&lt; > </td>
-<td> 不等于</td>
-</tr>
-<tr>
-<td>!= </td>
-<td> 不等于</td>
-</tr>
-<tr>
-<td>&lt; </td>
-<td> 小于</td>
-</tr>
-<tr>
-<td>&lt;= </td>
-<td> 小于等于</td>
-</tr>
-<tr>
-<td>!&lt; </td>
-<td> 不小于</td>
-</tr>
-<tr>
-<td>> </td>
-<td> 大于</td>
-</tr>
-<tr>
-<td>>= </td>
-<td> 大于等于</td>
-</tr>
-<tr>
-<td>!> </td>
-<td> 不大于</td>
-</tr>
-<tr>
-<td>BETWEEN </td>
-<td> 在指定的两个值之间</td>
-</tr>
-<tr>
-<td>IS NULL </td>
-<td> 为NULL值</td>
-</tr>
-</tbody>
-</table>
-
-
-<h2>4、高级数据过滤</h2>
-
-<ol>
-<li>and</li>
-<li>or</li>
-<li>in <code>select pro_name from products where vend_id in ('DLL01','BRS01') order by prod_name;</code></li>
-<li>NOT：否定它之后所跟的任何条件。<code>select pro_name from products where NOT vend_id in ('DLL01','BRS01')</code>。注意mysql里只有 <code>not exist</code>。</li>
-</ol>
-
-
-<p>IN与OR比较：</p>
-
-<ol>
-<li>在使用长的合法选项清单时，IN操作符的语法更清楚且更直观。</li>
-<li>在使用IN时，计算次序更容易管理（因为使用的操作符更少）。</li>
-<li>IN操作符一般比OR操作符清单执行更快。</li>
-<li>IN最大的优点是可以包含其他的SELECT语句，使得能够更动态地建立WHERE子句。</li>
-</ol>
-
-
-<h2>5、用通配符进行过滤</h2>
-
-<p>like操作符使用的通配符</p>
-
-<ol>
-<li><code>%</code> 表示任何字符出现任意次数。</li>
-<li><code>_</code> 匹配单个字符。</li>
-<li><code>[]</code> 用来指定一个字符集，必须匹配指定位置的一个字符。如以J或者M开头的联系人：<code>select * from customers where name like '[JM]%'</code>
-
-<h2>6、创建计算字段</h2></li>
-<li>拼接字段：将值联结到一起构成单个值。使用<code>+</code>或者<code>||</code>。</li>
-<li>使用别名。
-
-<h2>7、使用数据处理函数</h2></li>
-<li>文本处理函数：<code>UPPER()</code> <code>LOWER()</code> <code>LEFT()</code> <code>LTRIM()</code> <code>RTRIM()</code> <code>LENGTH()</code> <code>SOUNDEX()</code></li>
-<li>日期和时间处理函数：<code>YEAR()</code>mysql支持。 <code>DATE_PART('year',date)</code>sqlserver和postgresql支持。 <code>to_date()</code>oracle支持。 <code>between</code>同样支持两个日期之间的检索。</li>
-<li>数值处理函数：<code>ABS()</code> <code>COS()</code> <code>EXP()</code> <code>PI()</code> <code>SIN()</code> <code>SQRT()</code> <code>TAN()</code>
-
-<h2>8、汇总数据</h2></li>
-<li>聚集函数：<code>AVG()</code> <code>COUNT()</code> <code>MAX()</code> <code>MIN()</code> <code>SUM()</code>。聚集不同的值使用<code>DISTINCT</code>如：<code>select avg(distinct prod_price) as avg_price from products;</code></li>
-</ol>
-
-
-<h2>9、分组数据</h2>
-
-<p>一个例子，返回每个供应商提供的产品数目
-<code>select vend_id,count(*) as num_prods from products group by vend_id;</code></p>
-
-<table>
-<thead>
-<tr>
-<th>vend_id </th>
-<th> num_prods</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>BRS01 </td>
-<td> 3</td>
-</tr>
-<tr>
-<td>DLL01 </td>
-<td> 4</td>
-</tr>
-<tr>
-<td>FNG01 </td>
-<td> 2</td>
-</tr>
-</tbody>
-</table>
-
-
-<h2>10、使用子查询</h2>
-
-<p>使用in子句</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">cust_id</span> <span class="k">from</span> <span class="n">orders</span> <span class="k">where</span> <span class="n">order_num</span> <span class="k">in</span> <span class="p">(</span><span class="k">select</span> <span class="n">order_num</span> <span class="k">from</span> <span class="n">orderItems</span> <span class="k">where</span> <span class="n">prod_id</span><span class="o">=</span><span class="s1">&#39;RGAN01&#39;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>11、联结表</h2>
-
-<p>SQL最强大的功能之一就是能在数据查询的执行中联结表。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">select</span> <span class="n">vend_name</span> <span class="p">,</span><span class="n">pro_name</span><span class="p">,</span> <span class="n">prod_price</span> <span class="k">from</span> <span class="n">vendors</span><span class="p">,</span><span class="n">products</span> <span class="k">where</span> <span class="n">vendors</span><span class="p">.</span><span class="n">vend_id</span> <span class="o">=</span> <span class="n">products</span><span class="p">.</span><span class="n">vend_id</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<h3>内联结</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">INNER</span> <span class="k">JOIN</span> <span class="p">..</span> <span class="k">ON</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">select</span> <span class="n">vend_name</span><span class="p">,</span> <span class="n">prod_name</span><span class="p">,</span> <span class="n">prod_price</span>
-</span><span class='line'><span class="k">from</span> <span class="n">vendors</span><span class="p">,</span> <span class="n">products</span>
-</span><span class='line'><span class="k">where</span> <span class="n">vendors</span><span class="p">.</span><span class="n">vend_id</span> <span class="o">=</span> <span class="n">products</span><span class="p">.</span><span class="n">vend_id</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>以上SQL所用到的联结称为等值联结，它基于两个表之间的等值测试。这种联结也称为内部联结。 <br/>
-也可以使用如下语法来明确指定联结的类型：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">select</span> <span class="n">vend_name</span><span class="p">,</span> <span class="n">prod_name</span><span class="p">,</span> <span class="n">prod_price</span>
-</span><span class='line'><span class="k">from</span> <span class="n">vendors</span>
-</span><span class='line'><span class="k">inner</span> <span class="k">join</span> <span class="n">products</span>
-</span><span class='line'><span class="k">on</span> <span class="n">vendors</span><span class="p">.</span><span class="n">vend_id</span> <span class="o">=</span> <span class="n">products</span><span class="p">.</span><span class="n">vend_id</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>除了内部联结（等值联结）的简单联结。还有其他3种联结：自联结、自然联结和外部联结。</p>
-
-<h3>自联结</h3>
-
-<p>不止一次引用相同的表，通过表的别名进行比较。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">select</span> <span class="n">c1</span><span class="p">.</span><span class="n">cust_id</span><span class="p">,</span> <span class="n">c1</span><span class="p">.</span><span class="n">cust_name</span>
-</span><span class='line'><span class="k">from</span> <span class="n">customers</span> <span class="k">as</span> <span class="n">c1</span><span class="p">,</span> <span class="n">customers</span> <span class="k">as</span> <span class="n">c2</span>
-</span><span class='line'><span class="k">where</span> <span class="n">c1</span><span class="p">.</span><span class="n">cust_name</span> <span class="o">=</span> <span class="n">c2</span><span class="p">.</span><span class="n">cust_name</span>
-</span><span class='line'><span class="k">and</span> <span class="n">c2</span><span class="p">.</span><span class="n">cust_contact</span> <span class="o">=</span> <span class="s1">&#39;jim jones&#39;</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>自然联结</h3>
-
-<p>无论何时对表进行联结，应该至少有一个列出现在不止一个表中。
-标准联结返回所有数据，甚至相同的列多次出现。
-自然联结排除多次出现，使每一个列只返回一次。</p>
-
-<p>规则：自然联结是这样一种联结，其中你只能选择那些唯一的列。这一般通过对表使用通配符（select *），对所有其他表的列使用明确的子集来完成。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">select</span> <span class="k">C</span><span class="p">.</span><span class="o">*</span><span class="p">,</span> <span class="n">O</span><span class="p">.</span><span class="n">order_num</span><span class="p">,</span> <span class="n">O</span><span class="p">.</span><span class="n">order_date</span>
-</span><span class='line'><span class="k">from</span> <span class="n">customer</span> <span class="k">as</span> <span class="k">C</span> <span class="p">,</span> <span class="n">orders</span> <span class="k">as</span> <span class="n">O</span>
-</span><span class='line'><span class="k">where</span> <span class="k">C</span><span class="p">.</span><span class="n">cust_id</span> <span class="o">=</span> <span class="n">O</span><span class="p">.</span><span class="n">cust_id</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>(注：这里通配符只对第一个表使用。所有其他列明确列出，所以没有重复的列将被检索出来。)</p>
-
-<h3>外联结</h3>
-
-<p>许多联结将一个表中的行与另一个表中的行相关联。但有时候需要包含没有关联行的那些行。
-联结包含了那些在关联表中没有关联行的行。这些类型的联结称为外部联结。</p>
-
-<h4>左（外）联结</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">LEFT</span> <span class="k">OUTER</span> <span class="k">JOIN</span> <span class="p">..</span> <span class="k">ON</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">Persons</span><span class="p">.</span><span class="n">LastName</span><span class="p">,</span> <span class="n">Persons</span><span class="p">.</span><span class="n">FirstName</span><span class="p">,</span> <span class="n">Orders</span><span class="p">.</span><span class="n">OrderNo</span>
-</span><span class='line'><span class="k">FROM</span> <span class="n">Persons</span>
-</span><span class='line'><span class="k">LEFT</span> <span class="k">JOIN</span> <span class="n">Orders</span>
-</span><span class='line'><span class="k">ON</span> <span class="n">Persons</span><span class="p">.</span><span class="n">Id_P</span><span class="o">=</span><span class="n">Orders</span><span class="p">.</span><span class="n">Id_P</span>
-</span><span class='line'><span class="k">ORDER</span> <span class="k">BY</span> <span class="n">Persons</span><span class="p">.</span><span class="n">LastName</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>右（外）联结</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">RIGHT</span> <span class="k">OUTER</span> <span class="k">JOIN</span> <span class="p">..</span> <span class="k">ON</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">Persons</span><span class="p">.</span><span class="n">LastName</span><span class="p">,</span> <span class="n">Persons</span><span class="p">.</span><span class="n">FirstName</span><span class="p">,</span> <span class="n">Orders</span><span class="p">.</span><span class="n">OrderNo</span>
-</span><span class='line'><span class="k">FROM</span> <span class="n">Persons</span>
-</span><span class='line'><span class="k">RIGHT</span> <span class="k">JOIN</span> <span class="n">Orders</span>
-</span><span class='line'><span class="k">ON</span> <span class="n">Persons</span><span class="p">.</span><span class="n">Id_P</span><span class="o">=</span><span class="n">Orders</span><span class="p">.</span><span class="n">Id_P</span>
-</span><span class='line'><span class="k">ORDER</span> <span class="k">BY</span> <span class="n">Persons</span><span class="p">.</span><span class="n">LastName</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>12、组合查询</h2>
-
-<p>SQL UNION 操作符<br/>
-* UNION 操作符
-列出所有在中国和美国的不同的雇员名：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">E_Name</span> <span class="k">FROM</span> <span class="n">Employees_China</span>
-</span><span class='line'><span class="k">UNION</span>
-</span><span class='line'><span class="k">SELECT</span> <span class="n">E_Name</span> <span class="k">FROM</span> <span class="n">Employees_USA</span>
-</span><span class='line'><span class="err">结果：</span>
-</span><span class='line'><span class="n">E_Name</span>
-</span><span class='line'><span class="err">——————————</span>
-</span><span class='line'><span class="n">Zhang</span><span class="p">,</span> <span class="n">Hua</span>
-</span><span class='line'><span class="n">Wang</span><span class="p">,</span> <span class="n">Wei</span>
-</span><span class='line'><span class="n">Carter</span><span class="p">,</span> <span class="n">Thomas</span>
-</span><span class='line'><span class="n">Yang</span><span class="p">,</span> <span class="n">Ming</span>
-</span><span class='line'><span class="n">Adams</span><span class="p">,</span> <span class="n">John</span>
-</span><span class='line'><span class="n">Bush</span><span class="p">,</span> <span class="n">George</span>
-</span><span class='line'><span class="n">Gates</span><span class="p">,</span> <span class="n">Bill</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>UNION ALL 操作符</li>
-</ul>
-
-
-<p>列出在中国和美国的所有的雇员：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">E_Name</span> <span class="k">FROM</span> <span class="n">Employees_China</span>
-</span><span class='line'><span class="k">UNION</span> <span class="k">ALL</span>
-</span><span class='line'><span class="k">SELECT</span> <span class="n">E_Name</span> <span class="k">FROM</span> <span class="n">Employees_USA</span>
-</span><span class='line'><span class="err">结果</span>
-</span><span class='line'><span class="n">_____________</span>
-</span><span class='line'><span class="n">E_Name</span>
-</span><span class='line'><span class="n">Zhang</span><span class="p">,</span> <span class="n">Hua</span>
-</span><span class='line'><span class="n">Wang</span><span class="p">,</span> <span class="n">Wei</span>
-</span><span class='line'><span class="n">Carter</span><span class="p">,</span> <span class="n">Thomas</span>
-</span><span class='line'><span class="n">Yang</span><span class="p">,</span> <span class="n">Ming</span>
-</span><span class='line'><span class="n">Adams</span><span class="p">,</span> <span class="n">John</span>
-</span><span class='line'><span class="n">Bush</span><span class="p">,</span> <span class="n">George</span>
-</span><span class='line'><span class="n">Carter</span><span class="p">,</span> <span class="n">Thomas</span>
-</span><span class='line'><span class="n">Gates</span><span class="p">,</span> <span class="n">Bill</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>13、插入数据</h2>
-
-<ul>
-<li>语法</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">INSERT</span> <span class="k">INTO</span> <span class="err">表名称</span> <span class="k">VALUES</span> <span class="p">(</span><span class="err">值</span><span class="mi">1</span><span class="p">,</span> <span class="err">值</span><span class="mi">2</span><span class="p">,....)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>也可以指定要插入数据的列：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">INSERT</span> <span class="k">INTO</span> <span class="k">table_name</span> <span class="p">(</span><span class="err">列</span><span class="mi">1</span><span class="p">,</span> <span class="err">列</span><span class="mi">2</span><span class="p">,...)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="err">值</span><span class="mi">1</span><span class="p">,</span> <span class="err">值</span><span class="mi">2</span><span class="p">,....)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>第二种更安全，也更灵活（即使表结构发生改变也能正确工作。） <br/>
-另外：可以只插入部分列。
-* 插入检索出的数据（不管select语句返回多少行，都将被insert插入）</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">insert</span> <span class="k">select</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">insert</span> <span class="k">into</span> <span class="n">customers</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="n">name</span><span class="p">)</span>
-</span><span class='line'><span class="k">select</span> <span class="n">id</span><span class="p">,</span><span class="n">name</span> <span class="k">from</span> <span class="n">custnew</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>从一个表复制到另一个表<br/>
-<code>select into</code>：与<code>insert select</code>的区别是，后者导出数据，前者导入表。</li>
-</ul>
-
-
-<p>MySql:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">create</span> <span class="k">table</span> <span class="n">custcopy</span> <span class="k">as</span>
-</span><span class='line'><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">customers</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Oracle:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">select</span> <span class="o">*</span>
-</span><span class='line'><span class="k">into</span> <span class="n">custcopy</span>
-</span><span class='line'><span class="k">from</span> <span class="n">customers</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>14、更新和删除数据</h2>
-
-<p>更新数据：<code>UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值</code>;</p>
-
-<p>删除数据：<code>DELETE FROM 表名称 WHERE 列名称 = 值</code>;</p>
-
-<p>更新和删除应该遵循的习惯：</p>
-
-<ol>
-<li>除非确实要更新或者删除每一行，否则绝对不要使用不带where子句的update或者delete语句。</li>
-<li>保证每个表都有主键。</li>
-<li>在对update和delete语句使用where子句前，应该先使用select进行测试，保证它过滤的是正确的记录，以防编写的where子句不正确。</li>
-<li>使用强制实施引用完整性的数据库，这样DBMS将不允许删除具有与其他表相关联的数据的行。（存疑）。</li>
-<li>有的DBMS允许数据库管理员施加约束，以防止执行不带where子句的update或者delete。如果所采用的dbms支持这个特性，应该使用它。</li>
-</ol>
-
-
-<h2>15、创建和操纵表</h2>
-
-<h3>创建表</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">Persons</span>
-</span><span class='line'><span class="p">(</span>
-</span><span class='line'><span class="n">Id_P</span> <span class="nb">int</span> <span class="k">not</span> <span class="k">null</span><span class="p">,</span>
-</span><span class='line'><span class="n">LastName</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span>
-</span><span class='line'><span class="n">FirstName</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span>
-</span><span class='line'><span class="n">Address</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span>
-</span><span class='line'><span class="n">City</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">default</span> <span class="s1">&#39;BeiJing&#39;</span>
-</span><span class='line'><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>更新表</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">alter</span> <span class="k">table</span> <span class="n">vendors</span> <span class="k">add</span> <span class="n">vend_phone</span> <span class="nb">char</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span><span class="o">//</span><span class="err">增加列</span>
-</span><span class='line'><span class="k">alter</span> <span class="k">table</span> <span class="n">vendors</span> <span class="k">drop</span> <span class="k">column</span> <span class="n">vend_phone</span><span class="p">;</span><span class="o">//</span><span class="err">删除列</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>删除表</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">drop</span> <span class="k">table</span> <span class="n">custcopy</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
 
 ]]></content>
   </entry>
