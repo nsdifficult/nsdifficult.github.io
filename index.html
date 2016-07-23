@@ -88,54 +88,9 @@
 
 <h3>1)Checked Exception</h3>
 
-<p>所有非运行时异常都是Checked Exception，这意味着调用抛出Checked Exception的方法必须处理该异常：处理或者向上抛出。在实际的编程中，如果认为方法的某个异常，其调用者必须处理，则可以抛出Checked Exception，且方法签名需要声明该Checked Exception。</p>
-
-<h3>2)Unchecked Exception</h3>
-
-<p>即可以不处理的异常，所有运行时异常（RuntimeException及其子类）都是Unchecked Exception。</p>
-
-<h2>使用异常的TIPS（整理于《Effective Java》）</h2>
-
-<h3>1)只针对异常的情况才使用异常</h3>
-
-<p>异常应该只用于异常的情况下；它们永远不应该用于正常的控制流。在实际编码中，有些情况下这条建议有时候并不容易遵守，因为在某些情况下正常情况与异常情况并不好区分＝＝、。曾经在一篇文章中有开发者建议将业务成功定义为正常，任何导致业务失败的情况都定义为异常并抛出，这样所有的非成功流程就都在catch中处理，能使代码看起来非常整齐。</p>
-
-<h3>2)对可恢复的情况使用Checked Exception，对编程错误使用Unchecked Exception</h3>
-
-<p>如果期望调用者能够适当地恢复，对于这种情况就应该使用Checked Exception。API的设计者让API用户面对Checked Exception，以此强制用户从这个异常条件中恢复，大大增强了可靠性。</p>
-
-<h3>3)避免不必要地使用Checked Exception</h3>
-
-<p>API编写者应该尽量避免抛出异常，如不能避免可以为调用者提供前置检查方法，如 Iterator的hasNext方法。而不是不必要的抛出Checked Exception。</p>
-
-<h3>4)优先使用标准的异常</h3>
-
-<p>如IllegalArgumentException、IndexOutOfBoundsException等。</p>
-
-<h3>5)抛出与方法相对应的异常</h3>
-
-<p>如果方法抛出的异常与它执行的任务没有明显的联系，这种情形将会使人不知所措。为了避免这种问题，更高层的实现应该捕获低层的异常，同时抛出可以按照高层抽象进行解释的异常。这种做法即为：异常转译（exception translation）。</p>
-
-<h3>6)每个方法抛出的异常都要有文档</h3>
-
-<h3>7)自定义Unchecked Exception的toString方法应返回失败信息，以便程序能打印出异常原因</h3>
-
-<p>可通过覆盖toString方法实现</p>
-
-<h3>8)努力使失败保持原子性</h3>
-
-<p>一般而言，失败的方法调用应该使对象保持在被调用之前的状态，具有种属性的方法被称为具有失败原子性（failure atomic）。一般有以下方法实现： <br/>
-1. 对于在可变对象上执行操作的方法，获得失败原子性最常见的办法是，在执行操作之前检查参数的有效性。这可以在对象的状态被修改之前，先抛出适当的异常。   <br/>
-2. 调整计算处理过程的顺序，使得任何可能会失败的计算部分都在对象状态被修改之前发生。 <br/>
-3. 编写恢复代码，这种办法主要用于永久性的数据结构，如磁盘文件。很少用。 <br/>
-4. 在对象的临时拷贝上执行操作，操作完成后再替换对象。如Collections.sort。</p>
-
-<h3>9)不要忽略异常</h3>
-
-<p>即不要写空的catch块，只catch不处理。</p>
-
+<p>所有非运行时异常都是Checked Exception，这意味着调用抛出Checked Exception的方法必须处理该异常：处理或者向上抛出。在实际的编程中，如果认为方法的某个异常，其调用者必须处理，则可以抛出Checked Exception，且方法签名需要声明该Checked Exception。
 		
-		
+		<a href="/blog/2016/07/22/exception2/" class="more-link">Read on &rarr;</a>
 	</div>
 
 
