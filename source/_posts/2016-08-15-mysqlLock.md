@@ -119,4 +119,5 @@ delete from person where address = 'NanJing';//4
 4. Record Lock 和 Gap Lock
 	所有记录都加了Record Lock 和 所有主键索引间的Gap都加了Gap Lock（解决幻读）
 
-关于具体sql分析，可以参考这篇文章: [MySQL 加锁处理分析](http://hedengcheng.com/?p=771)
+关于具体sql分析，可以参考这篇文章: [MySQL 加锁处理分析](http://hedengcheng.com/?p=771)   
+官方参考文章: [15.5.1 InnoDB Locking](http://dev.mysql.com/doc/refman/5.7/en/innodb-locking.html#innodb-gap-locks)
