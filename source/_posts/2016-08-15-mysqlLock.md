@@ -7,7 +7,6 @@ categories:
 
 ---
 
-##InnoDB锁学习笔记
 ###Shared and Exclusive Locks
 即s锁/共享锁/读锁 和 x锁/排他锁/写锁。   
 s锁只允许别的事务在其持有数据上加s锁。顾名思义，x锁会让其他请求其数据的事务等待。<!--more--> 
@@ -37,8 +36,11 @@ Record Locks和Gap Locks的结合，锁定一个范围的记录。即锁定范�
 ###AUTO-INC Locks 
 AUTO-INC Locks是一种表锁，当往自增列插入时会使用AUTO-INC Locks。    
 innodb_autoinc_lock_mode配置可以调整该锁。    
+
 * ```innodb_autoinc_lock_mode=0```通过表锁的方式进行，也就是所有类型的insert都用AUTO-inc locking。
+
 * ```innodb_autoinc_lock_mode=1```默认值，对于simple insert 自增长值的产生使用互斥量对内存中的计数器进行累加操作，对于bulk insert 则还是使用表锁的方式进行。
+
 * ```innodb_autoinc_lock_mode=2```对所有的insert-like 自增长值的产生使用互斥量机制完成，性能最高，并发插入可能导致自增值不连续，可能会导致Statement 的 Replication 出现不一致，使用该模式，需要用 Row Replication的模式。
 
 ###Predicate Locks for Spatial Indexes
