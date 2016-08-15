@@ -7,7 +7,7 @@
 	<meta name="author" content="易荣义">
 
 	
-	<meta name="description" content="InnoDB锁学习笔记 Shared and Exclusive Locks 即s锁/共享锁/读锁 和 x锁/排他锁/写锁。 s锁只允许别的事务在其持有数据上加s锁。顾名思义，x锁会让其他请求其数据的事务等待。 Intention Locks Intention &hellip;">
+	<meta name="description" content="Shared and Exclusive Locks 即s锁/共享锁/读锁 和 x锁/排他锁/写锁。 s锁只允许别的事务在其持有数据上加s锁。顾名思义，x锁会让其他请求其数据的事务等待。 Intention Locks Intention &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -75,9 +75,7 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">InnoDB锁学习笔记</h2>
-	<div class="entry-content"><h2>InnoDB锁学习笔记</h2>
-
-<h3>Shared and Exclusive Locks</h3>
+	<div class="entry-content"><h3>Shared and Exclusive Locks</h3>
 
 <p>即s锁/共享锁/读锁 和 x锁/排他锁/写锁。 <br/>
 s锁只允许别的事务在其持有数据上加s锁。顾名思义，x锁会让其他请求其数据的事务等待。<!--more--></p>
@@ -153,10 +151,14 @@ s锁只允许别的事务在其持有数据上加s锁。顾名思义，x锁会�
 <h3>AUTO-INC Locks</h3>
 
 <p>AUTO-INC Locks是一种表锁，当往自增列插入时会使用AUTO-INC Locks。  <br/>
-innodb_autoinc_lock_mode配置可以调整该锁。  <br/>
-* <code>innodb_autoinc_lock_mode=0</code>通过表锁的方式进行，也就是所有类型的insert都用AUTO-inc locking。
-* <code>innodb_autoinc_lock_mode=1</code>默认值，对于simple insert 自增长值的产生使用互斥量对内存中的计数器进行累加操作，对于bulk insert 则还是使用表锁的方式进行。
-* <code>innodb_autoinc_lock_mode=2</code>对所有的insert-like 自增长值的产生使用互斥量机制完成，性能最高，并发插入可能导致自增值不连续，可能会导致Statement 的 Replication 出现不一致，使用该模式，需要用 Row Replication的模式。</p>
+innodb_autoinc_lock_mode配置可以调整该锁。</p>
+
+<ul>
+<li><p><code>innodb_autoinc_lock_mode=0</code>通过表锁的方式进行，也就是所有类型的insert都用AUTO-inc locking。</p></li>
+<li><p><code>innodb_autoinc_lock_mode=1</code>默认值，对于simple insert 自增长值的产生使用互斥量对内存中的计数器进行累加操作，对于bulk insert 则还是使用表锁的方式进行。</p></li>
+<li><p><code>innodb_autoinc_lock_mode=2</code>对所有的insert-like 自增长值的产生使用互斥量机制完成，性能最高，并发插入可能导致自增值不连续，可能会导致Statement 的 Replication 出现不一致，使用该模式，需要用 Row Replication的模式。</p></li>
+</ul>
+
 
 <h3>Predicate Locks for Spatial Indexes</h3>
 
