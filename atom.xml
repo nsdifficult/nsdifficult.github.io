@@ -4,7 +4,7 @@
   <title><![CDATA[RONGYI.WORK]]></title>
   <link href="http://rongyi.work/atom.xml" rel="self"/>
   <link href="http://rongyi.work/"/>
-  <updated>2016-08-15T17:18:18+08:00</updated>
+  <updated>2016-08-15T17:21:25+08:00</updated>
   <id>http://rongyi.work/</id>
   <author>
     <name><![CDATA[易荣义]]></name>
@@ -12,6 +12,205 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[InnoDB锁学习笔记]]></title>
+    <link href="http://rongyi.work/blog/2016/08/15/mysqlLock/"/>
+    <updated>2016-08-15T17:06:00+08:00</updated>
+    <id>http://rongyi.work/blog/2016/08/15/mysqlLock</id>
+    <content type="html"><![CDATA[<h2>InnoDB锁学习笔记</h2>
+
+<h3>Shared and Exclusive Locks</h3>
+
+<p>即s锁/共享锁/读锁 和 x锁/排他锁/写锁。 <br/>
+s锁只允许别的事务在其持有数据上加s锁。顾名思义，x锁会让其他请求其数据的事务等待。<!--more--></p>
+
+<h3>Intention Locks</h3>
+
+<p>Intention Locks的目的是InnoDB为支持不同粒度的锁而引入的一种锁，它是表级锁。简单点儿说就是在一个事务要确定对哪些范围的数据加锁前，先使用Intention Locks。同样，它也分： Intention shared (IS)锁和Intention exclusive (IX)锁。 <br/>
+这些规则可以总结为以下的锁兼容矩阵：</p>
+
+<table>
+<thead>
+<tr>
+<th>   </th>
+<th style="text-align:center;"> X </th>
+<th> IX    </th>
+<th> S  </th>
+<th style="text-align:center;"> IS </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> X  </td>
+<td style="text-align:center;"> Confict </td>
+<td> Confict     </td>
+<td> Confict </td>
+<td style="text-align:center;"> Confict </td>
+</tr>
+<tr>
+<td> IX </td>
+<td style="text-align:center;"> Confict  </td>
+<td> Compatible      </td>
+<td>  Confict  </td>
+<td style="text-align:center;"> Confict </td>
+</tr>
+<tr>
+<td> S  </td>
+<td style="text-align:center;"> Confict  </td>
+<td> Confict </td>
+<td> Compatible     </td>
+<td style="text-align:center;"> Confict </td>
+</tr>
+<tr>
+<td> IS  </td>
+<td style="text-align:center;"> Confict   </td>
+<td> Compatible </td>
+<td> Compatible     </td>
+<td style="text-align:center;"> Confict </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>如果一个事务请求的锁和已经存在的锁兼容，则此事务会得到锁，否则不能得到锁。事务会等待直到已有的冲突锁被释放。如果一个锁请求和已有的锁发生冲突，则它不会得到锁，因为会发生死锁并引发错误。</p>
+
+<h3>Record Locks</h3>
+
+<p>Record Locks是加在特定记录上的锁，该记录对应列为索引列。例如，SELECT c1 FOR UPDATE FROM t WHERE c1 = 10;可以防止任何其它事务插入、 更新或删除t.c1等于10的行。</p>
+
+<h3>Gap Locks</h3>
+
+<p>Gap Locks是加在一个索引范围内记录上的锁，或者索引开始记录前，索引结束记录后的这一范围的锁。即Gap Locks锁定一个范围，不锁定记录本身。Gap Locks主要为了解决幻读问题（隔离级别为Reapted Read）。 <br/>
+在InnoDB中，间隙锁是“完全被抑制”的，意思是它只阻止其它事务给往间隙中插入。它们不阻止其他事务在同一个间隙上获得间隙锁。因此，一个间隙X锁和一个间隙S锁效果一样。  <br/>
+可以显式禁用间隙锁。如果你更改事务隔离级别为READ COMMITTED或启用innodb_locks_unsafe_for_binlog系统变量 （现已废弃），禁用会生效。在这些情况下，间隙锁在查找和索引扫描时会被禁用，仅在外键约束检查和重复键检查时启用。</p>
+
+<h3>Next-Key Locks</h3>
+
+<p>Record Locks和Gap Locks的结合，锁定一个范围的记录。即锁定范围且锁定记录本身。</p>
+
+<h3>Insert Intention Locks</h3>
+
+<p>一个Insert Intention Locks是插入操作在插入某行或者某些行记录前放置的一种Gap Lock锁。它的存在是为了保证不同的事务如果要往不同的Gap里插入记录，而不互相影响。</p>
+
+<h3>AUTO-INC Locks</h3>
+
+<p>AUTO-INC Locks是一种表锁，当往自增列插入时会使用AUTO-INC Locks。  <br/>
+innodb_autoinc_lock_mode配置可以调整该锁。  <br/>
+* <code>innodb_autoinc_lock_mode=0</code>通过表锁的方式进行，也就是所有类型的insert都用AUTO-inc locking。
+* <code>innodb_autoinc_lock_mode=1</code>默认值，对于simple insert 自增长值的产生使用互斥量对内存中的计数器进行累加操作，对于bulk insert 则还是使用表锁的方式进行。
+* <code>innodb_autoinc_lock_mode=2</code>对所有的insert-like 自增长值的产生使用互斥量机制完成，性能最高，并发插入可能导致自增值不连续，可能会导致Statement 的 Replication 出现不一致，使用该模式，需要用 Row Replication的模式。</p>
+
+<h3>Predicate Locks for Spatial Indexes</h3>
+
+<p>空间索引预测锁，暂时用不到。忽略。</p>
+
+<h2>MySql锁</h2>
+
+<h3>锁超时设置与查看</h3>
+
+<p>参数支持范围为Session和Global，且支持动态修改，所以可以通过两种方法修改；  <br/>
+查看：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">show</span> <span class="n">variables</span> <span class="n">like</span> <span class="err">&#39;</span><span class="n">innodb_lock_wait_timeout</span><span class="err">&#39;</span><span class="o">;</span> <span class="o">--</span> <span class="n">查看</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>修改：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">set</span>  <span class="n">innodb_lock_wait_timeout</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>   <span class="o">--</span> <span class="n">设置</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>或者修改my.cnf文件</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="n">innodb_lock_wait_timeout</span> <span class="o">=</span> <span class="mi">50</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>更详细了解可以看看这篇文章<a href="http://www.importnew.com/2466.html">深入理解JDBC的超时设置</a></p>
+
+<h3>未提交事务查看</h3>
+
+<p>information_schema库下事务和锁的一些描述： <br/>
+* innodb_trx  当前运行的所有事务
+* innodb_locks  当前出现的锁
+* innodb_lock_waits  锁等待的对应关系</p>
+
+<h2>如何查看SQL语句使用什么锁</h2>
+
+<h3>InnoDB行锁</h3>
+
+<p>InnoDB行锁是通过给索引上的索引项加锁来实现的，这一点MySQL与Oracle不同，后者是通过在数据块中对相应数据行加锁来实现的。InnoDB这种行锁实现特点意味着：只有通过索引条件检索数据，InnoDB才使用行级锁，否则，InnoDB将使用表锁！  <br/>
+1. 在不通过索引条件查询的时候，InnoDB确实使用的是表锁，而不是行锁。  <br/>
+2. 由于MySQL的行锁是针对索引加的锁，不是针对记录加的锁，所以虽然是访问不同行的记录，但是如果是使用相同的索引键，是会出现锁冲突的。应用设计的时候要注意这一点。 <br/>
+3. 当表有多个索引的时候，不同的事务可以使用不同的索引锁定不同的行，另外，不论是使用主键索引、唯一索引或普通索引，InnoDB都会使用行锁来对数据加锁。  <br/>
+4. 即便在条件中使用了索引字段，但是否使用索引来检索数据是由MySQL通过判断不同执行计划的代价来决定的，如果MySQL认为全表扫描效率更高，比如对一些很小的表，它就不会使用索引，这种情况下InnoDB将使用表锁，而不是行锁。因此，在分析锁冲突时，别忘了检查SQL的执行计划，以确认是否真正使用了索引。</p>
+
+<h3>举例说明</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">person</span> <span class="p">(</span>
+</span><span class='line'>        <span class="n">id</span> <span class="nb">int</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">name</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+</span><span class='line'>        <span class="n">age</span> <span class="nb">int</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">address</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span>
+</span><span class='line'>        <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">),</span>
+</span><span class='line'>        <span class="k">CONSTRAINT</span> <span class="n">nameIdx</span> <span class="k">UNIQUE</span> <span class="p">(</span><span class="n">name</span><span class="p">),</span>
+</span><span class='line'>        <span class="k">INDEX</span> <span class="n">ageIdx</span> <span class="p">(</span><span class="n">age</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">)</span> <span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span> <span class="k">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span><span class="p">;</span>
+</span><span class='line'><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">person</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">address</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;900&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;BeiJing&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">person</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">address</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;ShangHai&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">person</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">address</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;930&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s1">&#39;NanJing&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">person</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">address</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="s1">&#39;950&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s1">&#39;NanJing&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>仅分析事务隔离级别为Reapted Read级别情况下的加锁情况。</p>
+
+<h4>执行如下sql：</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">delete</span> <span class="k">from</span> <span class="n">person</span> <span class="k">where</span> <span class="n">id</span> <span class="o">=</span> <span class="s1">&#39;5&#39;</span><span class="p">;</span><span class="o">//</span><span class="mi">1</span>
+</span><span class='line'><span class="k">delete</span> <span class="k">from</span> <span class="n">person</span> <span class="k">where</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;900&#39;</span><span class="p">;</span><span class="o">//</span><span class="mi">2</span>
+</span><span class='line'><span class="k">delete</span> <span class="k">from</span> <span class="n">person</span> <span class="k">where</span> <span class="n">age</span> <span class="o">=</span> <span class="s1">&#39;20&#39;</span><span class="p">;</span><span class="o">//</span><span class="mi">3</span>
+</span><span class='line'><span class="k">delete</span> <span class="k">from</span> <span class="n">person</span> <span class="k">where</span> <span class="n">address</span> <span class="o">=</span> <span class="s1">&#39;NanJing&#39;</span><span class="p">;</span><span class="o">//</span><span class="mi">4</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>Record Lock
+ 主键id对应为5的记录加Record Lock</li>
+<li>Record Lock
+ 索引nameIdx为900对应的记录加Record Lock，同时满足主键为3的记录也被加Record Lock</li>
+<li>Record Lock 和 Gap Lock
+ ageIdx为20的记录加Record Lock，同时满足(5,20],(20,+∞)的Gap被加Gap Lock(解决幻读)。</li>
+<li>Record Lock 和 Gap Lock
+ 所有记录都加了Record Lock 和 所有主键索引间的Gap都加了Gap Lock（解决幻读）</li>
+</ol>
+
+
+<p>关于具体sql分析，可以参考这篇文章: <a href="http://hedengcheng.com/?p=771">MySQL 加锁处理分析</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[关于异常的一些补充]]></title>
@@ -3646,85 +3845,6 @@ Arrays工具类提供的#Arrays.asList#：</p>
 
 <p>当有大量请求的时候，会出现返回的不是预期（不正确）的message。 <br/>
 解决的办法就是将message设置为局部变量。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iPhone开发图片尺寸]]></title>
-    <link href="http://rongyi.work/blog/2014/09/02/iphoneimage/"/>
-    <updated>2014-09-02T18:06:00+08:00</updated>
-    <id>http://rongyi.work/blog/2014/09/02/iphoneimage</id>
-    <content type="html"><![CDATA[<h2>说明</h2>
-
-<p>（iOS8不适用了）</p>
-
-<h3>关于系统</h3>
-
-<p>建议支持iOS7以上，目前iOS7占比91%。关于占比，见<a href="https://developer.apple.com/support/appstore/">官方说明</a>。<!--more--></p>
-
-<h2>图标尺寸</h2>
-
-<h3>icon说明</h3>
-
-<p>| 名称      |  尺寸（ps） | 系统及iPhone  | 说明 |
-| :&mdash;&mdash;&ndash; | &mdash;&mdash;&ndash;:| :&ndash;: | :&ndash;: |
-| Icon-60.png  | 60x60 |  iOS7及以上，非Retina  | 应用图标 |
-| <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#x49;&#99;&#x6f;&#110;&#x2d;&#x31;&#x32;&#48;&#64;&#50;&#120;&#x2e;&#112;&#110;&#x67;">&#x49;&#x63;&#111;&#110;&#45;&#49;&#x32;&#48;&#64;&#x32;&#x78;&#46;&#112;&#x6e;&#x67;</a>  | 120x120 |  iOS7及以上，Retina  | 应用图标 |
-| Icon-40.png  | 40x40 |  iOS7及以上，非Retina  | 应用图标，搜索中用 |
-| <a href="&#109;&#97;&#x69;&#x6c;&#116;&#111;&#58;&#x49;&#99;&#111;&#110;&#45;&#x38;&#48;&#64;&#50;&#120;&#46;&#112;&#110;&#103;">&#x49;&#99;&#111;&#x6e;&#x2d;&#56;&#48;&#x40;&#x32;&#x78;&#x2e;&#112;&#110;&#103;</a>  | 80x80 |  iOS7及以上，Retina  | 应用图标，搜索中用 |
-| Icon-29.png  | 29x29 |  iOS7及以上，非Retina | 应用图标，设置中用 |
-| <a href="&#109;&#97;&#x69;&#108;&#116;&#x6f;&#58;&#x49;&#x63;&#111;&#x6e;&#x2d;&#53;&#x38;&#64;&#x32;&#x78;&#x2e;&#x70;&#110;&#103;">&#73;&#99;&#111;&#x6e;&#x2d;&#x35;&#x38;&#x40;&#x32;&#x78;&#46;&#x70;&#110;&#103;</a>  | 58x58 |  iOS7及以上，Retina  | 应用图标，设置中用
- |</p>
-
-<h3>应用加载图片</h3>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:left;"> 名称      </th>
-<th style="text-align:right;">  尺寸（ps） </th>
-<th style="text-align:center;"> 系统及iPhone  </th>
-<th style="text-align:center;"> 说明 </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;"> Default.png  </td>
-<td style="text-align:right;"> 320x480 </td>
-<td style="text-align:center;">  iOS7及以上，非Retina，iPhone4及之前iPhone </td>
-<td style="text-align:center;"> 启动图片 </td>
-</tr>
-<tr>
-<td style="text-align:left;"> <a href="&#109;&#97;&#105;&#x6c;&#x74;&#111;&#58;&#68;&#x65;&#102;&#97;&#117;&#x6c;&#x74;&#x40;&#x32;&#120;&#x2e;&#x70;&#110;&#103;">&#x44;&#101;&#x66;&#97;&#x75;&#x6c;&#116;&#x40;&#x32;&#120;&#x2e;&#x70;&#110;&#103;</a>  </td>
-<td style="text-align:right;"> 640x960 </td>
-<td style="text-align:center;">  iOS7及以上，Retina，iPhone4s  </td>
-<td style="text-align:center;"> 启动图片 </td>
-</tr>
-<tr>
-<td style="text-align:left;"> <a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#68;&#101;&#x66;&#x61;&#x75;&#x6c;&#116;&#x5f;&#x31;&#49;&#51;&#x36;&#64;&#50;&#x78;&#x2e;&#x70;&#110;&#103;">&#x44;&#x65;&#102;&#97;&#x75;&#108;&#x74;&#x5f;&#x31;&#x31;&#51;&#x36;&#x40;&#50;&#120;&#46;&#x70;&#x6e;&#103;</a>  </td>
-<td style="text-align:right;"> 640x1136 </td>
-<td style="text-align:center;">  iOS7及以上，Retina，iPhone5、iPhone5s </td>
-<td style="text-align:center;"> 启动图片 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h3>　</h3>
-
-<ol>
-<li>如果需要定制navigaion bar，tab bar等iOS标准控件，其上的图片需要具体分析。</li>
-<li>所有图片需提供两套图片，一套给非Retina屏幕使用，为正常尺寸；一套给Retina屏幕使用，为正常尺寸的二倍，且需要命名为@2x。（如果只需要支持iPhone4s及之后的iPhone，只需要提供@2x图片，即正常尺寸的二倍的图片）</li>
-</ol>
-
-
-<h2>切图建议</h2>
-
-<ol>
-<li>所有图片需要为png格式</li>
-<li>图片命名请和用途关联，最好一看就知道用在哪的（图片太多，这样容易分辨）。</li>
-</ol>
-
 ]]></content>
   </entry>
   

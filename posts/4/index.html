@@ -7,8 +7,8 @@
 	<meta name="author" content="易荣义">
 
 	
-	<meta name="description" content="一、不可变的String 每当把String对象作为方法的参数时，都会复制一份引用（肯定的，无需赘言）。
-String对象是不可变的。但String类中每一个看起来会修改string值的方法，实际上都是创建了一个全新的String对象，而最初的String对象不变。 Read on &rarr &hellip;">
+	<meta name="description" content="RTTI RTTI即Run-Time Type Information（运行时类型信息）
+类型信息在运行时表示的工作由Class对象完成，它包含了与类有关的信息（可作用于这些实例的所有方法代码，类的所有静态成员），Class对象可以制造类的实例。因此， &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -75,6 +75,39 @@ String对象是不可变的。但String类中每一个看起来会修改string�
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/05/29/typeinfo/">
+		
+			《Java编程思想》读书笔记之类型信息</a>
+	</h2>
+	<div class="entry-content">
+		<h3>RTTI</h3>
+
+<ol>
+<li>RTTI即Run-Time Type Information（运行时类型信息）</li>
+<li>类型信息在运行时表示的工作由Class对象完成，它包含了与类有关的信息（可作用于这些实例的所有方法代码，类的所有静态成员），Class对象可以制造类的实例。因此，Class引用表示的就是它所指向的对象的确切类型，而该对象就是Class类的一个对象。
+		
+		<a href="/blog/2014/05/29/typeinfo/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+May 29th, 2014</div>
+	<div class="tags">
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -349,37 +382,6 @@ Jan 28th, 2014</div>
 
 
 Dec 18th, 2013</div>
-	<div class="tags">
-
-</div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/12/17/UIAppearance/">
-		
-			使用UIAppearance协议自定义视图</a>
-	</h2>
-	<div class="entry-content">
-		<h3>背景</h3>
-
-<p>在iOS5之前，如果想更改原生控件的外观，且如果想一次性更改系统中所有的控件外观，就只能定义子类且所有使用的地方都替换成自定义的子类，且覆盖drawRect方法。而在iOS5之后，苹果通过两个协议（UIAppearance和UIAppearanceContainer）规范了对许多UIKit控件定制的支持。
-		
-		<a href="/blog/2013/12/17/UIAppearance/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-Dec 17th, 2013</div>
 	<div class="tags">
 
 </div>
