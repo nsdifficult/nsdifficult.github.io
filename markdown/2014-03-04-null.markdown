@@ -1,0 +1,76 @@
+---
+layout: post
+title: "nil/Nil/Null/NSNull[译]"
+date: 2014-03-03 15:06
+comments: true
+categories: 
+---
+[原文：http://nshipster.com/nil/](http://nshipster.com/nil/)  
+
+  理解空或者虚无的概念是和哲学问题一样实用的问题。我们是存在事物的宇宙居民，也是在逻辑宇宙中存在的不确定性的原因。作为一个逻辑系统的物理表现，电脑也面对这个棘手的问题：怎样用存在的事物表达不存在（空、虚无）。<!--more-->
+  
+  在Objective-C中对空有不同种类的表达。之所以这样的原因可以追溯到[a common NSHipster refrain](http://nshipster.com/ns_enum-ns_options/)，Objective-C如何在程序范式上建立C语言与受Smalltalk启发面向对象语言之间关于处理空的桥梁。  
+  
+  C语言用0代表基础数据类型的空。NULL代表指针为空。  
+  
+  Objective-C以C语言中空的代表为基础增加了nil。nil是对象指针，指向空。尽管在语义（semantically）上不同于NULL，但他们在技术上是等价的。   
+  
+  在框架级别，Foundation定义了NSNull，NSNull定义了一个类方法，＋null，这个方法返回单例的NSNull对象。NSNull不同于nil或者NULL，因为NSNull是一个实际的对象而不是一个0值。   
+  
+  额外的，在[Foundation/NSObjCRuntime.h](https://gist.github.com/4469665)中定义了Nil作为类指针指向了空。Nil很少出现，但仍值得关注。
+  
+## 关于nil  
+
+新分配内存的NSObject生命开始的初始化值都被置为0.这意味着对象的所有指向对象的指针开始于nil，所以不必再为NSObject对象初始化为nil，如在init方法中初始化：self.(association)=nil.   
+  
+  可能这样做最明显的好处是可以发送消息给nil。    
+  
+  在其他语言，如C++，发送消息给Null会导致程序崩溃，但在Objective—C中发送消息给nil回返回0值。这个很大范围的简化了许多表达式，如免除了在对对象执行操作前检查是否为nil。
+  
+```
+// For example, this expression...     
+if (name != nil && [name isEqualToString:@"Steve"]) { ... }    
+// ...can be simplified to:   
+if ([name isEqualToString:@"steve"]) { ... }
+```
+   
+   意识到nil在Objective—C中式如何工作的得以使得这个方便之处称为一个特色而不是程序中一个隐藏的bug。确保防止nil不希望出现的地方，而不是检查和默默返回错误，或者增加一个 NSParameterAssert抛出异常。
+   
+## 关于NSNull
+
+NSNull用在Foundation和其他框架来绕过集合（如NSArray和NSDictionary）不能包含nil的限制。你可以认为NSNull是包装NULL或者nil的盒子以至于它可以被使用在集合中：
+   
+```
+NSMutableDictionary *mutableDictionary =[NSMutableDictionary dictionary];    
+// Sets value of NSNull singleton for `someKey`    
+mutableDictionary[@"someKey"] = [NSNull null];     
+// @[@"someKey"]   
+NSLog(@"Keys: %@", [mutableDictionary allKeys]); 
+```
+
+## 总结  
+
+  概括来说，每个Objective-C程序员都需要知道的是：  
+  
+  Symbol | Value | Meaning
+------------ | ------------- | -------------
+NULL | (void *)0 	literal null value for C pointers |literal null value for C pointers 
+nil | (id)0 | literal null value for Objective-C objects
+Nil | (Class)0 | literal null value for Objective-C classes
+NSNull | [NSNull null] | singleton object used to represent null  
+
+
+##注：
+Objective-C中对nil的定义：
+
+	define nil NULL;
+	
+C中对NULL的定义：
+
+	define NULL 0;
+	
+所以在Objective-C中对基础数据类型（如a）的判断，认为：
+
+	if (a == nil)
+	
+正确。因为`a == 0`与`a == nil`相同。

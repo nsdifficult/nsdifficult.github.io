@@ -1,0 +1,180 @@
+---
+layout: post
+title: "《Java编程思想》读书笔记之String"
+date: 2014-05-28 09:06
+comments: true
+categories: 
+---
+
+
+###一、不可变的String
+1. 每当把String对象作为方法的参数时，都会复制一份引用（肯定的，无需赘言）。
+2. String对象是不可变的。但String类中每一个看起来会修改string值的方法，实际上都是创建了一个全新的String对象，而最初的String对象不变。<!--more-->
+
+```java
+String q = "abc";
+String qq = upcase(q);
+print(qq);//ABC
+print(q);//abc
+```
+
+###二、重载“＋”与StringBuilder
+1. 用于String的“＋”与“＋＝”是java中仅有的两个重载过的操作符。Java不允许程序员重载任何操作符。（原文：The ‘+’ and ‘+=‘ for String are the only operators that are overloaded in Java, and Java does not allow the programmer to overload any others.）
+2. 用“＋”或者“＋＝”连接String时，Java会自动引入StringBuilder。
+3. 如果在for循环中连接字符串，推荐使用StringBuilder。如果使用“＋”或者“＋＝”，java会在每次循环中创建一个StringBuilder，造成多次分配缓存。
+4. 如果拿不准使用哪种方式，可使用javap命令分析程序。
+
+避免：
+
+	
+	public String implicit(String[] fields) {
+		String result = "";
+		for (int i = 0; i < fields.length; i++)
+			result += fields[i];
+		return result;
+	}
+
+推荐：
+
+	public String explicit(String[] fields) {
+		StringBuilder result = new StringBuilder();
+		for (int i = 0; i < fields.length; i++)
+			result.append(fields[i]);
+		return result.toString();
+	}
+
+###三、格式化输出
+
+1. Java使用System.out.format()方法模仿C的printf()实现格式化输出，java中也可使用printf，与System.out.format()一致。
+2. Java种，所有新的格式化的功能都由java.util.Formatter类处理。
+3. String.format()方法则参考自C中的sprintf()方法以生成格式化的String对象，它是一个static方法，接受与java.util.Formatter类的format()方法一样的参数，但返回一个String对象。其内部也是使用Formatter。
+4. 格式化说明符：%[argument_index$][flags][width][.precision]conversion。如  
+
+```java
+import java.util.*;
+public class Receipt {
+	private double total = 0;
+	private Formatter f = new Formatter(System.out);
+	public void printTitle() {
+		f.format("%-15s %5s %10s\n", "Item", "Qty", "Price");
+		f.format("%-15s %5s %10s\n", "----", "---", "-----");
+	}
+	public void print(String name, int qty, double price) {
+		f.format("%-15.15s %5d %10.2f\n", name, qty, price);
+		total += price;
+	}
+	public void printTotal() {
+		f.format("%-15s %5s %10.2f\n", "Tax", "", total * 0.06);
+		f.format("%-15s %5s %10s\n", "", "", "-----");
+		f.format("%-15s %5s %10.2f\n", "Total", "", total * 1.06);
+	}
+	public static void main(String[] args) {
+		Receipt receipt = new Receipt();
+		receipt.printTitle();
+		receipt.print("Jack’s Magic Beans", 4, 4.25);
+		receipt.print("Princess Peas", 3, 5.1);
+		receipt.print("Three Bears Porridge", 1, 14.29);
+		receipt.printTotal();
+	}
+}
+```
+
+
+输出
+
+```java
+Item              Qty      Price
+----              ---      -----
+Jack’s Magic Be     4       4.25
+Princess Peas       3       5.10
+Three Bears Por     1      14.29
+Tax                         1.42
+                           -----
+Total                      25.06
+```
+
+
+`"%-15s %5s %10.2f\n"` 中  -15s：－15表示左起长度为15，s表示字符串   
+
+System.out.format()例子
+
+	public class SimpleFormat {
+	public static void main(String[] args) {
+		int x = 5;
+		double y = 5.332542;
+		// The old way:
+		System.out.println("Row 1: [" + x + " " + y + "]");
+		// The new way:
+		System.out.format("Row 1: [%d %f]\n", x, y);
+		// or
+		System.out.printf("Row 1: [%d %f]\n", x, y);
+		}
+	}
+
+输出：
+
+	Row 1: [5 5.332542]
+	Row 1: [5 5.332542]
+	Row 1: [5 5.332542]
+
+###四、使用Scanner类用于扫描输入，其构造器可以接受任何类型的输入对象（String、File对象、实现Readable接口的对象等）。   
+####Scanner分词：默认Scanner使用空白字符对输入进行分词，但是也可以使用正则表达式指定所需的定界符。 如：
+
+使用“，”分隔：
+
+	import java.util.*;
+	public class ScannerDelimiter {
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner("12, 42, 78, 99, 42");
+		scanner.useDelimiter("\\s*,\\s*");
+		while(scanner.hasNextInt())
+			System.out.println(scanner.nextInt());
+		}
+	}
+
+
+输出：
+
+
+	12
+	42
+	78
+	99
+	42
+
+使用正则表达式分隔：
+
+	import java.util.regex.*;
+	import java.util.*;
+
+	public class ThreatAnalyzer {
+		static String threatData = "58.27.82.161@02/10/2005\n"
+			+ "204.45.234.40@02/11/2005\n" + "58.27.82.161@02/11/2005\n"
+			+ "58.27.82.161@02/12/2005\n" + "58.27.82.161@02/12/2005\n"
+			+ "[Next log section with different data format]";
+
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(threatData);
+		String pattern = "(\\d+[.]\\d+[.]\\d+[.]\\d+)@"
+				+ "(\\d{2}/\\d{2}/\\d{4})";
+		while (scanner.hasNext(pattern)) {
+			scanner.next(pattern);
+			MatchResult match = scanner.match();
+			String ip = match.group(1);
+			String date = match.group(2);
+			System.out.format("Threat on %s from %s\n", date, ip);
+		}
+	}
+	}
+
+
+输出：
+
+
+	Threat on 02/10/2005 from 58.27.82.161
+	Threat on 02/11/2005 from 204.45.234.40
+	Threat on 02/11/2005 from 58.27.82.161
+	Threat on 02/12/2005 from 58.27.82.161
+	Threat on 02/12/2005 from 58.27.82.161
+
+
