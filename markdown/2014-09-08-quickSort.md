@@ -10,7 +10,7 @@ categories:
 
 快速排序的图解：  
 
-{% img  /images/quicksort/1.png %}   
+![](/images/quicksort/1.png )
 
 ###步骤  
 快速排序使用分治法（Divide and conquer）策略来把一个串行（list）分为两个子串行（sub-lists）。   

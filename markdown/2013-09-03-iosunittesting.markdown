@@ -16,23 +16,23 @@ OCUnit包括两部分Logic Tests和Application Tests。
 在项目中添加OCUnit分两种情况： 
   
 1.   建立项目时添加   
-	{% img /images/iosunittestingimage/iosunittesting001.png %}  
+	![](/images/iosunittestingimage/iosunittesting001.png)  
 	这样在项目建立时XCode便自动帮我们添加了OCUnit。  
-	{% img /images/iosunittestingimage/iosunittesting002.png %}  
+	![](/images/iosunittestingimage/iosunittesting002.png)  
 	
 2.   给已有的项目添加OCUnit  
    
       向已存在的工程中添加OCUnit Logic Tests只需要添加一个类型为：“Cocoa Touch Unit Testing Bundle”的Target即可。        
-   {% img /images/iosunittestingimage/iosunittesting003.jpg %}    
+   ![](/images/iosunittestingimage/iosunittesting003.jpg)    
       向已有工程中添加一个测试Target时，XCode会自动生成一个Scheme，运行单元测试用例和Build原工程需要切换不同的Scheme。如果认为切换Scheme非常麻烦，也可以在添加Target之前，在“Manage Scheme”菜单中取消“Autocreate schemes”。取消后就不需要切换了，如果想测试，直接选择TEST。      
-   {% img /images/iosunittestingimage/iosunittesting008.png %}     
+   ![](/images/iosunittestingimage/iosunittesting008.png)     
       向已有的工程添加Application Tests。  
       * 首先添加一个类型为：“Cocoa Touch Unit Testing Bundle”的Target（与Logic Tests一致）。   
       * 然后设置Build Settings中的`Bundle Loader`为 `$(BUILT_PRODUCTS_DIR)/<app_name>.app/<app_name>`   
-      {% img   /images/iosunittestingimage/iosunittesting005.jpg %}  
+      ![](/images/iosunittestingimage/iosunittesting005.jpg)
             
       * 设置`Test Host`为`$(BUNDLE_LOADER)`   
-      {% img /images/iosunittestingimage/iosunittesting006.jpg %}  
+      ![](/images/iosunittestingimage/iosunittesting006.jpg)  
 
       * 在Build Phases-Target Dependencies中添加依赖，选择主程序Target。   
       官方文档：[Xcode Unit Testing Guide](https://developer.apple.com/library/ios/documentation/DeveloperTools/Conceptual/UnitTesting/00-About_Unit_Testing/about.html#//apple_ref/doc/uid/TP40002143-CH1-SW1)   
@@ -43,18 +43,18 @@ OCUnit包括两部分Logic Tests和Application Tests。
 *   下载GHUnit，将GHUnitIOS.framework添加至刚才新加的target。   
 *   在Build Settings中搜索“linker flags”，设置Other Linker Flags - Debug - 添加一个支持全架构和全版本SDK的标示“-ObjC -all_load”。   
 *   删除刚添加的Target中的AppDelegate。修改main函数，导入GHUnitIOSAppDelegate代替原来的AppDelegate，修改UIApplicationMain的参数。  
-{% img  /images/iosunittestingimage/iosunittesting009.png %}   
+![](/images/iosunittestingimage/iosunittesting009.png)
 ##OCMock   
 OCMock是针对Objective-C的一个用来模拟对象的框架  
 
 *   下载[OCMock](http://ocmock.org/)
 *   在原始工程目录下创建Libraries文件夹，将下载的libOCMock.a和OCMock文件夹添加至其中。   
-{% img /images/iosunittestingimage/iosunittesting010.png %}   
+![](/images/iosunittestingimage/iosunittesting010.png)   
 *   在 GHUnitTest 工程中新建名为 Libraries 的 group，导入libOCMock.a 和目录 OCMock，注意 target 是 Tests。
 *   设置 Tests 的 Build Setting。让 Libray Search Paths 包含 $(SRCROOT)/Libraries。   
-{%  img  /images/iosunittestingimage/iosunittesting012.jpg %}
+![](/images/iosunittestingimage/iosunittesting012.jpg)
 *   在 Header Search Paths 中增加 $(SRCROOT)/Libraries。   
-{% img /images/iosunittestingimage/iosunittesting013.jpg  %}
+![](/images/iosunittestingimage/iosunittesting013.jpg)
 *   更多OCMock安装与介绍见[OCMock](http://ocmock.org/)   
  
 ##OCHamcrest   

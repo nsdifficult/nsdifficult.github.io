@@ -11,7 +11,7 @@ categories:
 
 冒泡排序的图解：  
 
-{% img  /images/bubblesort/1.gif %}   
+![](/images/bubblesort/1.gif) 
 
 ###步骤  
 

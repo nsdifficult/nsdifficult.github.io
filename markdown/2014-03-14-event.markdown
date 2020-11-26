@@ -23,7 +23,7 @@ iOS使用hit-testing寻找触摸的view。 Hit-Testing通过检查触摸点是�
 
 举例说明，假设用户触摸了图中的view E。iOS通过如下顺序查找hit-test view。  
 
-{% img /images/eventimage/hit_testing_2x.png %}
+![](/images/eventimage/hit_testing_2x.png)
 
 1. 触摸点在view A中，所以要检查子view B和C。
 2. 触摸点不在view B中，但在C中，所以检查C的子view D和E。
@@ -58,7 +58,7 @@ First responder被设计来第一个接收事件。典型的，first responder�
 
 Responder chain 序列在iOS确定一个事件并将它传递给initial object（通常是view）时开始。所以initial view有处理事件的第一个机会。下图描述了两个不同的事件传递路径（因为不同的app 设置）。一个App的事件传递路径由app特殊的构成决定，但事件传递路径会遵守相同的规则。  
 
-{% img /images/eventimage/iOS_responder_chain_2x.png %}
+![](/images/eventimage/iOS_responder_chain_2x.png)
 
 
 ##关键方法
