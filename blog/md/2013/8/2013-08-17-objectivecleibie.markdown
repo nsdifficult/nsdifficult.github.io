@@ -1,10 +1,4 @@
----
-layout: post
-title: "Objective-C的类别，类扩展与私有方法"
-date: 2013-08-17 21:09
-comments: true
-categories: 
----
+# Objective-C的类别，类扩展与私有方法
 ## 类扩展
 
 始终不明白类扩展是什么东西,今天查了下文档
