@@ -1,18 +1,18 @@
 # iOS中并发编程之Operation Queues（二）
-##简介
+## 简介
 Operation Queue是 concurrent dispatch queue在Cocoa上的同等实现，由NSOperationQueue类实现。不同于dispatch queues的FIFO运行方式，Operation Queues中的任务执行顺序也会考虑其他因素，其中主要考虑任务的依赖性。你在创建任务时需要定义其依赖性来实现复杂的任务执行顺序图。<!--more-->  
 
 你提交给Operation Queue的任务必须是NSOperation的实例，这是一个Objective-C的对象，它是一个基类，但Foundation Framework也包括了一些其子类以供开发者使用。 
  
 Operation对象实现了KVO协议以方便开发者监控任务的执行进程。虽然 operation queue 总是并发地执行任务,你 可以使用依赖,在需要时确保顺序执行。  
-##Operation Objects介绍
+## Operation Objects介绍
 类 | 描述 
 ------------ | -------------
 NSInvocationOperation | 可以直接使用的类,基于应用的一个对象和 selector 来创 建 operation object。如果你已经有现有的方法来执行需要 的任务,就可以使用这个类。
 NSBlockOperation | 可以直接使用的类,用来并发地执行一个或多个 block 对 象。operation object 使用“组”的语义来执行多个 block 对 象,所有相关的 block 都执行完成之后,operation object 才算完成。
 NSOperation | 基类,用来自定义子类 operation object。继承 NSOperation 可以完全控制 operation object 的实现,包括修改操作执 行和状态报告的方式。
 
-####所有 operation objects 都支持以下关键特性:
+#### 所有 operation objects 都支持以下关键特性:
 
 * 支持建立基于图的operation objects依赖。可以阻止某个operation 运行,直到它依赖的所有 operation 都已经完成。
 * 支持可选的 completion block,在 operation 的主任务完成后调用。
@@ -21,7 +21,7 @@ NSOperation | 基类,用来自定义子类 operation object。继承 NSOperation
 * 支持取消,允许你中止正在执行的任务
 
 
-##并发VS非并发Operations
+## 并发VS非并发Operations
 
 通常我们通过将operation添加到operation queue中来执行该操作。但是我们也可以手动调用start方法来执行一个operation对象,这样做不保证operation会并发执行。NSOperation类对象的isConcurrent方法告诉你这个operation相对于调用start方法的线程,是同步还是异步执行的isConcurrent方法默认返回NO,表示operation与调用线程同步执行。   
 
@@ -31,7 +31,7 @@ NSOperation | 基类,用来自定义子类 operation object。继承 NSOperation
 
 多数开发者从来都不需要实现并发operation对象,我们只需要将operations添加到operation queue。当你提交非并发operation到operation queue时,queue会创建线程来运行你的操作,因此也能达到异步执行的目的。只有你不希望使用operation queue来执行operation时,才需要定义并发operations。
 
-##创建一个 NSInvocationOperation 对象
+## 创建一个 NSInvocationOperation 对象
 
 如果已经先有一个方法,需要并发地执行,就可以直接创建 NSInvocationOperation 对象,而不需要自己继承 NSOperation。   
 NSInvocationOpertaion例子：
@@ -65,7 +65,7 @@ NSInvocationOpertaion例子：
 ```
 
 
-##创建一个 NSBlockOperation 对象
+## 创建一个 NSBlockOperation 对象
 
 NSBlockOperation 对象用于封装一个或多个 block 对象,一般创建时 会添加至少一个 block,然后再根据需要添加更多的 block。
 当 NSBlockOperation 对象执行时,会把所有 block 提交到默认优先级的 并发 dispatch queue。然后 NSBlockOperation 对象等待所有 block 完成 执行,最后标记自己已完成。因此可以使用 block operation 来跟踪一组 执行中的 block,有点类似于 thread join 等待多个线程的结果。区别在于 block operation 本身也运行在一个单独的线程,应用的其它线程在等
@@ -86,7 +86,7 @@ NSBlockOperation* theOp = [NSBlockOperation blockOperationWithBlock: ^{
 使用 addExecutionBlock: 可以添加更多 block 到这个 block operation 对象。如果需要顺序地执行 block,你必须直接提交到所需的 dispatch queue。
 
 
-##自定义Operation对象
+## 自定义Operation对象
 
 如果 block operation 和 invocation operation 对象不符合应用的需求, 你可以直接继承 NSOperation,并添加任何你想要的行为。NSOperation 类提供通用的子类继承点,而且实现了许多重要的基础设施来处理依赖 和 KVO 通知。继承所需的工作量主要取决于你要实现非并发还是并发的 operation。  
 
@@ -136,7 +136,7 @@ NSBlockOperation* theOp = [NSBlockOperation blockOperationWithBlock: ^{
 @end
 ```
 
-###响应取消事件
+### 响应取消事件
 
 operation开始执行之后,会一直执行任务直到完成,或者显式地取消操作。取消可能在任何时候发生,甚至在operation执行之前。尽管NSOperation提供了一个方法,让应用取消一个操作,但是识别出取消事件则是你的事情。如果operation直接终止,可能无法回收所有已分配的内存或资源。因此operation对象需要检测取消事件,并优雅地退出执行。   
 
@@ -165,7 +165,7 @@ operation对象定期地调用isCancelled方法,如果返回YES(表示已取消)
 
 
 
-##为并发执行配置operations
+## 为并发执行配置operations
 
 Operation对象默认按同步方式执行,也就是在调用 start 方法的那 个线程中直接执行。由于 operation queue 为非并发operation提供了线 程支持,对应用来说,多数 operations 仍然是异步执行的。但是如果你 希望手工执行 operations,而且仍然希望能够异步执行操作,你就必须 采取适当的措施,通过定义 operation 对象为并发操作来实现:
 
@@ -216,7 +216,7 @@ isConcurrent | (必须)标识一个操作是否并发 operation,覆盖这个方�
 即使操作被取消,你也应该通知 KVO observers,你的操作已经完成。 当某个 operation 对象依赖于另一个 operation 对象的完成时,它会监测 后者的 isFinished key path。只有所有依赖的对象都报告已经完成,第一 个 operation 对象才会开始运行。如果你的 operation 对象没有产生完成 通知,就会阻止其它依赖于你的 operation 对象运行。  
 
 
-###维护KVO依从
+### 维护KVO依从
 
 NSOperation 类的 key-value observing(KVO)依从于以下 key paths:
 
@@ -229,10 +229,10 @@ NSOperation 类的 key-value observing(KVO)依从于以下 key paths:
 *   queuePriority
 *   completionBlock
 
-###自定义一个Operation对象的执行行为
+### 自定义一个Operation对象的执行行为
 对 Operation 对象的配置发生在创建对象之后,将其添加到queue之前。
 
-####配置operation之间的依赖关系
+#### 配置operation之间的依赖关系
 
 依赖关系可以顺序地执行相关的 operation 对象,依赖于其它操作, 则必须等到该操作完成之后自己才能开始。你可以创建一对一的依赖关 系,也可以创建多个对象之间的依赖图。
 
@@ -247,7 +247,7 @@ NSOperation 类的 key-value observing(KVO)依从于以下 key paths:
 
 优先级不能替代依赖关系,优先级只是 queue 对已经准备好的 operations 确定执行顺序。先满足依赖关系,然后再根据优先级从所有 准备好的操作中选择优先级最高的那个执行。
 
-####修改底层线程的优先级
+#### 修改底层线程的优先级
 
 Mac OS X 10.6 之后,我们可以配置 operation 底层线程的执行优先级, 线程直接由内核管理,通常优先级高的线程会给予更多的执行机会。对 于 operation 对象,你指定线程优先级为 0.0 到 1.0 之间的某个数值,0.0 表示最低优先级,1.0 表示最高优先级。默认线程优先级为 0.5   
 
@@ -255,14 +255,14 @@ Mac OS X 10.6 之后,我们可以配置 operation 底层线程的执行优先级
 
 如果你创建了并发 operation,并覆盖了 start 方法,你必须自己配置 线程优先级。
 
-####设置一个completion block
+#### 设置一个completion block
 
 在 Mac OS X 10.6 之后,operation 可以在主任务完成之后执行一个 completion block。你可以使用这个 completion block 来执行任何不属于 主任务的工作。例如你可以使用这个 block 来通知相关的 client,操作已 经执行完成。而并发 operation 对象则可以使用这个 block 来产生最终的 KVO 通知。
 
 
-##执行Operations
+## 执行Operations
 
-###添加Operations到Operation Queue
+### 添加Operations到Operation Queue
 
 执行 Operations 最简单的方法是添加到 operation queue,后者 是 NSOperationQueue 对象。应用负责创建和维护自己使用的所 有 NSOperationQueue 对象。  
 
@@ -276,7 +276,7 @@ setMaxConcurrentOperationCount: 方法可以配置 operation queue 的最 大并
  
 `加入queue的operation只能取消，不能暂停。`
 
-###手动执行Operations 
+### 手动执行Operations
 
 手动执行 Operation,要求 Operation 已经准备好,isReady 返回 YES, 此时你才能调用 start 方法来执行它。isReady 方法与 Operations 依赖是 结合在一起的。  
 调用 start 而不是 main 来手动执行 Operation,因为 start 在执行你的 自定义代码之前,会首先执行一些安全检查。而且 start 还会产生 KVO通知,以正确地支持 Operations 的依赖机制。start 还能处理 Operations
@@ -290,7 +290,7 @@ setMaxConcurrentOperationCount: 方法可以配置 operation queue 的最 大并
 
 你可以调用 Operation 对象的 cancel 方 法取消单个操作,也可以调用 operation queue 的 cancelAllOperations 方 法取消当前 queue 中的所有操作。
 
-##挂起和继续Queue
+## 挂起和继续Queue
 
 如果你想临时挂起 Operations 的执行,可以使用 setSuspended: 方 法暂停相应的 queue。不过挂起一个 queue 不会导致正在执行的 Operation 在任务中途暂停,只是简单地阻止调度新 Operation 执行。你 可以在响应用户请求时,挂起一个 queue,来暂停等待中的任务。稍后 根据用户的请求,可以再次调用 setSuspended: 方法继续 Queue 中操作 的执行。
 

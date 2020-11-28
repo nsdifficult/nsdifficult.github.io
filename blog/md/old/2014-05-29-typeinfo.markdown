@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-###RTTI
+### RTTI
 1.  RTTI即Run-Time Type Information（运行时类型信息）
 2.  类型信息在运行时表示的工作由Class对象完成，它包含了与类有关的信息（可作用于这些实例的所有方法代码，类的所有静态成员），Class对象可以制造类的实例。因此，Class引用表示的就是它所指向的对象的确切类型，而该对象就是Class类的一个对象。<!--more-->
 3.  事实上，Class对象就是用来创建类的所有的“常规”对象的。Java使用Class对像来执行其RTTI，即使你正在执行的是类型转换这样的操作。

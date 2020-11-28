@@ -17,7 +17,7 @@ categories:
 事件传递路径的最终目的时找出能处理和响应该事件的对象。因此，UIKit给适合处理该事件的对象发送事件。对于触摸事件，这个对象就是hit-test view，对于其他事件，这个对象就是第一个响应器（first responder）。下面的章节解释了hit-test view和first responder对象是如何被确定的。  
 
 
-##Hit-Testing返回触摸发生的view
+## Hit-Testing返回触摸发生的view
 
 iOS使用hit-testing寻找触摸的view。 Hit-Testing通过检查触摸点是否在关联的view边界内，如果在，则递归地（recursively）检查该view的所有子view。在层级上处于lowest（我理解就是离用户最近的view）且边界范围包含触摸点的view成为hit-test view。确定hit-test view后，它传递触摸事件给该view。  
 
@@ -52,7 +52,7 @@ First responder被设计来第一个接收事件。典型的，first responder�
 。。。   
 
 
-##响应器链遵照一个特殊的传递路径（The Responder Chain Follows a Specific Delivery Path）   
+## 响应器链遵照一个特殊的传递路径（The Responder Chain Follows a Specific Delivery Path）
 
 如果初始化对象（initial object）—— 即hit-test view或者first responder —— 不处理事件，UIKit会将事件传递给responder chain的下一个responder。每个responder决定它是传递事件还是通过nextResponder方法传递给它的下一个responder。这个操作继续直到一个responder处理event或者没有responder了。  
 
@@ -61,7 +61,7 @@ Responder chain 序列在iOS确定一个事件并将它传递给initial object�
 ![](/images/eventimage/iOS_responder_chain_2x.png)
 
 
-##关键方法
+## 关键方法
 `- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event` 返回在层级上离当前view最远（离用户最近）且包含指定的point的view。  
 
 关于hitTest方法的解释见[hitTest:withEvent:方法流程](http://www.winddisk.com/2012/10/11/hittest_withevent/)    

@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-##Storm 集群的组成部分
+## Storm 集群的组成部分
 
 一个Storm集群可以简单的认为和Hadoop集群类似。但是在Hadoop上你运行“MapReduce jobs”而在Storm上你运行“topologies（拓扑）”。”Jobs”和“topologies”是不同的－－－一个关键的不同点是MapReduce job最终完成时停止，而一个topology processes messages 永远不会停止（除非你kill它）。<!--more-->    
 
@@ -18,8 +18,8 @@ Storm 集群上有两种节点：master node和worker 节点（以后简称主�
 
 所有Nimbus和Supervisors之间的协调通过[Zookeeper](http://zookeeper.apache.org/)集群。此外，Nimbus守护进程和Supervisor守护进程是fail-fast（快速失败）和stateless（adj. 没有国家的；无国家主权的；无状态的）；所有的状态都保存在Zookeeper或者本地磁盘中。这意味着你可以kill  -9 Nimbus z或者Supervisors，但他们会恢复并开始就像什么都没发生过。这个设计导致了Storm集群非常稳定。   
 
-##安装
-###zookeeper  
+## 安装
+### zookeeper
 
 http://jbowles.github.io/blog/2013/02/08/zookeeper-setup-on-mac/  
 
@@ -29,7 +29,7 @@ brew update && brew install zookeeper
 ```  
 
 
-###Omq
+### Omq
 
 http://ptgoetz.github.io/blog/2013/11/26/building-storm-on-osx-mavericks/   
 
@@ -40,7 +40,7 @@ git checkout 381c97f Library/Formula/zeromq.rb
 brew install zeromq
 ```  
 
-###JZMQ
+### JZMQ
 消息处理。
 
 ```
@@ -61,7 +61,7 @@ make
 sudo make install
 ```
 
-###Leiningen  
+### Leiningen
 
 ``` 
 mkdir ~/bin
@@ -70,7 +70,7 @@ chmod +x ~/bin/lein
 export PATH=$PATH:~/bin
 ```
 
-###build Storm
+### build Storm
 
 ```
 git clone https://github.com/nathanmarz/storm.git
@@ -79,7 +79,7 @@ lein sub install
 ```
 
 
-##命令
+## 命令
 `jps`查看java进程
 
 `which java`查看命令地址  
@@ -92,7 +92,7 @@ lein sub install
 
 `zkServer start/stop` 启动／停止zookeeper
 
-###启动storm：
+### 启动storm：
 
 ```
 storm nimbus &

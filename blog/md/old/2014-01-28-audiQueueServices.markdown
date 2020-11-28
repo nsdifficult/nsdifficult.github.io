@@ -21,7 +21,7 @@ Audio Queue Services是[Audio Toolbox](https://developer.apple.com/library/ios/d
 [System Sound Services](https://developer.apple.com/library/ios/documentation/AudioToolbox/Reference/SystemSoundServicesReference/Reference/reference.html#//apple_ref/doc/uid/TP40007916)  
 
 
-###Audio Queue Services是什么？
+### Audio Queue Services是什么？
 Audio Queue Services提供一个在iOS和Mac OS X上直接、低开销的方式去记录和播放音频。它被推荐作为播放和记录音频的技术。Audio Queue Services允许你使用下面的格式来记录和播放音频：  
 
 * Linear PCM（线性PCM：主要特点为未经过任何编码和压缩处理）
@@ -34,7 +34,7 @@ Audio Queue Services是高层的技术。它允许你使用硬件（如麦克风
 同时Audio Queue Services支持一些高级特性。它提供细微的时间控制来支持预定播放和同步。你可以使用它来同步多个音频队列（Audio Queues）和同步音频和视频的播放。  
 
 
-##Audio Queue Services结构
+## Audio Queue Services结构
 
 Audio Queue Services包括：  
 
@@ -44,7 +44,7 @@ Audio Queue Services包括：
 
 
 
-##使用Audio Queue Services播放本地音频
+## 使用Audio Queue Services播放本地音频
 
 1. 定义一个管理队列状态、音频格式、文件路径等信息的结构。
 2. 编写音频队列的回调函数来执行实际的播放。
@@ -56,7 +56,7 @@ Audio Queue Services包括：
 
 
 
-##一些链接
+## 一些链接
 [Audio Queue Services Programming Guide 官方指南](https://developer.apple.com/library/ios/documentation/MusicAudio/Conceptual/AudioQueueProgrammingGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40005343-CH1-SW1)  
 [Audio Queue Services Programming Guide 中文翻译](http://blog.csdn.net/jiangyiaxiu/article/details/9190059)  
 [Audio Queue Services Programming Guide 官方例子：SpeakHere](https://developer.apple.com/library/ios/samplecode/SpeakHere/Introduction/Intro.html)

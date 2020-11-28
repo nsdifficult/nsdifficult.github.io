@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-##背景
+## 背景
 
 通过往cell的contentView里加入自定义view的方式定制Cell时，发现自定义的view中的图片，按钮等不响应gesture。<!--more-->代码如下：
 
@@ -32,7 +32,7 @@ categories:
 }
 ``` 
 
-##分析
+## 分析
 
 1. 调试了半天，发现`- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath`方法在显示前调用，用于返回要显示的cell。但在这个方法里的cell的frame的height在初始化时为44，而不是指定的height。在要显示时才会算出正确的height。所以不能在这个方法里使用cell的frame/bounds来设置cell中子view的frame等！！！！！  所以上例中的`cellView = [[CellView alloc] initWithFrame:cell.bounds];`会导致自定义的CellView的frame不正确，当然会导致gesture无效。 
 

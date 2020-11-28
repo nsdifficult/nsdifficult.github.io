@@ -7,12 +7,12 @@ categories:
 ---
 
 
-###介绍
+### 介绍
 UIControl是一些诸如buttons和sliders的控件的基类，它向应用传递用户意图。你不能直接使用UIControl。它替代它的子类来定义普通接口和行为结构。<!--more-->  
 UIControl的主要角色是定义interface和为准备事件消息和当目标事件发生时初始化并传递它们到它们的目标。  
 要了解target-action机制，可以查看Cocoa Fundamentals中的GuideTarget-Action in UIKit部分。Multi-Touch模式则可以查看[ Event Handling Guide for iOS](https://developer.apple.com/library/ios/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40009541)  
 UIControl类也包括存取control state的方法。如决定一个control是否开启。   
-###使用
+### 使用
 你可能会处于两个原因来定义UIControl子类：  
 1.去观察或者修改特定事件的action messages的传递。To do this, override sendAction:to:forEvent:, evaluate the passed-in selector, target object, or UIControlEvents bit mask, and proceed as required.－－－－翻译不好:(   
 2.提供自定义的跟踪行为（如改变外观的高亮）。要做到这点，需要覆盖所有这三个方法：
@@ -23,7 +23,7 @@ continueTrackingWithTouch:withEvent:
 endTrackingWithTouch:withEvent:
 ```
  
-###继承自UIControl的自定义控件经常会发送一些UIControl中定义的特有的事件
+### 继承自UIControl的自定义控件经常会发送一些UIControl中定义的特有的事件
 
 ```
 typedef NS_OPTIONS(NSUInteger, UIControlEvents) {

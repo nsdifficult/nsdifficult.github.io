@@ -4,7 +4,7 @@
 [OCUnit](www.sente.ch/software/ocunit/‎)：由Sen:te开发的Objective-C单元测试框架，自Xcode的2.1版本后集成了OCUnit。OCUnit中的测试分为两类，一类称为Logic Tests，另一类称为Application Tests。Logic Tests更倾向于所谓的白盒测试，用于测试工程中较细节的逻辑；Application Tests更倾向于黑盒测试，或接口测试，用于测试直接与用户交互的接口。  <!--more-->
 [GHUnit](https://github.com/gabriel/gh-unit)：是一款Objective-C的测试框架，支持iOS工程还支持OSX的工程。GHUnit不同于OCUnit，它提供了GUI界面来操作测试用例，而且也不区分Logic Tests和Application Tests。
 
-###增加OCUnit
+### 增加OCUnit
 OCUnit包括两部分Logic Tests和Application Tests。
 在项目中添加OCUnit分两种情况： 
   
@@ -30,14 +30,14 @@ OCUnit包括两部分Logic Tests和Application Tests。
       * 在Build Phases-Target Dependencies中添加依赖，选择主程序Target。   
       官方文档：[Xcode Unit Testing Guide](https://developer.apple.com/library/ios/documentation/DeveloperTools/Conceptual/UnitTesting/00-About_Unit_Testing/about.html#//apple_ref/doc/uid/TP40002143-CH1-SW1)   
 
-###增加GHUnit   
+### 增加GHUnit
 
 *   给工程添加一个EmptyApplication Target。   
 *   下载GHUnit，将GHUnitIOS.framework添加至刚才新加的target。   
 *   在Build Settings中搜索“linker flags”，设置Other Linker Flags - Debug - 添加一个支持全架构和全版本SDK的标示“-ObjC -all_load”。   
 *   删除刚添加的Target中的AppDelegate。修改main函数，导入GHUnitIOSAppDelegate代替原来的AppDelegate，修改UIApplicationMain的参数。  
 ![](/images/iosunittestingimage/iosunittesting009.png)
-##OCMock   
+## OCMock
 OCMock是针对Objective-C的一个用来模拟对象的框架  
 
 *   下载[OCMock](http://ocmock.org/)
@@ -50,16 +50,16 @@ OCMock是针对Objective-C的一个用来模拟对象的框架
 ![](/images/iosunittestingimage/iosunittesting013.jpg)
 *   更多OCMock安装与介绍见[OCMock](http://ocmock.org/)   
  
-##OCHamcrest   
+## OCHamcrest
 
 Hamcrest是比较流行的匹配引擎，他提供了很多自带的匹配，同时也支持自定义匹配。   
 同时它也支持Java，Python，Ruby，Objective-C， PHP， Erlang   
  
-###添加OCHamcrest
+### 添加OCHamcrest
 *   从[qualitycoding](http://qualitycoding.org/resources/)下载或者从Github下载源代码编译获得OCHamcrestIOS.framework。   
 *   将OCHamcrestIOS.framework添加至tests的target。   
 
-##GHUnit+OCHamcrest+OCMock完整的代码例子
+## GHUnit+OCHamcrest+OCMock完整的代码例子
 ```
 #import <Foundation/Foundation.h>
 #import <GHUnitIOS/GHUnit.h>
