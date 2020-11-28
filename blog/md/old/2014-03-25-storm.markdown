@@ -1,0 +1,186 @@
+---
+layout: post
+title: "Mac OS X上安装Storm"
+date: 2014-03-25 17:06
+comments: true
+categories: 
+---
+
+##Storm 集群的组成部分
+
+一个Storm集群可以简单的认为和Hadoop集群类似。但是在Hadoop上你运行“MapReduce jobs”而在Storm上你运行“topologies（拓扑）”。”Jobs”和“topologies”是不同的－－－一个关键的不同点是MapReduce job最终完成时停止，而一个topology processes messages 永远不会停止（除非你kill它）。<!--more-->    
+
+Storm 集群上有两种节点：master node和worker 节点（以后简称主节点和工作节点）。主节点运行一个名为“Nimbus”<n.(人和物产生的)灵气；光轮；[气象] 雨云；光辉灿烂的气氛>的守护进程，类似于Hadoop的“JobTracker”。Nimbus负责在集群中分配（distributing）代码，给机器分配（assigning）任务，监测（monitoring）失败。   
+
+每个工作节点运行一个叫做“Supervisor”（n. 监督人，[管理] 管理人；检查员）守护进程。Supervisor有两个任务：监听分配给它的机器和基于Nimbus分配给它的任务－在必要时开始或结束工作进程（worker processes）。每个工作进程执行一部分拓扑（topology），一个运行中拓扑包括一些机器上的worker processes。  
+
+
+
+所有Nimbus和Supervisors之间的协调通过[Zookeeper](http://zookeeper.apache.org/)集群。此外，Nimbus守护进程和Supervisor守护进程是fail-fast（快速失败）和stateless（adj. 没有国家的；无国家主权的；无状态的）；所有的状态都保存在Zookeeper或者本地磁盘中。这意味着你可以kill  -9 Nimbus z或者Supervisors，但他们会恢复并开始就像什么都没发生过。这个设计导致了Storm集群非常稳定。   
+
+##安装
+###zookeeper  
+
+http://jbowles.github.io/blog/2013/02/08/zookeeper-setup-on-mac/  
+
+
+```
+brew update && brew install zookeeper
+```  
+
+
+###Omq
+
+http://ptgoetz.github.io/blog/2013/11/26/building-storm-on-osx-mavericks/   
+
+```
+brew versions zeromq
+cd /usr/local
+git checkout 381c97f Library/Formula/zeromq.rb
+brew install zeromq
+```  
+
+###JZMQ
+消息处理。
+
+```
+git clone https://github.com/nathanmarz/jzmq.git
+brew install pkg-config
+brew install automake
+brew install libtool
+export JAVA_HOME=$(/usr/libexec/java_home -v1.6)
+sudo ln -s /System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers/ /Library/Java/Home/include
+cd jzmq
+./autogen.sh
+./configure
+touch src/classdist_noinst.stamp
+cd src
+javac -d . org/zeromq/*.java
+cd ../
+make
+sudo make install
+```
+
+###Leiningen  
+
+``` 
+mkdir ~/bin
+curl https://raw.github.com/technomancy/leiningen/stable/bin/lein -o ~/bin/lein
+chmod +x ~/bin/lein
+export PATH=$PATH:~/bin
+```
+
+###build Storm
+
+```
+git clone https://github.com/nathanmarz/storm.git
+cd storm
+lein sub install
+```
+
+
+##命令
+`jps`查看java进程
+
+`which java`查看命令地址  
+
+`echo  $JAVA_HOME`输出JAVA_HOME的环境变量值   
+
+`env` 查看所有环境变量  
+
+`export PATH=$PATH:$JAVA_HOME`将JAVA_HOME环境变量添加到path 
+
+`zkServer start/stop` 启动／停止zookeeper
+
+###启动storm：
+
+```
+storm nimbus &
+storm supervisor &
+storm ui &
+```  
+
+
+###提交topology  
+`storm jar jar包路径 com.edgar.类名 arg1 arg2 arg3`  
+
+###进程名称(用于查询)
+
+运行jps可查询
+
+
+```
+yirongyi-d:bin yirongyi$ jps
+684
+1354 supervisor //storm supervisor进程
+1351 nimbus //storm nimbus进程
+752
+1330 QuorumPeerMain //zkServer进程
+1363 Jps
+1360 core //storm UI进程
+```
+
+###运行topology
+
+`storm jar all-my-code.jar backtype.storm.MyTopology arg1 arg2`
+
+如果不指定topology的名称，storm将topology以本地模式运行，且storm ui不显示。如：
+
+`storm jar storm-starter-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+storm.starter.ExclamationTopology exclamation-topo`
+
+##RedHat5.4 X86下安装
+
+###配置yum的163源
+
+```
+rpm -qa|grep yum  //查看系统rpm版本
+rpm -aq|grep yum|xargs rpm -e --nodeps //删除自带rpm
+//下载
+wget http://tel.mirrors.163.com/centos/5/os/x86_64/CentOS/m2crypto-0.16-9.el5.x86_64.rpm
+wget http://mirrors.163.com/centos/5/os/x86_64/CentOS/python-elementtree-1.2.6-5.x86_64.rpm
+wget http://mirrors.163.com/centos/5/os/x86_64/CentOS/python-iniparse-0.2.3-6.el5.noarch.rpm
+wget http://mirrors.163.com/centos/5/os/x86_64/CentOS/python-sqlite-1.1.7-1.2.1.x86_64.rpm
+wget http://mirrors.163.com/centos/5/os/x86_64/CentOS/python-urlgrabber-3.1.0-6.el5.noarch.rpm
+wget http://mirrors.163.com/centos/5/os/x86_64/CentOS/yum-3.2.22-40.el5.centos.noarch.rpm
+wget http://mirrors.163.com/centos/5/os/x86_64/CentOS/yum-fastestmirror-1.1.16-21.el5.centos.noarch.rpm
+wget http://mirrors.163.com/centos/5/os/x86_64/CentOS/yum-metadata-parser-1.1.2-4.el5.x86_64.rpm
+//安装
+rpm -ivh python-iniparse-0.2.3-6.el5.noarch.rpm python-elementtree-1.2.6-5.x86_64.rpm python-sqlite-1.1.7-1.2.1.x86_64.rpm python-urlgrabber-3.1.0-6.el5.noarch.rpm
+rpm -ivh m2crypto-0.16-9.el5.x86_64.rpm
+rpm -ivh yum-metadata-parser-1.1.2-4.el5.x86_64.rpm
+rpm -ivh yum-3.2.22-40.el5.centos.noarch.rpm yum-fastestmirror-1.1.16-21.el5.centos.noarch.rpm  //必须同时安装，避免互相安装依赖
+//导入公钥
+rpm -import http://mirrors.163.com/centos/RPM-GPG-KEY-CentOS-5
+//让yum使用网易的源：
+cd /etc/yum.repos.d/
+wget http://mirrors.163.com/.help/CentOS-Base-163.repo
+vi CentOS-Base-163.repo
+[在所有mirrorlist前面加上#，把所有$releasever替换成5，保存]
+//清理并重新生成yum缓存
+yum clean metadata
+yum makecache
+//更新所有软件，网速慢就不要更新了
+yum -y upgrade
+```
+
+###安装storm
+
+####安装zeroMQ
+
+```
+wget http://download.zeromq.org/zeromq-4.0.4.tar.gz
+tar -xzf zeromq-4.0.4.tar.gz
+cd zeromq-2.1.7
+./configure
+make
+sudo make install
+```
+
+####安装zookeeper
+
+```
+//安装ruby1.9.3
+wget http://cache.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p545.tar.gz
+
+```
