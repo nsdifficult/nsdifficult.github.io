@@ -1,10 +1,4 @@
----
-layout: post
-title: "iOS中并发编程之GCD（一）"
-date: 2013-09-08 17:06
-comments: true
-categories: 
----
+# iOS中并发编程之GCD（一）
 
 ##概述  
   

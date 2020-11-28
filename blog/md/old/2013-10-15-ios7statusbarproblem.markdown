@@ -1,10 +1,4 @@
----
-layout: post
-title: "iOS7中的status bar问题"
-date: 2013-10-15 15:06
-comments: true
-categories: 
----
+# iOS7中的status bar问题
 
 
 首先推荐这篇文章：[Redesign Your App for iOS 7 之 页面布局](http://www.vinqon.com/codeblog/?detail/11109)

@@ -1,10 +1,4 @@
----
-layout: post
-title: "iOS中并发编程之Operation Queues（二）"
-date: 2013-10-12 15:06
-comments: true
-categories: 
----
+# iOS中并发编程之Operation Queues（二）
 ##简介
 Operation Queue是 concurrent dispatch queue在Cocoa上的同等实现，由NSOperationQueue类实现。不同于dispatch queues的FIFO运行方式，Operation Queues中的任务执行顺序也会考虑其他因素，其中主要考虑任务的依赖性。你在创建任务时需要定义其依赖性来实现复杂的任务执行顺序图。<!--more-->  
 
@@ -156,28 +150,16 @@ operation对象定期地调用isCancelled方法,如果返回YES(表示已取消)
 - (void)main {
 
    @try {
-
       BOOL isDone = NO;
-
- 
-
       while (![self isCancelled] && !isDone) {
-
           // Do some work and set isDone to YES when finished
-
       }
-
    }
-
    @catch(...) {
-
       // Do not rethrow exceptions.
-
    }
-
 }
 	}
-
 }
 ```
 
@@ -198,59 +180,34 @@ isConcurrent | (必须)标识一个操作是否并发 operation,覆盖这个方�
 
 ```
 @interface MyOperation : NSOperation {
-
     BOOL        executing;
-
     BOOL        finished;
-
 }
-
 - (void)completeOperation;
 
 @end
 
- 
-
 @implementation MyOperation
 
 - (id)init {
-
     self = [super init];
-
     if (self) {
-
         executing = NO;
-
         finished = NO;
-
     }
-
     return self;
-
 }
-
- 
 
 - (BOOL)isConcurrent {
-
     return YES;
-
 }
-
- 
 
 - (BOOL)isExecuting {
-
     return executing;
-
 }
 
- 
-
 - (BOOL)isFinished {
-
     return finished;
-
 }
 
 @end
