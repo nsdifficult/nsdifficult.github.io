@@ -5,6 +5,7 @@ date: 2014-03-25 17:06
 comments: true
 categories: 
 ---
+# Mac OS X上安装Storm
 
 ## Storm 集群的组成部分
 
@@ -101,10 +102,10 @@ storm ui &
 ```  
 
 
-###提交topology  
+### 提交topology  
 `storm jar jar包路径 com.edgar.类名 arg1 arg2 arg3`  
 
-###进程名称(用于查询)
+### 进程名称(用于查询)
 
 运行jps可查询
 
@@ -120,7 +121,7 @@ yirongyi-d:bin yirongyi$ jps
 1360 core //storm UI进程
 ```
 
-###运行topology
+### 运行topology
 
 `storm jar all-my-code.jar backtype.storm.MyTopology arg1 arg2`
 
@@ -131,7 +132,7 @@ storm.starter.ExclamationTopology exclamation-topo`
 
 ##RedHat5.4 X86下安装
 
-###配置yum的163源
+### 配置yum的163源
 
 ```
 rpm -qa|grep yum  //查看系统rpm版本
@@ -164,9 +165,9 @@ yum makecache
 yum -y upgrade
 ```
 
-###安装storm
+### 安装storm
 
-####安装zeroMQ
+#### 安装zeroMQ
 
 ```
 wget http://download.zeromq.org/zeromq-4.0.4.tar.gz
@@ -177,7 +178,7 @@ make
 sudo make install
 ```
 
-####安装zookeeper
+#### 安装zookeeper
 
 ```
 //安装ruby1.9.3

@@ -5,7 +5,7 @@ date: 2014-05-29 19:06
 comments: true
 categories: 
 ---
-
+# 《Java编程思想》读书笔记之类型信息 
 ### RTTI
 1.  RTTI即Run-Time Type Information（运行时类型信息）
 2.  类型信息在运行时表示的工作由Class对象完成，它包含了与类有关的信息（可作用于这些实例的所有方法代码，类的所有静态成员），Class对象可以制造类的实例。因此，Class引用表示的就是它所指向的对象的确切类型，而该对象就是Class类的一个对象。<!--more-->
