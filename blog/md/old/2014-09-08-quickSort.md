@@ -5,14 +5,14 @@ date: 2014-09-08 18:06
 comments: true
 categories: 
 ---  
-###介绍
+### 介绍
 通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比另外一部分的所有数据都要小，然后再按此方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，以此达到整个数据变成有序序列。<!--more-->   
 
 快速排序的图解：  
 
 ![](/images/quicksort/1.png )
 
-###步骤  
+### 步骤  
 快速排序使用分治法（Divide and conquer）策略来把一个串行（list）分为两个子串行（sub-lists）。   
 
 1. 从数列中挑出一个元素，称为 "基准"（pivot）。   
@@ -109,8 +109,8 @@ void quick_sort(int s[], int l, int r)
     }
 }
 ```
-###实现
-###C实现
+### 实现
+### C实现
 
 ```objc
 //
@@ -175,12 +175,12 @@ int main()
     return 0;
 }
 ```
-###算法分析    
+### 算法分析    
 
 * 时间复杂度：平均Ο(nlogn)    
 * 空间复杂度：Ω(n)（依据版本）   
 * 稳定性：原地分区版本的快速排序算法是不稳定的。  
 
-###参考文章   
+### 参考文章   
 维基百科：http://en.wikipedia.org/wiki/Quicksort     
 白话经典算法系列之六 快速排序 快速搞定：http://blog.csdn.net/morewindows/article/details/6684558
