@@ -65,7 +65,7 @@ Java NIO包含一个特殊的用来连接内存映射文件（memory mapped file
 
 一个Selector允许一个线程去处理多个channel。这对于那些有很多打开的连接Connections（channels），但在每个连接仅有少量流量的应用特别有用。比如，在一个提供聊天功能的服务器里。这里有一个一个线程使用一个selector处理3个channel的示例图：
 
-![image-20201213221736723](mage-20201213221736723.png)
+![image-20201213221736723](image-20201213221736723.png)
 
 
 
@@ -81,7 +81,7 @@ Java NIO Channels和流相似但也有些许差别：
 
 正如刚才所说，Channel总是将数据读到Buffer，或从Buffer往Channel里写数据。再次出示相关示意图：
 
-![image-20201213215123354](mage-20201213215123354.png)
+![image-20201213215123354](image-20201213215123354.png)
 
 ### Channel实现
 
@@ -185,7 +185,7 @@ aFile.close();
 
 position和limit的含义依赖于Buffer是在读模式还是写模式。而Capacity的含义则与Buffer处于何种模式无关。
 
-![image-20201213233211394](mage-20201213233211394.png)
+![image-20201213233211394](image-20201213233211394.png)
 
 
 
