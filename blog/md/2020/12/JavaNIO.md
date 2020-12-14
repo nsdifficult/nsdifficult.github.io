@@ -222,8 +222,135 @@ Java NIO有以下几个Buffer类型：
 
 MappedByteBuffer是一个有点特殊的类型，它是被它自己的内容覆盖的类型（翻译不好：The `MappedByteBuffer` is a bit special, and will be covered in its own text.）。
 
+### 给Buffer分配内存
 
+每个Buffer实现类都有一个allocate()方法用于给Buffer分配内存。如下例子展示了如何分配一个48byte容量大小的ByteBuffer。
 
+```java
+ByteBuffer buf = ByteBuffer.allocate(48);
+```
 
+分配一个1024个字符的空间的CharBuffer
 
+```java
+CharBuffer buf = CharBuffer.allocate(1024);
+```
 
+### 将数据写到buffer
+
+将数据写到Buffer有两个办法：
+
+1. 将数据从Channel写入Buffer
+2. 通过put方法直接将数据写入Buffer
+
+下面的代码展示了如何将数据从Channel写入Buffer
+
+```java
+int bytesRead = inChannel.read(buf); //read into buffer.
+```
+
+下面的代码展示了如何通过put方法直接将数据写入Buffer（写入127）
+
+```java
+buf.put(127);    
+```
+
+有很多其他版本的put()方法允许你实现一些特殊的写入。例如，在指定position写入，或者写入一个byte数组。通过查看JavaDoc可查看更多实现。
+
+### flip()
+
+flip()方法可将Buffer从写模式切换到读模式：将position设置为0，limit设置为position刚刚的位置。
+
+换言之，position标记了正在读的位置，limit标记了有多少诸如bytes，chars被写入了buffer-而这正表示了有多少诸如bytes，chars可以读取。
+
+### 从Buffer读取数据
+
+有两种方式可以从Buffer读取数据
+
+1. 将Buffer中数据读入channel
+2. 使用get()方法从Buffer中直接读取数据
+
+下面的代码展示了如何将Buffer中数据读入channel
+
+```java
+//read from buffer into channel.
+int bytesWritten = inChannel.write(buf);
+```
+
+下面的代码展示了如何使用get()方法从Buffer中直接读取数据
+
+```java
+byte aByte = buf.get();    
+```
+
+Buffer有很多其他版本的get()方法允许你实现一些特殊的从buffer中读取数据。例如从指定position位置读取，或者从buffer中读取一个bytes数组。通过查看JavaDoc可查看更多实现。
+
+### rewind()
+
+Buffer.rewind()方法将position设置为0，这样就可以重新从开始的位置读取所有数据了。limit保持不变，依然标记了可以从Buffer中读取多少元素（诸如bytes，chars等）。
+
+### clear()和compact()
+
+一旦你完成了从buffer读取数据的操作，就可以调用clear()方法或者compact()方法来将Buffer为接下来的写操作做好准备。
+
+clear()方法被调用后position被设置为0，limit被设置为capacity。换言之，Buffer被清理了，但数据并未被清理，仅仅标记了你可以从哪个位置写入数据。
+
+如果clear()方法被调用后，Buffer仍有任何未读取的数据，这些数据会被“遗忘”，意味着你没有任何标记告诉你什么数据被读取，什么数据未被读取。
+
+如果你还有未读取的数据，但你想在读取这些数据之前先写入数据，可以调用compact()方法而不是clear()。
+
+compact()方法将所有未读取数据拷贝到Buffer的开始，然后将position指向最后一个未读数据的下一个cell。limit则不变，仍然指向capacity，这点和clear一样。这样Buffer就为写做好了准备，因为你不会覆盖这些未读数据。
+
+> > TODO 这里有部分没翻译
+
+## Java NIO Selector
+
+Java NIO Selector是用来检测多个Java NIO Channel实例的组件，并确定哪个channel为读或者写等操作做好了准备。这样我们就可以仅使用一个线程去管理多个channels，多个网络连接。
+
+### 为什么使用Selector？
+
+可以使用一个线程处理多个channels意味着你可以使用更少的线程处理大量channels。实际上，你可以仅使用一个线程来处理所有的channels。线程切换对于操作系统来说代价是很昂贵的，并且每个线程都会占用一定的内存。因此使用的线程越少越好。
+
+但是同样得记住，现代的操作系统和CPU在处理多任务方便已经变得越来越好，处理多任务的耗费也越来越小。实际上，一个CPU有多个核心，如果你不适用多任务，就有可能浪费了CPU的多核运算能力。但说回来，这已经是另一个话题了。这里我们继续讨论怎么使用一个线程，一个selector去处理多个channels。
+
+下面这张示意图表示操作3个Channel的Selector
+
+![image-20201215001537695](/Users/edgar/Library/Application Support/typora-user-images/image-20201215001537695.png)
+
+### 创建一个Selector
+
+通过Selector.open()方法创建一个Selector：
+
+```java
+Selector selector = Selector.open();
+```
+
+### 将Channels注册到Selector
+
+使用SelectableChannel.register()方法可将channel注册到Selector：
+
+```java
+channel.configureBlocking(false);
+
+SelectionKey key = channel.register(selector, SelectionKey.OP_READ);
+```
+
+注册到Selector的Channel必须被设置成非阻塞模式。这意味着FileChannel不能使用Selector，因为FileChannel不能切换到非阻塞模式。但Socket Channels可以工作在非阻塞模式下。
+
+register()的第二个参数是是一个Selector感兴趣的集合：即通过Selector想监听的那些事件。有4个事件可供监听：
+
+1. Connect
+2. Accept
+3. Read
+4. Write
+
+Channel与Server连接成功为：connect Ready。一个Server socket chanel接收到一个连接为：accept Ready。一个Channel有数据做好了被读取的准备为：read Ready。一个channel做好了被写入数据的准备则为：write Ready。
+
+有四个SectionKey常量代表了这四个事件：
+
+1. SelectionKey.OP_CONNECT
+2. SelectionKey.OP_ACCEPT
+3. SelectionKey.OP_READ
+4. SelectionKey.OP_WRITE
+
+待续.......
