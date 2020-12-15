@@ -315,7 +315,7 @@ Java NIO Selector是用来检测多个Java NIO Channel实例的组件，并确�
 
 下面这张示意图表示操作3个Channel的Selector
 
-![image-20201215001537695](/Users/edgar/Library/Application Support/typora-user-images/image-20201215001537695.png)
+![image-20201213221736723](image-20201213221736723.png)
 
 ### 创建一个Selector
 
