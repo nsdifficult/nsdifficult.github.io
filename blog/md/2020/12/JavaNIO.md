@@ -353,4 +353,159 @@ Channel与Server连接成功为：connect Ready。一个Server socket chanel接�
 3. SelectionKey.OP_READ
 4. SelectionKey.OP_WRITE
 
-待续.......
+如果对多个事件感兴趣可以这么写：
+
+```java
+int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;    
+```
+
+下面将更加深入讲解interest set。
+
+### SelectionKey
+
+如前面所讲，当你将一个channel注册到Selector时register()方法会返回一个SelectionKey对象。这个SelectionKey对象包含了一些调用者会关注的属性：
+
+* The interest set
+* The ready set
+* The Channel
+* The Selector
+* An attached object (optional)
+
+#### Interest Set
+
+Interest Set是调用者关注的事件集合，如“将Channels注册到Selector”章节所讲那样。你可以通过SelectionKey读或者写这些Interest Set（感觉翻译的不对，附上原文：You can read and write that interest set via the `SelectionKey` like this）:
+
+```java
+int interestSet = selectionKey.interestOps();
+
+boolean isInterestedInAccept  = interestSet & SelectionKey.OP_ACCEPT;
+boolean isInterestedInConnect = interestSet & SelectionKey.OP_CONNECT;
+boolean isInterestedInRead    = interestSet & SelectionKey.OP_READ;
+boolean isInterestedInWrite   = interestSet & SelectionKey.OP_WRITE;
+```
+
+通过代码可以看到，我们可以使用AND运算符来找出Interest Set中某个确定的事件。
+
+#### Ready Set
+
+Ready Set是channel是否准备好的事件集合。通过Selection可以获取这些Ready Set。Selection将会在下文解释。
+
+```java
+int readySet = selectionKey.readyOps();
+```
+
+同样可以通过向上文那样使用AND运算符来找出Ready Set中某个确定的事件。但也可以使用另外四个返回boolean的方法替代：
+
+```java
+selectionKey.isAcceptable();
+selectionKey.isConnectable();
+selectionKey.isReadable();
+selectionKey.isWritable();
+```
+
+#### Channel+Selector
+
+从SelectionKey访问Channel+Selector是繁琐的（trivial）。
+
+```java
+Channel  channel  = selectionKey.channel();
+Selector selector = selectionKey.selector();
+```
+
+TODO 这里Attaching Objects 没有翻译
+
+#### 通过Selector获取Channels
+
+将一个或者多个channel注册到Selector后，可以调用select()方法获取调用者关注的事件（诸如connect, accept, read or write）已经发生的channel数目。换言之，如果调用者关注channel是否准备好读操作了，当channel准备好读后，select()方法会让调用者收到这个channel。
+
+有三个select()方法
+
+* int select()
+* int select(long timout)
+* int selectNow()
+
+#### selectedKeys()
+
+在调用select()方法并返回后，可以调用selector的selectedKey()方法获取：selected key set：
+
+```java
+Set<SelectionKey> selectedKeys = selector.selectedKeys();    
+```
+
+将channel注册到selector后，Channel.register()方法也会返回一个SelectionKey对象。这个key代表channels注册到了selector。可以通过SelectionKey的selectedKeySet()方法访问这些key。
+
+你可以通过迭代访问这些selected key set来访问这些准备好的channel
+
+```java
+Set<SelectionKey> selectedKeys = selector.selectedKeys();
+
+Iterator<SelectionKey> keyIterator = selectedKeys.iterator();
+
+while(keyIterator.hasNext()) {
+    
+    SelectionKey key = keyIterator.next();
+
+    if(key.isAcceptable()) {
+        // a connection was accepted by a ServerSocketChannel.
+
+    } else if (key.isConnectable()) {
+        // a connection was established with a remote server.
+
+    } else if (key.isReadable()) {
+        // a channel is ready for reading
+
+    } else if (key.isWritable()) {
+        // a channel is ready for writing
+    }
+
+    keyIterator.remove();
+}
+```
+
+TODO  部分章节没翻译
+
+### 一个完整的selector的例子
+
+这里有个完整的demo，展示了如何将channels注册到Selector，然后通过监控Selector获取channel的事件（accept，connect，read，write）。
+
+```java
+Selector selector = Selector.open();
+
+channel.configureBlocking(false);
+
+SelectionKey key = channel.register(selector, SelectionKey.OP_READ);
+
+
+while(true) {
+
+  int readyChannels = selector.selectNow();
+
+  if(readyChannels == 0) continue;
+
+
+  Set<SelectionKey> selectedKeys = selector.selectedKeys();
+
+  Iterator<SelectionKey> keyIterator = selectedKeys.iterator();
+
+  while(keyIterator.hasNext()) {
+
+    SelectionKey key = keyIterator.next();
+
+    if(key.isAcceptable()) {
+        // a connection was accepted by a ServerSocketChannel.
+
+    } else if (key.isConnectable()) {
+        // a connection was established with a remote server.
+
+    } else if (key.isReadable()) {
+        // a channel is ready for reading
+
+    } else if (key.isWritable()) {
+        // a channel is ready for writing
+    }
+
+    keyIterator.remove();
+  }
+}
+```
+
