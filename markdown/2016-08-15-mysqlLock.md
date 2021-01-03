@@ -7,6 +7,8 @@ categories:
 
 ---
 
+# InnoDB锁学习笔记
+
 ###Shared and Exclusive Locks
 即s锁/共享锁/读锁 和 x锁/排他锁/写锁。   
 s锁只允许别的事务在其持有数据上加s锁。顾名思义，x锁会让其他请求其数据的事务等待。<!--more--> 
