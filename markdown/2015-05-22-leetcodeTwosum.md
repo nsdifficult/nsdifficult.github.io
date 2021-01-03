@@ -7,7 +7,7 @@ categories:
 ---
 
 # leetcode之two sum
-##问题描述
+## 问题描述
 [two sum原题链接](https://leetcode.com/problems/two-sum/)
 >Given an array of integers, find two numbers such that they add up to a specific target number.<!--more-->
 
@@ -18,11 +18,11 @@ categories:
 >Input: numbers={2, 7, 11, 15}, target=9
 Output: index1=1, index2=2 
 
-##简要说明
+## 简要说明
 给定一个int型数组和一个目标数字，从数组中找到两个数字之和为目标数字，返回这两个数字的索引，要求索引从1开始，且第一个小于第二个。如输入：numbers={2, 7, 11, 15}, target=9。只能返回1，2。返回0，1或者2，1都是错的。   
 
-##思路
-###1、两个循环
+## 思路
+### 1、两个循环
 
 ```objc
 int* twoSum(int* nums, int numsSize, int target) {
@@ -42,7 +42,7 @@ int* twoSum(int* nums, int numsSize, int target) {
 }
 ```
 时间复杂度是n^2，提交之后告诉我超时。。。不通过。
-###2、先快速排序，再二分查找
+### 2、先快速排序，再二分查找
 
 ```objc
 struct intWithIndex{
@@ -134,7 +134,7 @@ int* twoSum(int* nums, int numsSize, int target) {
 }
 ```
 时间复杂度为nlogn，提交通过。
-###3、先快速排序，再使用两个数字之和的特性来查找
+### 3、先快速排序，再使用两个数字之和的特性来查找
 
 ```objc
 struct intWithIndex{
@@ -213,7 +213,7 @@ int *twoSum(int *nums,int numsSize,int target) {
 ```
 时间复杂度也为nlogn，提交通过。
 
-###4、使用map强制搜索
+### 4、使用map强制搜索
 
 ```java
 public class Solution {

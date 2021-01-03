@@ -7,7 +7,7 @@ categories:
 ---
 
 # 《Java编程思想》读书笔记之多线程(一)
-##线程状态 
+## 线程状态
 new->runnable->running->block->dead<!--more-->   
 
 1. 新建(new)：新创建了一个线程对象。   
@@ -19,16 +19,16 @@ new->runnable->running->block->dead<!--more-->
 	c. 其他阻塞：运行(running)的线程执行Thread.sleep(long ms)或t.join()方法，或者发出了I/O请求时，JVM会把该线程置为阻塞状态。当sleep()状态超时、join()等待线程终止或者超时、或者I/O处理完毕时，线程重新转入可运行(runnable)状态。   
 5. 死亡(dead)：线程run()、main() 方法执行结束，或者因异常退出了run()方法，则该线程结束生命周期。死亡的线程不可再次复生。 
 
-##yield()方法   
+## yield()方法
 
 在run方法中对静态方法`Thread.yield()`的调用是对线程调度器（Java线程机制的一部分，可以将cpu丛一个线程转移到另一个线程）的一种建议，它在声明：“我已经执行完声明周期中最重要的部分了，此刻正是切换给其他任务执行一段是 jain的大好时机。”。   
 
-##如何创建线程   
+## 如何创建线程
 
 1. 实现Runnable接口，并将其传入Thread的构造函数，其中run方法中负责执行任务；
 2. 继承Thread类。
 
-##使用Executors   
+## 使用Executors
 Java SE5的java.util.concurrent包中的Executors将为你管理Thread对象，丛而简化了并发编程。   
 Executors提供了一系列工厂方法用于创先线程池，返回的线程池都实现了ExecutorService接口。   
 
@@ -42,7 +42,7 @@ Executors提供了一系列工厂方法用于创先线程池，返回的线程�
 	创建一个支持定时及周期性的任务执行的线程池，多数情况下可用来替代Timer类。
 	
 
-##从任务中返回值   
+## 从任务中返回值
 使用Callable接口代替Runnable接口，其call()中为任务代码，且会返回执行结果。但必须使用ExecutorService.submit()方法调用它。   
 
 ```java
@@ -88,12 +88,12 @@ public class CallableDemo {
 }
 ```
 
-##休眠（sleep）与等待（wait）
+## 休眠（sleep）与等待（wait）
 sleep：使线程进入休眠，但不放弃对象的锁。Java SE5引入了更加显式的sleep()版本：`TimeUnit.MILLSESECONDS.sleep(100)`。sleep行为本身可以被中断，因此需要捕获InterruptedException异常。  
 wait：使线程进入阻塞且放弃锁。必须使用notify或者notifyAlll或者指定睡眠时间来唤醒当前等待池中的线程。
 
 
-##join方法    
+## join方法
 >join() method suspends the execution of the calling thread until the object called finishes its execution.
 也就是说，t.join()方法阻塞调用此方法的线程(calling thread)，直到线程t完成，此线程再继续；通常用于在main()主线程内，等待其它线程完成再结束main()主线程。  
 注意，对join()方法的调用可以被中断，做法是在调用线程上调用interrupt()方法，这时需要用到try-catch子句。   
@@ -161,7 +161,7 @@ Dopey join completed
 ```
 
 
-##处理线程中的异常   
+## 处理线程中的异常
  
 Thread的run方法是不抛出任何检查型异常(checked exception)的,但是它自身却可能因为一个异常而被终止，导致这个线程的终结。即异常不能跨线程传播回main()，所以必须在本地处理所有在线程内部产生的异常。    
 所以要处理线程的异常有两个方法：    
