@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-
+# 《Java编程思想》读书笔记之多线程(一)
 ##线程状态 
 new->runnable->running->block->dead<!--more-->   
 

@@ -6,8 +6,9 @@ comments: true
 categories: 
 
 ---
+# 《Java编程思想》读书笔记之容器(一)
 
-#先上容器的类图<!--more-->
+# 先上容器的类图<!--more-->
 ![](/images/container/container.png)
 
 点线框表示接口；实线框表示普通类（具体类）；虚线框表示抽象类；带有空心箭头的点线表示一个特定的类实现了一个接口；实心箭头表示某个类可以生成箭头所指向类的对象。例如任意的Collection可以生成Iterator，而List可以生成ListIterator（也能生成普通的Iterator，因为List继承自Collection）。   

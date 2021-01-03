@@ -5,6 +5,8 @@ date: 2015-05-22 16:06
 comments: true
 categories: 
 ---
+
+# leetcode之two sum
 ##问题描述
 [two sum原题链接](https://leetcode.com/problems/two-sum/)
 >Given an array of integers, find two numbers such that they add up to a specific target number.<!--more-->
