@@ -29,7 +29,7 @@ categories:
 A事务读取B事务尚未提交的更改数据，并在这个数据的基础上操作。如果恰巧B事务回滚，那么A事务读到的数据根本是不被承认的。来看取款事务和转账事务并发时引发的脏读场景：   
 ![dirtyread.png](/images/transaction/dirtyread.png) 
 
-### 不可重复读
+### 1不可重复读
 不可重复读是指A事务读取了B事务已经提交的更改数据（**更改**和**删除**）和在B事务未完成时读的数据不一致。假设A在取款事务的过程中，B往该账户转账100元，A两次读取账户的余额发生不一致：   
 ![nonrepeatRead.png](/images/transaction/nonrepeatRead.png) 
 
